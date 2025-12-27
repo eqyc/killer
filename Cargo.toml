@@ -32,7 +32,7 @@ tonic-build = "0.14.2"  # 编译时 Proto 生成
 
 # 数据库
 sqlx = { version = "0.8", features = ["runtime-tokio", "tls-rustls", "postgres", "macros", "migrate", "uuid", "chrono", "json"] }  # PostgreSQL 驱动（最新稳定 0.8.x）
-clickhouse = "0.13"  # ClickHouse 驱动（官方最新，默认使用 tokio）
+clickhouse = "0.14"  # ClickHouse 驱动（官方最新，默认使用 tokio）
 
 # 可观测性
 opentelemetry = { version = "0.31", features = ["trace", "metrics"] }
@@ -47,7 +47,7 @@ prometheus = "0.14"  # Prometheus metrics (v0.14+ handles protobuf dependency be
 rdkafka = { version = "0.36", features = ["cmake-build"] }  # Kafka 客户端（推荐用于生产）
 
 # 缓存与配置
-redis = { version = "0.26", features = ["tokio-comp", "connection-manager"] }
+redis = { version = "1.0", features = ["tokio-comp", "connection-manager"] }
 config = "0.14"  # 配置管理
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
