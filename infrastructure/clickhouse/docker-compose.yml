@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.12
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    volumes:
+      - ./config:/etc/clickhouse-server
+      - ./init-scripts:/docker-entrypoint-initdb.d

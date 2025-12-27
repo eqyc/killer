@@ -1,0 +1,178 @@
+# Prometheus 配置文件
+# 用于 ERP 系统微服务监控
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'erp-system'
+    environment: 'dev'
+
+# Alertmanager 配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# 加载告警规则
+rule_files:
+  # - "alerts/*.yml"
+
+# 抓取配置
+scrape_configs:
+  # Prometheus 自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # API Gateway
+  - job_name: 'api-gateway'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api-gateway:8080']
+        labels:
+          service: 'api-gateway'
+
+  # Analytics Service
+  - job_name: 'analytics-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['analytics-service:8080']
+        labels:
+          service: 'analytics-service'
+
+  # CRM Service
+  - job_name: 'crm-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['crm-service:8080']
+        labels:
+          service: 'crm-service'
+
+  # Financial Service
+  - job_name: 'financial-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['financial-service:8080']
+        labels:
+          service: 'financial-service'
+
+  # HR Service
+  - job_name: 'hr-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['hr-service:8080']
+        labels:
+          service: 'hr-service'
+
+  # Sales Service
+  - job_name: 'sales-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['sales-service:8080']
+        labels:
+          service: 'sales-service'
+
+  # SCM Service
+  - job_name: 'scm-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['scm-service:8080']
+        labels:
+          service: 'scm-service'
+
+  # Warehouse Service
+  - job_name: 'warehouse-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['warehouse-service:8080']
+        labels:
+          service: 'warehouse-service'
+
+  # Production Service
+  - job_name: 'production-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['production-service:8080']
+        labels:
+          service: 'production-service'
+
+  # Quality Service
+  - job_name: 'quality-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['quality-service:8080']
+        labels:
+          service: 'quality-service'
+
+  # Project Service
+  - job_name: 'project-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['project-service:8080']
+        labels:
+          service: 'project-service'
+
+  # Materials Service
+  - job_name: 'materials-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['materials-service:8080']
+        labels:
+          service: 'materials-service'
+
+  # Shipping Service
+  - job_name: 'shipping-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['shipping-service:8080']
+        labels:
+          service: 'shipping-service'
+
+  # Treasury Service
+  - job_name: 'treasury-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['treasury-service:8080']
+        labels:
+          service: 'treasury-service'
+
+  # Controlling Service
+  - job_name: 'controlling-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['controlling-service:8080']
+        labels:
+          service: 'controlling-service'
+
+  # Maintenance Service
+  - job_name: 'maintenance-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['maintenance-service:8080']
+        labels:
+          service: 'maintenance-service'
+
+  # MDG Service
+  - job_name: 'mdg-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['mdg-service:8080']
+        labels:
+          service: 'mdg-service'
+
+  # PostgreSQL Exporter (可选)
+  # - job_name: 'postgres-exporter'
+  #   static_configs:
+  #     - targets: ['postgres-exporter:9187']
+
+  # Redis Exporter (可选)
+  # - job_name: 'redis-exporter'
+  #   static_configs:
+  #     - targets: ['redis-exporter:9121']
+
+  # Kafka Exporter (可选)
+  # - job_name: 'kafka-exporter'
+  #   static_configs:
+  #     - targets: ['kafka-exporter:9308']

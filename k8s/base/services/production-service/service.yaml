@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: production-service
+  namespace: killer-erp
+spec:
+  selector:
+    app: production-service
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http

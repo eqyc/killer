@@ -1,0 +1,9 @@
+FROM rust:1.92
+# 提前创建用户
+RUN groupadd -g 1000 rust \
+    && useradd -u 1000 -g rust -s /bin/bash -m rust
+# 显式声明 USER 解决扫描器警报
+USER rust
+RUN cargo install cargo-watch
+WORKDIR /workspace
+CMD ["cargo", "watch", "-x", "check"]

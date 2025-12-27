@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quality-service
+  namespace: killer-erp
+spec:
+  selector:
+    app: quality-service
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http

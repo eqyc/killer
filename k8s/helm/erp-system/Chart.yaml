@@ -1,0 +1,4 @@
+apiVersion: v2
+name: erp-system
+version: 0.1.0
+description: Helm chart for the KILLER ERP microservices

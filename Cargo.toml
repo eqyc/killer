@@ -1,0 +1,101 @@
+# 项目根目录 Cargo.toml - Rust ERP 系统 Workspace 配置
+# 基于 2025 年 12 月最新稳定版本（Rust 1.92.0）
+# Workspace 包含所有 shared library、services binary、tools binary
+
+[workspace]
+members = [
+    "shared/*",
+    "services/*",
+    "tools/cli",
+    "tools/data-migration",
+    "tools/proto-gen",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"  # Rust 2024 Edition
+license = "Apache-2.0"
+repository = "https://github.com/eqyc/killer"
+authors = ["EQYC <a@eqy.cc>"]
+description = "Rust 微服务 KILLER 系统"
+
+[workspace.dependencies]
+# 核心异步与 Web/RPC
+tokio = { version = "1.48.0", features = ["full"] }  # 异步运行时（最新稳定）
+axum = { version = "0.8", features = ["tokio", "tracing", "json"] }  # Web 框架（0.8.x 系列最新）
+tonic = { version = "0.14", features = ["transport", "gzip", "tls-webpki-roots"] }  # gRPC（最新）
+
+# Proto 管理与代码生成
+prost = "0.13"  # Protobuf 序列化（tonic 依赖）
+tonic-build = "0.14.2"  # 编译时 Proto 生成
+
+# 数据库
+sqlx = { version = "0.8", features = ["runtime-tokio", "tls-rustls", "postgres", "macros", "migrate", "uuid", "chrono", "json"] }  # PostgreSQL 驱动（最新稳定 0.8.x）
+clickhouse = "0.13"  # ClickHouse 驱动（官方最新，默认使用 tokio）
+
+# 可观测性
+opentelemetry = { version = "0.31", features = ["trace", "metrics"] }
+opentelemetry_sdk = { version = "0.31", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.31", features = ["tonic"] }
+opentelemetry-prometheus = "0.31"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+prometheus = "0.14"  # Prometheus metrics (v0.14+ handles protobuf dependency better)
+
+# 消息队列
+rdkafka = { version = "0.36", features = ["cmake-build"] }  # Kafka 客户端（推荐用于生产）
+
+# 缓存与配置
+redis = { version = "0.26", features = ["tokio-comp", "connection-manager"] }
+config = "0.14"  # 配置管理
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+validator = { version = "0.19", features = ["derive"] }
+
+# 安全与认证
+jsonwebtoken = "9.3"
+tower = { version = "0.5", features = ["limit", "timeout", "load-shed"] }  # Tower 中间件（限流、熔断）
+
+# 批处理与调度
+tokio-cron-scheduler = "0.11"
+
+# 测试与工具
+testcontainers = "0.18"  # 集成测试容器支持
+anyhow = "1.0"
+thiserror = "1.0"
+
+# 其他常用
+uuid = { version = "1.10", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# 共享库专用依赖（示例）
+domain-primitives = { path = "shared/domain-primitives" }
+event-sourcing = { path = "shared/event-sourcing" }
+cqrs = { path = "shared/cqrs" }
+messaging = { path = "shared/messaging" }
+observability = { path = "shared/observability" }
+auth = { path = "shared/auth" }
+rules-engine = { path = "shared/rules-engine" }
+integration = { path = "shared/integration" }
+api-contracts = { path = "shared/api-contracts" }
+batch-framework = { path = "shared/batch-framework" }
+testing-utils = { path = "shared/testing-utils" }
+
+# Profile 优化
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"  # 减小二进制体积
+
+[profile.test]
+opt-level = 1
+
+# 统一 patch
+[patch.crates-io]
+# 如需强制特定版本，可在此覆盖

@@ -1,0 +1,39 @@
+# 使用 cargo-chef 优化 Rust Docker 构建缓存
+# 需要 build 参数: BIN_NAME (例如: api-gateway, crm-service)
+
+# 1. Planner 阶段
+FROM rust:1.92-slim-bookworm AS planner
+USER root
+WORKDIR /app
+RUN cargo install cargo-chef
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+# 2. Cacher 阶段
+FROM rust:1.92-slim-bookworm AS cacher
+USER root
+WORKDIR /app
+RUN cargo install cargo-chef
+COPY --from=planner /app/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
+
+# 3. Builder 阶段
+FROM rust:1.92-slim-bookworm AS builder
+USER root
+WORKDIR /app
+COPY --from=cacher /app/target target
+COPY --from=cacher /usr/local/cargo /usr/local/cargo
+COPY . .
+ARG BIN_NAME
+RUN if [ -z "$BIN_NAME" ]; then echo "ERROR: BIN_NAME build argument is required"; exit 1; fi
+RUN cargo build --release --bin ${BIN_NAME}
+
+# 4. Runtime 阶段 (最终镜像)
+FROM gcr.io/distroless/cc-debian12 AS runtime
+# 显式使用 distroless 提供的 nonroot 用户
+USER nonroot:nonroot
+WORKDIR /app
+ARG BIN_NAME
+COPY --from=builder /app/target/release/${BIN_NAME} /app/server
+ENV RUST_LOG=info
+ENTRYPOINT ["/app/server"]

@@ -1,0 +1,9 @@
+services:
+  postgres:
+    ports: ["5432:5432"]
+  kafka:
+    ports: ["9092:9092"]
+  redis:
+    ports: ["6379:6379"]
+  clickhouse:
+    ports: ["9000:9000", "8123:8123"]

@@ -1,0 +1,42 @@
+[package]
+name = "api-contracts"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "ERP 系统所有微服务共享的 API 契约（DTO、错误码、分页等）"
+keywords = ["erp", "api", "dto", "contracts"]
+categories = ["web-programming"]
+
+publish = false
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true, optional = true }
+opentelemetry = { workspace = true, optional = true }
+prometheus = { workspace = true, optional = true }
+validator = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_test = "1.0"
+
+[features]
+default = []
+full = [
+    "dep:tracing",
+    "dep:opentelemetry",
+    "dep:prometheus",
+    "dep:validator",
+]
+tracing = ["dep:tracing"]
+metrics = ["dep:prometheus"]
+otel = ["dep:opentelemetry"]
+validation = ["dep:validator"]

@@ -1,0 +1,254 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/erp
+
+jobs:
+  # 创建 GitHub Release
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # 生成 changelog（简化版，实际项目可使用 git-chglog 等工具）
+          echo "## Changes" > CHANGELOG.md
+          git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"- %s (%h)" >> CHANGELOG.md || echo "- Initial release" >> CHANGELOG.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 构建 Rust 二进制文件
+  build-binaries:
+    name: Build Rust Binaries
+    runs-on: ${{ matrix.os }}
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: aarch64-apple-darwin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.92.0"
+          targets: ${{ matrix.target }}
+
+      - name: Install system dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake pkg-config libssl-dev
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release binaries
+        run: cargo build --workspace --release --target ${{ matrix.target }}
+
+      - name: Package binaries
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czf ../../../erp-${{ matrix.target }}.tar.gz $(find . -maxdepth 1 -type f -executable)
+
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.create-release.outputs.version }}
+          files: erp-${{ matrix.target }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 构建并推送 Docker 镜像
+  build-docker:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: create-release
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - analytics-service
+          - crm-service
+          - financial-service
+          - hr-service
+          - sales-service
+          - scm-service
+          - warehouse-service
+          - production-service
+          - quality-service
+          - project-service
+          - materials-service
+          - shipping-service
+          - treasury-service
+          - controlling-service
+          - maintenance-service
+          - mdg-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.service }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.optimized
+          build-args: |
+            BIN_NAME=${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # 打包并发布 Helm Charts
+  publish-helm:
+    name: Publish Helm Charts
+    runs-on: ubuntu-latest
+    needs: [create-release, build-docker]
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: '3.14.0'
+
+      - name: Update Chart version
+        run: |
+          VERSION=${{ needs.create-release.outputs.version }}
+          VERSION_NO_V=${VERSION#v}
+          sed -i "s/^version:.*/version: $VERSION_NO_V/" k8s/helm/erp-system/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: $VERSION/" k8s/helm/erp-system/Chart.yaml
+
+      - name: Package Helm chart
+        run: |
+          helm package k8s/helm/erp-system -d helm-charts/
+
+      - name: Upload Helm chart to release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.create-release.outputs.version }}
+          files: helm-charts/*.tgz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to OCI registry (GitHub Packages)
+        run: |
+          CHART=$(ls helm-charts/*.tgz)
+          helm push $CHART oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
+
+  # 部署到测试环境（可选）
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [publish-helm]
+    if: github.event_name == 'push' && !contains(needs.create-release.outputs.version, '-rc')
+    environment:
+      name: staging
+      url: https://staging.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Deploy to staging
+        run: |
+          helm upgrade --install erp-system \
+            oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts/erp-system \
+            --version ${{ needs.create-release.outputs.version }} \
+            --namespace erp-staging \
+            --create-namespace \
+            --values k8s/helm/erp-system/values-staging.yaml \
+            --wait \
+            --timeout 10m
+
+      - name: Run smoke tests
+        run: |
+          # 添加基本的健康检查
+          kubectl rollout status deployment -n erp-staging --timeout=5m
+          kubectl get pods -n erp-staging

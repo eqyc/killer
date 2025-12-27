@@ -1,0 +1,10 @@
+syntax = "proto3";
+package killer.controlling.v1;
+
+message PlaceholderRequest {
+  string id = 1;
+}
+
+message PlaceholderResponse {
+  string message = 1;
+}

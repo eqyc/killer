@@ -1,0 +1,92 @@
+# Labeler configuration for automatic PR labeling
+
+# Rust code
+'rust':
+  - '**/*.rs'
+  - 'Cargo.toml'
+  - 'Cargo.lock'
+
+# Services
+'service:api-gateway':
+  - 'services/api-gateway/**/*'
+
+'service:analytics':
+  - 'services/analytics-service/**/*'
+
+'service:crm':
+  - 'services/crm-service/**/*'
+
+'service:financial':
+  - 'services/financial-service/**/*'
+
+'service:hr':
+  - 'services/hr-service/**/*'
+
+'service:sales':
+  - 'services/sales-service/**/*'
+
+'service:scm':
+  - 'services/scm-service/**/*'
+
+'service:warehouse':
+  - 'services/warehouse-service/**/*'
+
+'service:production':
+  - 'services/production-service/**/*'
+
+# Shared libraries
+'shared':
+  - 'shared/**/*'
+
+# Infrastructure
+'infrastructure':
+  - 'infrastructure/**/*'
+  - 'k8s/**/*'
+  - 'docker/**/*'
+
+'docker':
+  - '**/Dockerfile*'
+  - 'docker/**/*'
+  - 'docker-compose*.yml'
+
+'kubernetes':
+  - 'k8s/**/*'
+  - '**/*.yaml'
+
+'helm':
+  - 'k8s/helm/**/*'
+
+# CI/CD
+'ci/cd':
+  - '.github/workflows/**/*'
+  - '.github/actions/**/*'
+
+# Documentation
+'documentation':
+  - 'docs/**/*'
+  - '**/*.md'
+  - 'README.md'
+
+# Configuration
+'configuration':
+  - '**/*.yml'
+  - '**/*.yaml'
+  - '**/*.toml'
+  - '**/*.json'
+  - '.github/**/*.yml'
+
+# Testing
+'testing':
+  - '**/*_test.rs'
+  - '**/*test*.rs'
+  - 'tests/**/*'
+
+# Dependencies
+'dependencies':
+  - 'Cargo.toml'
+  - 'Cargo.lock'
+
+# Security
+'security':
+  - '.github/workflows/security-scan.yml'
+  - '.github/dependabot.yml'

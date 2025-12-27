@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: treasury-service
+  namespace: killer-erp
+spec:
+  selector:
+    matchLabels:
+      app: treasury-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: treasury-service
+    spec:
+      containers:
+        - name: treasury-service
+          image: ghcr.io/example/treasury-service:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+          # 如果应用需要写临时文件，必须挂载 emptyDir
+          # volumeMounts:
+          #   - name: tmp
+          #     mountPath: /tmp
+      # volumes:
+      #   - name: tmp
+      #     emptyDir: {}

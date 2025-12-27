@@ -1,0 +1,52 @@
+# Code Owners for KILLER ERP System
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything
+* @eqyc
+
+# Rust workspace configuration
+/Cargo.toml @eqyc
+/Cargo.lock @eqyc
+/rust-toolchain.toml @eqyc
+
+# Shared libraries
+/shared/ @eqyc
+
+# Services
+/services/api-gateway/ @eqyc
+/services/analytics-service/ @eqyc
+/services/crm-service/ @eqyc
+/services/financial-service/ @eqyc
+/services/hr-service/ @eqyc
+/services/sales-service/ @eqyc
+/services/scm-service/ @eqyc
+/services/warehouse-service/ @eqyc
+/services/production-service/ @eqyc
+/services/quality-service/ @eqyc
+/services/project-service/ @eqyc
+/services/materials-service/ @eqyc
+/services/shipping-service/ @eqyc
+/services/treasury-service/ @eqyc
+/services/controlling-service/ @eqyc
+/services/maintenance-service/ @eqyc
+/services/mdg-service/ @eqyc
+
+# Infrastructure
+/infrastructure/ @eqyc
+/docker/ @eqyc
+/k8s/ @eqyc
+
+# CI/CD
+/.github/ @eqyc
+/.github/workflows/ @eqyc
+
+# Documentation
+/docs/ @eqyc
+/*.md @eqyc
+
+# Proto definitions
+/proto/ @eqyc
+
+# Tools
+/tools/ @eqyc
+/scripts/ @eqyc

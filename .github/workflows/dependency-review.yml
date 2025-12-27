@@ -1,0 +1,19 @@
+name: 'Dependency Review'
+on: [pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v4
+        with:
+          # 如果引入了包含高危或严重漏洞的依赖，则阻止 PR
+          fail-on-severity: high
+          # 也可以配置阻止特定的许可证
+          # deny-licenses: GPL-3.0, AGPL-3.0

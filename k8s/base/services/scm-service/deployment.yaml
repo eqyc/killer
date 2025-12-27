@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scm-service
+  namespace: killer-erp
+spec:
+  selector:
+    matchLabels:
+      app: scm-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: scm-service
+    spec:
+      containers:
+        - name: scm-service
+          image: ghcr.io/example/scm-service:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+          # 如果应用需要写临时文件，必须挂载 emptyDir
+          # volumeMounts:
+          #   - name: tmp
+          #     mountPath: /tmp
+      # volumes:
+      #   - name: tmp
+      #     emptyDir: {}

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: killer-config
+  namespace: killer-erp
+data:
+  RUST_LOG: info

@@ -1,0 +1,5 @@
+# Gitleaks ignore file
+# Ignore false positives or documentation examples
+
+README.md:sidekiq-secret:47
+README.md:generic-api-key:574
