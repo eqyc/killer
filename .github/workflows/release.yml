@@ -46,7 +46,7 @@ jobs:
           git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"- %s (%h)" >> CHANGELOG.md || echo "- Initial release" >> CHANGELOG.md
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.version }}
           name: Release ${{ steps.get_version.outputs.version }}
@@ -95,7 +95,7 @@ jobs:
           tar czf ../../../erp-${{ matrix.target }}.tar.gz $(find . -maxdepth 1 -type f -executable)
 
       - name: Upload binaries to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.create-release.outputs.version }}
           files: erp-${{ matrix.target }}.tar.gz
@@ -200,7 +200,7 @@ jobs:
           helm package k8s/helm/erp-system -d helm-charts/
 
       - name: Upload Helm chart to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.create-release.outputs.version }}
           files: helm-charts/*.tgz
