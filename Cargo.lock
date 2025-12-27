@@ -65,7 +65,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -101,7 +101,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_test",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
  "uuid",
  "validator",
@@ -136,7 +136,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -192,7 +192,7 @@ name = "auth"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -277,7 +277,7 @@ name = "batch-framework"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -513,7 +513,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -552,7 +552,7 @@ name = "cqrs"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -609,7 +609,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -817,7 +817,7 @@ name = "event-sourcing"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -850,7 +850,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -1175,7 +1175,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -1437,7 +1437,7 @@ name = "integration"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -1618,7 +1618,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -1672,7 +1672,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -1721,7 +1721,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -1742,7 +1742,7 @@ name = "messaging"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -1898,7 +1898,7 @@ name = "observability"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -2261,7 +2261,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -2300,7 +2300,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -2405,7 +2405,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -2683,7 +2683,7 @@ name = "rules-engine"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -2773,7 +2773,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -2812,7 +2812,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -3000,7 +3000,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -3376,7 +3376,7 @@ name = "testing-utils"
 version = "0.1.0"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tracing",
 ]
 
@@ -3849,7 +3849,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
@@ -4032,7 +4032,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "testing-utils",
- "thiserror 1.0.69",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-cron-scheduler",
  "tonic",
