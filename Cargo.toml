@@ -58,7 +58,7 @@ jsonwebtoken = "9.3"
 tower = { version = "0.5", features = ["limit", "timeout", "load-shed"] }  # Tower 中间件（限流、熔断）
 
 # 批处理与调度
-tokio-cron-scheduler = "0.11"
+tokio-cron-scheduler = "0.15"
 
 # 测试与工具
 testcontainers = "0.18"  # 集成测试容器支持
