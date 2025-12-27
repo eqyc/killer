@@ -54,7 +54,7 @@ serde_json = "1.0"
 validator = { version = "0.19", features = ["derive"] }
 
 # 安全与认证
-jsonwebtoken = "9.3"
+jsonwebtoken = "10.2"
 tower = { version = "0.5", features = ["limit", "timeout", "load-shed"] }  # Tower 中间件（限流、熔断）
 
 # 批处理与调度
