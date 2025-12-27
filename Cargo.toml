@@ -44,7 +44,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 prometheus = "0.14"  # Prometheus metrics (v0.14+ handles protobuf dependency better)
 
 # 消息队列
-rdkafka = { version = "0.36", features = ["cmake-build"] }  # Kafka 客户端（推荐用于生产）
+rdkafka = { version = "0.38", features = ["cmake-build"] }  # Kafka 客户端（推荐用于生产）
 
 # 缓存与配置
 redis = { version = "0.26", features = ["tokio-comp", "connection-manager"] }
