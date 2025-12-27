@@ -51,7 +51,7 @@ redis = { version = "0.26", features = ["tokio-comp", "connection-manager"] }
 config = "0.14"  # 配置管理
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-validator = { version = "0.19", features = ["derive"] }
+validator = { version = "0.20", features = ["derive"] }
 
 # 安全与认证
 jsonwebtoken = "9.3"
