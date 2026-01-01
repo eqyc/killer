@@ -1,0 +1,113 @@
+# =============================================================================
+# KILLER ERP - 开发环境 Dockerfile
+# =============================================================================
+#
+# 优化开发体验的 Dockerfile，支持热重载和调试。
+#
+# 构建:
+#   docker build -f Dockerfile.dev -t killer-dev .
+#
+# 运行:
+#   docker run -it --rm \
+#     -v $(pwd):/app \
+#     -v cargo-cache:/usr/local/cargo/registry \
+#     killer-dev
+#
+# =============================================================================
+
+# =============================================================================
+# 阶段 1: 基础环境
+# =============================================================================
+# FROM rust:1.85-bookworm AS base
+#
+# 安装开发依赖:
+#   - protobuf-compiler (gRPC 代码生成)
+#   - libssl-dev (TLS 支持)
+#   - libpq-dev (PostgreSQL 客户端)
+#   - pkg-config (库发现)
+#   - cmake (某些 crate 需要)
+#   - git (版本控制)
+#
+# 安装开发工具:
+#   - cargo-watch (热重载)
+#   - cargo-nextest (快速测试)
+#   - cargo-llvm-cov (覆盖率)
+#   - sqlx-cli (数据库迁移)
+#   - buf (Protobuf 管理)
+#
+# 环境变量:
+#   - CARGO_HOME=/usr/local/cargo
+#   - RUSTUP_HOME=/usr/local/rustup
+#   - RUST_BACKTRACE=1
+
+# =============================================================================
+# 阶段 2: 依赖缓存层
+# =============================================================================
+# FROM base AS deps
+#
+# 复制 Cargo 配置文件:
+#   - Cargo.toml
+#   - Cargo.lock
+#   - 各个 crate 的 Cargo.toml
+#
+# 创建空的 lib.rs 文件用于依赖编译
+# 运行: cargo build --workspace
+# 删除空的源文件
+
+# =============================================================================
+# 阶段 3: 开发环境
+# =============================================================================
+# FROM deps AS development
+#
+# 工作目录: /app
+#
+# 复制源代码:
+#   - src/
+#   - libs/
+#   - services/
+#   - proto/
+#
+# 暴露端口:
+#   - 8000-8800 (微服务)
+#   - 50051-50060 (gRPC)
+#
+# 默认命令: cargo watch -x run
+#
+# 开发模式特性:
+#   - 源码挂载支持
+#   - 增量编译缓存
+#   - 调试符号保留
+#   - RUST_LOG=debug
+
+# =============================================================================
+# 使用说明
+# =============================================================================
+#
+# 1. 热重载开发:
+#    docker run -it --rm \
+#      -v $(pwd):/app \
+#      -v cargo-cache:/usr/local/cargo/registry \
+#      -p 8000:8000 \
+#      killer-dev \
+#      cargo watch -x 'run -p api-gateway'
+#
+# 2. 运行测试:
+#    docker run -it --rm \
+#      -v $(pwd):/app \
+#      killer-dev \
+#      cargo nextest run
+#
+# 3. 生成 gRPC 代码:
+#    docker run -it --rm \
+#      -v $(pwd):/app \
+#      killer-dev \
+#      buf generate proto/
+#
+# 4. 数据库迁移:
+#    docker run -it --rm \
+#      -v $(pwd):/app \
+#      -e DATABASE_URL=postgres://... \
+#      killer-dev \
+#      sqlx migrate run
+
+# TODO: 实现完整的 Dockerfile

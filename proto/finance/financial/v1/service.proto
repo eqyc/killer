@@ -1,0 +1,163 @@
+// =============================================================================
+// KILLER ERP - Financial Service (FI)
+// =============================================================================
+//
+// 财务会计服务 gRPC 接口定义。
+// 提供总账、应收、应付、资产会计等功能。
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.finance.financial.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.finance.financial.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// =============================================================================
+// FinancialService - 财务会计服务
+// =============================================================================
+//
+// service FinancialService {
+//
+//   // -------------------------------------------------------------------------
+//   // 会计凭证 (Journal Entry)
+//   // -------------------------------------------------------------------------
+//
+//   // 创建会计凭证
+//   rpc CreateJournalEntry(CreateJournalEntryRequest)
+//       returns (CreateJournalEntryResponse);
+//
+//   // 过账会计凭证
+//   rpc PostJournalEntry(PostJournalEntryRequest)
+//       returns (PostJournalEntryResponse);
+//
+//   // 冲销会计凭证
+//   rpc ReverseJournalEntry(ReverseJournalEntryRequest)
+//       returns (ReverseJournalEntryResponse);
+//
+//   // 查询会计凭证
+//   rpc GetJournalEntry(GetJournalEntryRequest)
+//       returns (GetJournalEntryResponse);
+//
+//   // 查询会计凭证列表
+//   rpc ListJournalEntries(ListJournalEntriesRequest)
+//       returns (ListJournalEntriesResponse);
+//
+//   // -------------------------------------------------------------------------
+//   // 科目表 (Chart of Accounts)
+//   // -------------------------------------------------------------------------
+//
+//   // 创建会计科目
+//   rpc CreateAccount(CreateAccountRequest)
+//       returns (CreateAccountResponse);
+//
+//   // 更新会计科目
+//   rpc UpdateAccount(UpdateAccountRequest)
+//       returns (UpdateAccountResponse);
+//
+//   // 查询会计科目
+//   rpc GetAccount(GetAccountRequest)
+//       returns (GetAccountResponse);
+//
+//   // 查询科目余额
+//   rpc GetAccountBalance(GetAccountBalanceRequest)
+//       returns (GetAccountBalanceResponse);
+//
+//   // -------------------------------------------------------------------------
+//   // 客户发票 (Customer Invoice)
+//   // -------------------------------------------------------------------------
+//
+//   // 创建客户发票
+//   rpc CreateCustomerInvoice(CreateCustomerInvoiceRequest)
+//       returns (CreateCustomerInvoiceResponse);
+//
+//   // 过账客户发票
+//   rpc PostCustomerInvoice(PostCustomerInvoiceRequest)
+//       returns (PostCustomerInvoiceResponse);
+//
+//   // -------------------------------------------------------------------------
+//   // 供应商发票 (Vendor Invoice)
+//   // -------------------------------------------------------------------------
+//
+//   // 创建供应商发票
+//   rpc CreateVendorInvoice(CreateVendorInvoiceRequest)
+//       returns (CreateVendorInvoiceResponse);
+//
+//   // 过账供应商发票
+//   rpc PostVendorInvoice(PostVendorInvoiceRequest)
+//       returns (PostVendorInvoiceResponse);
+//
+//   // -------------------------------------------------------------------------
+//   // 付款 (Payment)
+//   // -------------------------------------------------------------------------
+//
+//   // 创建付款
+//   rpc CreatePayment(CreatePaymentRequest)
+//       returns (CreatePaymentResponse);
+//
+//   // 执行付款运行
+//   rpc ExecutePaymentRun(ExecutePaymentRunRequest)
+//       returns (ExecutePaymentRunResponse);
+//
+//   // -------------------------------------------------------------------------
+//   // 期间结算 (Period Closing)
+//   // -------------------------------------------------------------------------
+//
+//   // 执行期间结算
+//   rpc ClosePeriod(ClosePeriodRequest)
+//       returns (ClosePeriodResponse);
+//
+//   // 查询期间状态
+//   rpc GetPeriodStatus(GetPeriodStatusRequest)
+//       returns (GetPeriodStatusResponse);
+//
+// }
+
+// =============================================================================
+// 消息定义框架 (在 messages.proto 中详细定义)
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// JournalEntry - 会计凭证
+// -----------------------------------------------------------------------------
+// 字段:
+//   - string id                    // 凭证 ID
+//   - string document_number       // 凭证号
+//   - string company_code          // 公司代码
+//   - Period fiscal_period         // 会计期间
+//   - google.protobuf.Timestamp posting_date   // 过账日期
+//   - google.protobuf.Timestamp document_date  // 凭证日期
+//   - string currency_code         // 货币代码
+//   - repeated LineItem line_items // 行项目
+//   - DocumentStatus status        // 状态
+//   - AuditInfo audit_info         // 审计信息
+
+// -----------------------------------------------------------------------------
+// LineItem - 行项目
+// -----------------------------------------------------------------------------
+// 字段:
+//   - int32 item_number            // 行号
+//   - string account_code          // 科目代码
+//   - Money amount                  // 金额
+//   - DebitCreditIndicator dc_indicator  // 借贷标识
+//   - string cost_center           // 成本中心
+//   - string profit_center         // 利润中心
+//   - string text                  // 摘要
+
+// -----------------------------------------------------------------------------
+// DocumentStatus - 凭证状态
+// -----------------------------------------------------------------------------
+// 值:
+//   - DOCUMENT_STATUS_UNSPECIFIED = 0
+//   - DOCUMENT_STATUS_DRAFT = 1      // 草稿
+//   - DOCUMENT_STATUS_POSTED = 2     // 已过账
+//   - DOCUMENT_STATUS_REVERSED = 3   // 已冲销
+//   - DOCUMENT_STATUS_PARKED = 4     // 暂存
+
+// TODO: 在 messages.proto 中实现完整的消息定义

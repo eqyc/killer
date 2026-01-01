@@ -1,0 +1,33 @@
+[package]
+name = "killer-domain-primitives"
+description = "领域原语类型：Money, Quantity, UnitOfMeasure, AccountCode, MaterialNumber 等"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 精确十进制运算（金额计算）
+rust_decimal.workspace = true
+
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 类型派生
+derive_more.workspace = true
+thiserror.workspace = true
+
+# 验证
+validator.workspace = true
+
+# 时间处理
+chrono.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+fake.workspace = true
+
+[lints]
+workspace = true

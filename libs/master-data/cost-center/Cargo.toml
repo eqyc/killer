@@ -1,0 +1,33 @@
+[package]
+name = "killer-cost-center"
+description = "成本中心主数据：CostCenter, ProfitCenter 定义"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 类型派生
+derive_more.workspace = true
+strum.workspace = true
+
+# 验证
+validator.workspace = true
+
+# 时间
+chrono.workspace = true
+
+# 项目内部依赖
+killer-types = { path = "../../common/types" }
+killer-domain-primitives = { path = "../../common/domain-primitives" }
+
+[dev-dependencies]
+fake.workspace = true
+
+[lints]
+workspace = true

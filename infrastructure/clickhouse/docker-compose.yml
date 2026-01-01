@@ -1,0 +1,62 @@
+# =============================================================================
+# KILLER ERP - ClickHouse Docker Compose
+# =============================================================================
+#
+# ClickHouse 分析数据库本地开发环境。
+#
+# 使用方式:
+#   docker compose up -d
+#
+# =============================================================================
+
+# TODO: 实现完整配置
+
+# version: '3.8'
+
+# services:
+#   clickhouse:
+#     image: clickhouse/clickhouse-server:24.1
+#     container_name: killer-clickhouse
+#     ports:
+#       - "8123:8123"   # HTTP 接口
+#       - "9000:9000"   # Native 接口
+#       - "9009:9009"   # 集群间通信
+#     volumes:
+#       - clickhouse_data:/var/lib/clickhouse
+#       - clickhouse_logs:/var/log/clickhouse-server
+#       - ./config/users.xml:/etc/clickhouse-server/users.d/users.xml
+#       - ./config/config.xml:/etc/clickhouse-server/config.d/config.xml
+#       - ./schemas:/docker-entrypoint-initdb.d
+#     environment:
+#       - CLICKHOUSE_DB=killer_analytics
+#       - CLICKHOUSE_USER=killer
+#       - CLICKHOUSE_PASSWORD=killer_dev
+#       - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+#     ulimits:
+#       nofile:
+#         soft: 262144
+#         hard: 262144
+#     healthcheck:
+#       test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+#       interval: 30s
+#       timeout: 5s
+#       retries: 3
+
+#   # ClickHouse Keeper (ZooKeeper 替代)
+#   clickhouse-keeper:
+#     image: clickhouse/clickhouse-keeper:24.1
+#     container_name: killer-clickhouse-keeper
+#     ports:
+#       - "9181:9181"
+#     volumes:
+#       - keeper_data:/var/lib/clickhouse-keeper
+
+# volumes:
+#   clickhouse_data:
+#   clickhouse_logs:
+#   keeper_data:
+
+# networks:
+#   default:
+#     name: killer-network
+#     external: true

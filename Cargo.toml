@@ -1,0 +1,468 @@
+# =============================================================================
+# KILLER - 企业资源计划系统
+# Rust 微服务 Monorepo Workspace 配置
+# =============================================================================
+
+[workspace]
+# Cargo resolver 版本，2 是目前推荐的版本
+resolver = "2"
+
+# -----------------------------------------------------------------------------
+# Workspace 成员定义
+# 使用通配符模式自动包含各目录下的所有 crate
+# -----------------------------------------------------------------------------
+members = [
+    # =========================================================================
+    # 共享库 (libs)
+    # =========================================================================
+
+    # 通用工具库：错误处理、日志、配置、通用工具函数
+    "libs/common/*",
+
+    # 框架层：Web 框架封装、中间件、gRPC 服务封装
+    "libs/frameworks/*",
+
+    # 基础设施层：数据库、缓存、消息队列、分布式锁
+    "libs/infrastructure/*",
+
+    # 主数据定义：跨服务共享的领域模型和主数据
+    "libs/master-data/*",
+
+    # 集成层：外部系统对接、API 客户端、协议适配器
+    "libs/integration/*",
+
+    # =========================================================================
+    # 微服务 (services)
+    # 按业务域分组，每个域下可包含多个服务
+    # =========================================================================
+
+    # 基础设施域：用户认证、权限管理、系统配置、审计日志
+    "services/infrastructure/*",
+
+    # 财务域：总账、应收应付、固定资产、成本核算
+    "services/finance/*",
+
+    # 采购运营域：采购管理、供应商管理、合同管理
+    "services/procurement-ops/*",
+
+    # 运营域：生产计划、质量管理、设备管理
+    "services/operations/*",
+
+    # 物流域：仓储管理、库存管理、运输配送
+    "services/logistics/*",
+
+    # 商业域：销售管理、客户管理、定价、订单
+    "services/commercial/*",
+
+    # 项目研发域：项目管理、研发管理、文档知识库
+    "services/project-rd/*",
+
+    # 人力资本域：人事、薪酬、考勤、招聘、培训
+    "services/human-capital/*",
+
+    # =========================================================================
+    # 开发工具 (tools)
+    # =========================================================================
+
+    # CLI 工具、代码生成、数据库迁移等
+#    "tools/*",
+]
+
+# -----------------------------------------------------------------------------
+# Workspace 统一包元信息
+# 子 crate 可通过 package.xxx.workspace = true 继承这些配置
+# -----------------------------------------------------------------------------
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+license = "Apache-2.0"
+authors = ["KILLER Team"]
+repository = "https://github.com/eqyc/killer"
+homepage = "https://github.com/eqyc/killer"
+documentation = "https://github.com/eqyc/killer"
+keywords = ["erp", "microservices", "rust", "ddd"]
+#categories = ["business", "enterprise"]
+
+categories = ["database", "web-programming", "finance"]
+
+# -----------------------------------------------------------------------------
+# Workspace 统一依赖管理
+# 子 crate 通过 xxx.workspace = true 引用，确保版本一致性
+# -----------------------------------------------------------------------------
+[workspace.dependencies]
+
+# =============================================================================
+# 异步运行时与网络
+# =============================================================================
+
+# Tokio: Rust 异步运行时，提供异步 I/O、定时器、任务调度
+tokio = { version = "1.43", features = ["full"] }
+
+# Tokio-util: Tokio 扩展工具，提供编解码器、流扩展等
+tokio-util = { version = "0.7", features = ["full"] }
+
+# Tower: 服务抽象层，提供中间件、负载均衡、重试等
+tower = { version = "0.5", features = ["full"] }
+
+# Tower-http: HTTP 专用中间件，提供压缩、跟踪、CORS 等
+tower-http = { version = "0.6", features = ["full"] }
+
+# Hyper: 底层 HTTP 实现，Axum 的基础
+hyper = { version = "1.6", features = ["full"] }
+
+# Hyper-util: Hyper 扩展工具
+hyper-util = { version = "0.1", features = ["full"] }
+
+# =============================================================================
+# Web 框架
+# =============================================================================
+
+# Axum: 基于 Tokio 的 Web 框架，人体工程学设计，类型安全
+axum = { version = "0.8", features = ["macros", "multipart", "ws"] }
+
+# Axum-extra: Axum 扩展功能，提供额外的提取器和响应类型
+axum-extra = { version = "0.12.3", features = ["typed-header", "query", "cookie", "form"] }
+
+# =============================================================================
+# gRPC 框架
+# =============================================================================
+
+# Tonic: 基于 Tokio 的 gRPC 实现，支持流式通信
+tonic = { version = "0.14.2", features = ["gzip", "zstd"] }
+
+# Tonic-build: 从 .proto 文件生成 Rust 代码的构建工具
+#tonic-build = { version = "0.14.2" }
+
+# 正确：使用 tonic-prost-build 而不是 tonic-build
+tonic-prost-build = { version = "0.14.2" }
+
+# Tonic-reflection: gRPC 服务反射，用于调试和服务发现
+tonic-reflection = { version = "0.14.2" }
+
+# Tonic-health: gRPC 健康检查服务实现
+tonic-health = { version = "0.14.2" }
+
+# Prost: Protocol Buffers 编解码库
+prost = { version = "0.14.1" }
+
+# Prost-types: Prost 的 Well-Known Types 支持
+prost-types = { version = "0.14.1" }
+
+# =============================================================================
+# 数据库
+# =============================================================================
+
+# SQLx: 异步 SQL 工具包，编译时检查 SQL 语句
+sqlx = { version = "0.8", features = [
+    "runtime-tokio",      # 使用 Tokio 运行时
+    "tls-rustls",         # 使用 Rustls 作为 TLS 后端
+    "postgres",           # PostgreSQL 支持
+    "uuid",               # UUID 类型支持
+    "chrono",             # 时间类型支持
+    "rust_decimal",       # 精确十进制支持
+    "json",               # JSON 类型支持
+    "macros",             # 宏支持（query!, query_as! 等）
+    "migrate",            # 数据库迁移支持
+] }
+
+# ClickHouse: 列式数据库客户端，用于 OLAP 分析场景
+clickhouse = { version = "0.14.1", features = ["lz4"] }
+
+# SeaORM: 异步 ORM 框架（可选，用于复杂查询场景）
+sea-orm = { version = "1.1", features = [
+    "sqlx-postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "with-uuid",
+    "with-chrono",
+    "with-rust_decimal",
+    "with-json",
+] }
+
+# =============================================================================
+# 缓存
+# =============================================================================
+
+# Redis: Redis 异步客户端
+redis = { version = "1.0.1", features = [
+    "tokio-comp",         # Tokio 兼容
+    "connection-manager", # 连接池管理
+    "cluster-async",      # 集群支持
+    "json",               # RedisJSON 模块支持
+] }
+
+# Moka: 高性能本地缓存，支持 TTL 和容量限制
+moka = { version = "0.12", features = ["future"] }
+
+# =============================================================================
+# 消息队列
+# =============================================================================
+
+# rdkafka: Kafka 客户端，基于 librdkafka
+rdkafka = { version = "0.38.0", features = [
+    "tokio",              # Tokio 运行时支持
+    "ssl",                # SSL/TLS 支持
+    "gssapi",             # Kerberos 认证支持
+    "zstd",               # Zstd 压缩支持
+] }
+
+# Lapin: RabbitMQ 异步客户端（可选）
+lapin = { version = "3.7.2" }
+
+# =============================================================================
+# 可观测性 (Observability)
+# =============================================================================
+
+# OpenTelemetry: 可观测性框架核心
+opentelemetry = { version = "0.31.0" }
+
+# OpenTelemetry SDK: 遥测数据采集 SDK
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"] }
+
+# OpenTelemetry OTLP: OTLP 协议导出器
+opentelemetry-otlp = { version = "0.31.0", features = ["grpc-tonic", "metrics", "logs"] }
+
+# OpenTelemetry 语义约定: 标准化属性名称
+opentelemetry-semantic-conventions = { version = "0.31.0" }
+
+# Tracing: Rust 生态的分布式追踪框架
+tracing = { version = "0.1" }
+
+# Tracing-subscriber: 追踪数据订阅和格式化
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Tracing-opentelemetry: Tracing 与 OpenTelemetry 集成
+tracing-opentelemetry = { version = "0.32.0" }
+
+# Metrics: 指标收集
+metrics = { version = "0.24" }
+
+# Metrics-exporter-prometheus: Prometheus 指标导出
+metrics-exporter-prometheus = { version = "0.18.1" }
+
+# =============================================================================
+# 序列化与数据格式
+# =============================================================================
+
+# Serde: Rust 序列化框架
+serde = { version = "1.0", features = ["derive"] }
+
+# Serde-json: JSON 序列化
+serde_json = { version = "1.0" }
+
+# Serde-yaml: YAML 序列化（配置文件）
+serde_yaml = { version = "0.9" }
+
+# Toml: TOML 格式解析（配置文件）
+toml = { version = "0.9.10+spec-1.1.0" }
+
+# =============================================================================
+# 错误处理
+# =============================================================================
+
+# Anyhow: 简化的错误处理，适用于应用程序
+anyhow = { version = "1.0" }
+
+# Thiserror: 自定义错误类型派生宏，适用于库
+thiserror = { version = "2.0" }
+
+# =============================================================================
+# 通用工具类型
+# =============================================================================
+
+# UUID: 通用唯一标识符
+uuid = { version = "1.16", features = ["v4", "v7", "serde"] }
+
+# Chrono: 日期时间处理
+chrono = { version = "0.4", features = ["serde"] }
+
+# Rust-decimal: 精确十进制运算，用于金融计算
+rust_decimal = { version = "1.37", features = ["serde", "serde-with-str"] }
+
+# Bytes: 高效字节缓冲区
+bytes = { version = "1.9" }
+
+# Url: URL 解析和处理
+url = { version = "2.5", features = ["serde"] }
+
+# Regex: 正则表达式
+regex = { version = "1.11" }
+
+# Once-cell: 延迟初始化的单例
+once_cell = { version = "1.20" }
+
+# Derive-more: 更多 derive 宏（Display, From, Into 等）
+derive_more = { version = "2.0", features = ["full"] }
+
+# Strum: 枚举工具宏
+strum = { version = "0.27", features = ["derive"] }
+
+# =============================================================================
+# 配置管理
+# =============================================================================
+
+# Config: 多源配置管理
+config = { version = "0.15" }
+
+# Dotenvy: 环境变量加载（.env 文件）
+dotenvy = { version = "0.15" }
+
+# =============================================================================
+# 安全与认证
+# =============================================================================
+
+# Jsonwebtoken: JWT 编解码
+jsonwebtoken = { version = "9.3" }
+
+# Argon2: 密码哈希算法
+argon2 = { version = "0.5" }
+
+# Rand: 随机数生成
+rand = { version = "0.9" }
+
+# Rustls: 纯 Rust TLS 实现
+rustls = { version = "0.23" }
+
+# =============================================================================
+# HTTP 客户端
+# =============================================================================
+
+# Reqwest: 高级 HTTP 客户端
+reqwest = { version = "0.12", default-features = false, features = [
+    "rustls-tls",
+    "json",
+    "gzip",
+    "brotli",
+] }
+
+# =============================================================================
+# 验证
+# =============================================================================
+
+# Validator: 数据验证框架
+validator = { version = "0.20", features = ["derive"] }
+
+# =============================================================================
+# 异步工具
+# =============================================================================
+
+# Futures: 异步编程基础工具
+futures = { version = "0.3" }
+
+# Async-trait: 异步 trait 支持
+async-trait = { version = "0.1" }
+
+# =============================================================================
+# 测试
+# =============================================================================
+
+# Tokio-test: Tokio 测试工具
+tokio-test = { version = "0.4" }
+
+# Testcontainers: 集成测试容器支持
+testcontainers = { version = "0.26.2" }
+
+# Testcontainers-modules: 预定义的测试容器（PostgreSQL, Redis, Kafka 等）
+testcontainers-modules = { version = "0.14.0", features = [
+    "postgres",
+    "redis",
+    "kafka",
+    "clickhouse",
+] }
+
+# Fake: 假数据生成
+fake = { version = "4.1", features = ["derive", "uuid", "chrono"] }
+
+# Wiremock: HTTP Mock 服务器
+wiremock = { version = "0.6" }
+
+# Criterion: 性能基准测试
+criterion = { version = "0.8.1" }
+
+# Proptest: 属性测试
+proptest = { version = "1.6" }
+
+# =============================================================================
+# 编译优化 Profile
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 开发环境配置
+# 优化编译速度，方便快速迭代
+# -----------------------------------------------------------------------------
+[profile.dev]
+# 禁用优化以加快编译速度
+opt-level = 0
+# 启用调试信息
+debug = true
+# 增量编译
+incremental = true
+# 代码生成单元数量（更多 = 更快编译，更慢运行）
+codegen-units = 256
+# 禁用 LTO
+lto = false
+
+# 开发模式下依赖的优化（加速运行时性能）
+[profile.dev.package."*"]
+opt-level = 3
+
+# -----------------------------------------------------------------------------
+# 发布环境配置
+# 最大化运行时性能
+# -----------------------------------------------------------------------------
+[profile.release]
+# 最高优化级别
+opt-level = 3
+# 禁用调试信息以减小二进制体积
+debug = false
+# 禁用增量编译
+incremental = false
+# 单代码生成单元以获得最佳优化
+codegen-units = 1
+# 启用链接时优化（跨 crate 优化）
+lto = "fat"
+# 启用 panic 展开（保持栈回溯）
+panic = "unwind"
+# 去除符号表以减小体积
+strip = "symbols"
+
+# -----------------------------------------------------------------------------
+# 测试环境配置
+# 平衡编译速度和运行性能
+# -----------------------------------------------------------------------------
+[profile.test]
+opt-level = 1
+debug = true
+incremental = true
+
+# -----------------------------------------------------------------------------
+# 基准测试配置
+# 使用 release 级别优化以获得准确的性能数据
+# -----------------------------------------------------------------------------
+[profile.bench]
+opt-level = 3
+debug = false
+lto = "thin"
+codegen-units = 1
+
+# =============================================================================
+# Lints 配置
+# 统一代码质量检查规则
+# =============================================================================
+[workspace.lints.rust]
+# 启用 unsafe 代码警告
+unsafe_code = "warn"
+# 缺失文档警告（库 crate 建议开启）
+# missing_docs = "warn"
+
+[workspace.lints.clippy]
+# Clippy 严格模式
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+# 允许某些常见的 lint
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"

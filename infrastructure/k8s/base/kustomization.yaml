@@ -1,0 +1,111 @@
+# =============================================================================
+# KILLER ERP - Kustomize 基础配置
+# =============================================================================
+#
+# 定义所有环境共享的基础资源。
+# 通过 overlays 目录进行环境特定的定制。
+#
+# 使用方式:
+#   kubectl apply -k overlays/dev
+#   kubectl apply -k overlays/staging
+#   kubectl apply -k overlays/production
+#
+# =============================================================================
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# -----------------------------------------------------------------------------
+# 命名空间
+# -----------------------------------------------------------------------------
+namespace: killer-system
+
+# -----------------------------------------------------------------------------
+# 通用标签
+# -----------------------------------------------------------------------------
+commonLabels:
+  app.kubernetes.io/part-of: killer-erp
+  app.kubernetes.io/managed-by: kustomize
+
+# -----------------------------------------------------------------------------
+# 通用注解
+# -----------------------------------------------------------------------------
+commonAnnotations:
+  killer.io/version: "1.0.0"
+
+# -----------------------------------------------------------------------------
+# 资源引用
+# -----------------------------------------------------------------------------
+resources:
+  # 公共配置
+  - common/namespace.yaml
+  - common/configmap.yaml
+  - common/secrets.yaml
+  - common/network-policies.yaml
+
+  # 基础设施服务
+  - infrastructure/api-gateway/
+  - infrastructure/identity-iam/
+  - infrastructure/mdg-service/
+
+  # 财务域服务
+  - finance/financial-service/
+  - finance/controlling-service/
+  - finance/treasury-service/
+
+  # 物流域服务
+  - logistics/materials-service/
+  - logistics/warehouse-service/
+  - logistics/shipping-service/
+
+# -----------------------------------------------------------------------------
+# ConfigMap 生成器
+# -----------------------------------------------------------------------------
+configMapGenerator:
+  - name: killer-common-config
+    literals:
+      - RUST_LOG=info
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - KAFKA_BROKERS=kafka:9092
+
+# -----------------------------------------------------------------------------
+# Secret 生成器
+# -----------------------------------------------------------------------------
+# 注意: 生产环境应使用外部 Secret 管理 (如 Vault, AWS Secrets Manager)
+secretGenerator:
+  - name: killer-db-credentials
+    type: Opaque
+    literals:
+      - DATABASE_URL=postgres://killer:changeme@postgres:5432/killer
+  - name: killer-redis-credentials
+    type: Opaque
+    literals:
+      - REDIS_URL=redis://:changeme@redis:6379
+
+# -----------------------------------------------------------------------------
+# 镜像配置
+# -----------------------------------------------------------------------------
+images:
+  - name: killer/api-gateway
+    newTag: latest
+  - name: killer/financial-service
+    newTag: latest
+  - name: killer/sales-service
+    newTag: latest
+
+# -----------------------------------------------------------------------------
+# 副本数配置 (可被 overlay 覆盖)
+# -----------------------------------------------------------------------------
+replicas:
+  - name: api-gateway
+    count: 2
+  - name: financial-service
+    count: 2
+
+# -----------------------------------------------------------------------------
+# 补丁 (可选)
+# -----------------------------------------------------------------------------
+# patches:
+#   - path: patches/resource-limits.yaml
+#     target:
+#       kind: Deployment

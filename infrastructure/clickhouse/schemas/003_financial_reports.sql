@@ -1,0 +1,82 @@
+-- =============================================================================
+-- KILLER ERP - 财务报表表结构
+-- =============================================================================
+--
+-- 财务域 OLAP 表定义。
+--
+-- =============================================================================
+
+-- TODO: 实现完整表结构
+
+-- -----------------------------------------------------------------------------
+-- 总账余额表
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_analytics.gl_balances
+-- (
+--     fiscal_year UInt16,
+--     fiscal_period UInt8,
+--     company_code LowCardinality(String),
+--     account_code String,
+--     account_name String,
+--     account_type LowCardinality(String),
+--     cost_center LowCardinality(String),
+--     profit_center LowCardinality(String),
+--     opening_balance Decimal(18, 2),
+--     debit_amount Decimal(18, 2),
+--     credit_amount Decimal(18, 2),
+--     closing_balance Decimal(18, 2),
+--     currency LowCardinality(String),
+--     updated_at DateTime
+-- )
+-- ENGINE = ReplacingMergeTree(updated_at)
+-- PARTITION BY fiscal_year
+-- ORDER BY (fiscal_year, fiscal_period, company_code, account_code, cost_center);
+
+-- -----------------------------------------------------------------------------
+-- 凭证明细表
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_analytics.journal_entries
+-- (
+--     document_number String,
+--     fiscal_year UInt16,
+--     fiscal_period UInt8,
+--     company_code LowCardinality(String),
+--     posting_date Date,
+--     document_date Date,
+--     entry_date DateTime,
+--     line_item UInt16,
+--     account_code String,
+--     amount Decimal(18, 2),
+--     dc_indicator LowCardinality(String),
+--     currency LowCardinality(String),
+--     cost_center LowCardinality(String),
+--     profit_center LowCardinality(String),
+--     reference String,
+--     text String,
+--     created_by String,
+--     created_at DateTime
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMM(posting_date)
+-- ORDER BY (posting_date, company_code, document_number, line_item)
+-- TTL posting_date + INTERVAL 7 YEAR;
+
+-- -----------------------------------------------------------------------------
+-- 损益汇总表
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_analytics.profit_loss_summary
+-- (
+--     fiscal_year UInt16,
+--     fiscal_period UInt8,
+--     company_code LowCardinality(String),
+--     profit_center LowCardinality(String),
+--     revenue Decimal(18, 2),
+--     cost_of_sales Decimal(18, 2),
+--     gross_profit Decimal(18, 2),
+--     operating_expenses Decimal(18, 2),
+--     operating_profit Decimal(18, 2),
+--     currency LowCardinality(String)
+-- )
+-- ENGINE = SummingMergeTree()
+-- PARTITION BY fiscal_year
+-- ORDER BY (fiscal_year, fiscal_period, company_code, profit_center);

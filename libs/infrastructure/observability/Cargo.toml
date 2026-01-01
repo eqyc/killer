@@ -1,0 +1,34 @@
+[package]
+name = "killer-observability"
+description = "可观测性基础设施：OpenTelemetry Tracing, Metrics, Structured Logging"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# OpenTelemetry
+opentelemetry.workspace = true
+opentelemetry_sdk.workspace = true
+opentelemetry-otlp.workspace = true
+opentelemetry-semantic-conventions.workspace = true
+
+# Tracing
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-opentelemetry.workspace = true
+
+# Metrics
+metrics.workspace = true
+metrics-exporter-prometheus.workspace = true
+
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 异步运行时
+tokio.workspace = true
+
+[lints]
+workspace = true

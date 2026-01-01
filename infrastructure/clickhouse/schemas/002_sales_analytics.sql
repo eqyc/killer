@@ -1,0 +1,75 @@
+-- =============================================================================
+-- KILLER ERP - 销售分析表结构
+-- =============================================================================
+--
+-- 销售域 OLAP 表定义。
+--
+-- =============================================================================
+
+-- TODO: 实现完整表结构
+
+-- -----------------------------------------------------------------------------
+-- 销售订单明细表
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_analytics.sales_orders
+-- (
+--     order_id String,
+--     order_date DateTime,
+--     company_code LowCardinality(String),
+--     sales_org LowCardinality(String),
+--     distribution_channel LowCardinality(String),
+--     customer_id String,
+--     customer_name String,
+--     material_id String,
+--     material_name String,
+--     quantity Decimal(18, 3),
+--     unit LowCardinality(String),
+--     net_price Decimal(18, 2),
+--     net_value Decimal(18, 2),
+--     tax_amount Decimal(18, 2),
+--     gross_value Decimal(18, 2),
+--     currency LowCardinality(String),
+--     order_status LowCardinality(String),
+--     created_at DateTime,
+--     updated_at DateTime
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMM(order_date)
+-- ORDER BY (order_date, company_code, customer_id, order_id)
+-- TTL order_date + INTERVAL 3 YEAR;
+
+-- -----------------------------------------------------------------------------
+-- 销售日汇总表 (物化视图)
+-- -----------------------------------------------------------------------------
+-- CREATE MATERIALIZED VIEW killer_analytics.sales_daily_summary
+-- ENGINE = SummingMergeTree()
+-- PARTITION BY toYYYYMM(date)
+-- ORDER BY (date, company_code, sales_org, customer_id)
+-- AS SELECT
+--     toDate(order_date) as date,
+--     company_code,
+--     sales_org,
+--     customer_id,
+--     count() as order_count,
+--     sum(quantity) as total_quantity,
+--     sum(net_value) as total_net_value,
+--     sum(gross_value) as total_gross_value
+-- FROM killer_analytics.sales_orders
+-- GROUP BY date, company_code, sales_org, customer_id;
+
+-- -----------------------------------------------------------------------------
+-- 客户销售排名表
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_analytics.customer_sales_ranking
+-- (
+--     date Date,
+--     company_code LowCardinality(String),
+--     customer_id String,
+--     customer_name String,
+--     total_orders UInt32,
+--     total_amount Decimal(18, 2),
+--     rank UInt32
+-- )
+-- ENGINE = ReplacingMergeTree()
+-- PARTITION BY toYYYYMM(date)
+-- ORDER BY (date, company_code, customer_id);

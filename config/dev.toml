@@ -1,0 +1,238 @@
+# ============================================================================
+# KILLER ERP - 开发环境配置
+# ============================================================================
+# 文件：config/dev.toml
+# 环境：Development
+# 说明：本地开发环境配置，优化开发体验
+# ============================================================================
+
+[environment]
+name = "development"
+debug = true
+
+# ----------------------------------------------------------------------------
+# 服务器配置
+# ----------------------------------------------------------------------------
+[server]
+host = "127.0.0.1"
+port = 8080
+grpc_port = 50051
+worker_threads = 2
+request_timeout = 60  # 开发环境放宽超时
+graceful_shutdown_timeout = 5
+
+# TLS 配置（开发环境禁用）
+[server.tls]
+enabled = false
+
+# ----------------------------------------------------------------------------
+# 数据库配置
+# ----------------------------------------------------------------------------
+# 每个服务对应独立数据库
+
+[database]
+# 连接 URL 模板，实际使用时替换 {service}
+# 例如：erp_financial, erp_sales, erp_purchasing
+url = "postgresql://killer:killer_dev@localhost:5432/erp_${SERVICE_DB}"
+
+# 连接池配置（开发环境使用较小值）
+pool_size = 5
+pool_min = 1
+connection_timeout = 30
+idle_timeout = 300
+max_lifetime = 1800
+
+# SSL 配置
+ssl_mode = "disable"
+
+# 开发环境特有配置
+[database.dev]
+log_sql = true          # 打印 SQL 语句
+log_slow_queries = true # 打印慢查询
+slow_query_threshold = 100  # 慢查询阈值（毫秒）
+
+# 各服务数据库映射
+[database.services]
+api-gateway = "erp_gateway"
+financial-service = "erp_financial"
+controlling-service = "erp_controlling"
+treasury-service = "erp_treasury"
+sales-service = "erp_sales"
+crm-service = "erp_crm"
+purchasing-service = "erp_purchasing"
+scm-service = "erp_scm"
+materials-service = "erp_materials"
+warehouse-service = "erp_warehouse"
+shipping-service = "erp_shipping"
+production-service = "erp_production"
+quality-service = "erp_quality"
+maintenance-service = "erp_maintenance"
+hr-service = "erp_hr"
+payroll-service = "erp_payroll"
+project-service = "erp_project"
+plm-service = "erp_plm"
+mdg-service = "erp_mdg"
+iam-service = "erp_iam"
+
+# ----------------------------------------------------------------------------
+# Redis 配置
+# ----------------------------------------------------------------------------
+[redis]
+url = "redis://localhost:6379/0"
+pool_size = 3
+connection_timeout = 5
+command_timeout = 3
+
+# 缓存配置
+[redis.cache]
+default_ttl = 300       # 默认 TTL（秒）
+key_prefix = "killer:dev:"
+
+# ----------------------------------------------------------------------------
+# Kafka 配置
+# ----------------------------------------------------------------------------
+[kafka]
+brokers = ["localhost:9092"]
+client_id = "killer-dev"
+
+[kafka.producer]
+acks = "all"
+retries = 3
+batch_size = 16384
+linger_ms = 5
+compression = "lz4"
+
+[kafka.consumer]
+group_id = "${SERVICE_NAME}-dev"
+auto_offset_reset = "earliest"
+enable_auto_commit = false
+max_poll_records = 100
+session_timeout = 30000
+
+# 主题配置
+[kafka.topics]
+domain_events = "killer.dev.domain-events"
+integration_events = "killer.dev.integration-events"
+dead_letter = "killer.dev.dead-letter"
+
+# ----------------------------------------------------------------------------
+# ClickHouse 配置
+# ----------------------------------------------------------------------------
+[clickhouse]
+url = "http://localhost:8123"
+database = "erp_analytics_dev"
+user = "default"
+password = ""
+pool_size = 3
+connection_timeout = 10
+query_timeout = 60
+
+# ----------------------------------------------------------------------------
+# 日志配置
+# ----------------------------------------------------------------------------
+[logging]
+level = "debug"         # 开发环境使用 debug 级别
+format = "pretty"       # 人类可读格式
+output = "stdout"
+include_location = true # 包含代码位置
+include_target = true   # 包含模块名
+
+# 模块级别日志配置
+[logging.modules]
+sqlx = "warn"           # 减少 sqlx 日志噪音
+tower_http = "debug"
+hyper = "warn"
+tonic = "info"
+
+# ----------------------------------------------------------------------------
+# 可观测性配置
+# ----------------------------------------------------------------------------
+[observability]
+enabled = true
+
+[observability.tracing]
+enabled = true
+sampler_ratio = 1.0     # 开发环境 100% 采样
+jaeger_agent_host = "localhost"
+jaeger_agent_port = 6831
+
+[observability.metrics]
+enabled = true
+port = 9090
+path = "/metrics"
+
+[observability.health]
+enabled = true
+path = "/health"
+liveness_path = "/health/live"
+readiness_path = "/health/ready"
+
+# ----------------------------------------------------------------------------
+# 安全配置
+# ----------------------------------------------------------------------------
+[security]
+# 注意：实际密钥从环境变量读取
+jwt_secret = "${JWT_SECRET}"
+jwt_access_token_expiration = 3600
+jwt_refresh_token_expiration = 604800
+
+[security.cors]
+enabled = true
+allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+allowed_methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+allowed_headers = ["Content-Type", "Authorization", "X-Request-ID"]
+max_age = 86400
+
+# 开发环境放宽安全限制
+[security.dev]
+skip_auth_paths = ["/health", "/metrics", "/api/docs"]
+allow_insecure_transport = true
+
+# ----------------------------------------------------------------------------
+# 服务发现配置
+# ----------------------------------------------------------------------------
+[service_discovery]
+type = "static"         # 开发环境使用静态配置
+
+[service_discovery.services]
+financial = "localhost:50052"
+controlling = "localhost:50053"
+treasury = "localhost:50054"
+sales = "localhost:50055"
+crm = "localhost:50056"
+purchasing = "localhost:50057"
+scm = "localhost:50058"
+materials = "localhost:50059"
+warehouse = "localhost:50060"
+shipping = "localhost:50061"
+production = "localhost:50062"
+quality = "localhost:50063"
+maintenance = "localhost:50064"
+hr = "localhost:50065"
+payroll = "localhost:50066"
+project = "localhost:50067"
+plm = "localhost:50068"
+mdg = "localhost:50069"
+iam = "localhost:50070"
+
+# ----------------------------------------------------------------------------
+# 限流与熔断配置
+# ----------------------------------------------------------------------------
+[rate_limit]
+enabled = false         # 开发环境禁用限流
+requests_per_second = 1000
+burst_size = 2000
+
+[circuit_breaker]
+enabled = false         # 开发环境禁用熔断
+
+# ----------------------------------------------------------------------------
+# 功能开关
+# ----------------------------------------------------------------------------
+[features]
+event_sourcing = true
+cqrs = true
+distributed_tracing = true
+request_logging = true
+profiling = true        # 开发环境启用性能分析
+hot_reload = true       # 配置热重载

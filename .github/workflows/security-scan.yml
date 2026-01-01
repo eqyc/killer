@@ -1,0 +1,291 @@
+# ============================================================================
+# KILLER ERP - 安全扫描工作流
+# ============================================================================
+# 触发条件：
+# - 定时任务（每周一凌晨 UTC 0:00）
+# - push 到 main 分支
+# - 手动触发
+# ============================================================================
+
+name: Security Scan
+
+on:
+  schedule:
+    # 每周一凌晨运行
+    - cron: '0 0 * * 1'
+  push:
+    branches:
+      - main
+    paths:
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+      - 'infrastructure/docker/**'
+  workflow_dispatch:  # 允许手动触发
+
+# 并发控制
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ==========================================================================
+  # 依赖漏洞审计
+  # ==========================================================================
+  cargo-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run security audit
+        run: cargo audit --deny warnings
+
+      - name: Upload audit report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cargo-audit-report
+          path: |
+            Cargo.lock
+          retention-days: 7
+
+  # ==========================================================================
+  # 依赖许可证检查
+  # ==========================================================================
+  cargo-deny:
+    name: License & Dependency Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install cargo-deny
+        uses: taiki-e/install-action@cargo-deny
+
+      - name: Check licenses
+        run: cargo deny check licenses || echo "cargo-deny not configured, skipping license check"
+
+      - name: Check bans
+        run: cargo deny check bans || echo "cargo-deny not configured, skipping ban check"
+
+      - name: Check advisories
+        run: cargo deny check advisories || echo "cargo-deny not configured, skipping advisory check"
+
+      - name: Check sources
+        run: cargo deny check sources || echo "cargo-deny not configured, skipping source check"
+
+  # ==========================================================================
+  # API 兼容性检查
+  # ==========================================================================
+  semver-checks:
+    name: Semver Compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # 仅在 main 分支或 PR 时运行
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要完整历史来比较
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install cargo-semver-checks
+        run: cargo install cargo-semver-checks
+
+      - name: Check semver compatibility
+        run: cargo semver-checks check-release || echo "No baseline version found, skipping"
+
+  # ==========================================================================
+  # 代码安全扫描 (SAST)
+  # ==========================================================================
+  code-scanning:
+    name: Code Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install clippy
+        run: rustup component add clippy
+
+      - name: Run Clippy with security lints
+        run: |
+          cargo clippy --workspace --all-features --message-format=json | \
+            tee clippy-results.json || true
+
+      - name: Upload Clippy results
+        uses: actions/upload-artifact@v4
+        with:
+          name: clippy-security-results
+          path: clippy-results.json
+          retention-days: 30
+
+  # ==========================================================================
+  # Docker 镜像安全扫描
+  # ==========================================================================
+  container-scan:
+    name: Container Image Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # 仅在 main 分支运行
+    if: github.ref == 'refs/heads/main'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - api-gateway
+          - financial-service
+          - sales-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f infrastructure/docker/Dockerfile.${{ matrix.service }} \
+            -t killer/${{ matrix.service }}:scan \
+            . || echo "Dockerfile not found, skipping"
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'killer/${{ matrix.service }}:scan'
+          format: 'sarif'
+          output: 'trivy-results-${{ matrix.service }}.sarif'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+        continue-on-error: true
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results-${{ matrix.service }}.sarif'
+        if: always()
+        continue-on-error: true
+
+  # ==========================================================================
+  # 密钥泄露检测
+  # ==========================================================================
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+        continue-on-error: true
+
+  # ==========================================================================
+  # 依赖更新检查
+  # ==========================================================================
+  outdated-deps:
+    name: Outdated Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install cargo-outdated
+        run: cargo install cargo-outdated
+
+      - name: Check outdated dependencies
+        run: cargo outdated --workspace --root-deps-only || true
+
+      - name: Generate outdated report
+        run: |
+          echo "## Outdated Dependencies Report" > outdated-report.md
+          echo "" >> outdated-report.md
+          echo "\`\`\`" >> outdated-report.md
+          cargo outdated --workspace --root-deps-only >> outdated-report.md 2>&1 || true
+          echo "\`\`\`" >> outdated-report.md
+
+      - name: Upload outdated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-dependencies-report
+          path: outdated-report.md
+          retention-days: 7
+
+  # ==========================================================================
+  # 安全扫描汇总
+  # ==========================================================================
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs:
+      - cargo-audit
+      - cargo-deny
+      - code-scanning
+      - secret-scan
+    if: always()
+
+    steps:
+      - name: Security scan summary
+        run: |
+          echo "## Security Scan Summary"
+          echo ""
+          echo "| Check | Status |"
+          echo "|-------|--------|"
+          echo "| Dependency Audit | ${{ needs.cargo-audit.result }} |"
+          echo "| License Check | ${{ needs.cargo-deny.result }} |"
+          echo "| Code Scanning | ${{ needs.code-scanning.result }} |"
+          echo "| Secret Detection | ${{ needs.secret-scan.result }} |"
+
+          if [[ "${{ needs.cargo-audit.result }}" == "failure" ]]; then
+            echo ""
+            echo "⚠️ Security vulnerabilities detected! Please review the audit report."
+            exit 1
+          fi

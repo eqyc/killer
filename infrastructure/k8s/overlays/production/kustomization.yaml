@@ -1,0 +1,59 @@
+# =============================================================================
+# KILLER ERP - 生产环境 Overlay
+# =============================================================================
+#
+# 生产环境配置。
+# 特点: 高可用、严格资源限制、完整安全策略。
+#
+# =============================================================================
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - pdb.yaml           # Pod Disruption Budget
+  - hpa.yaml           # Horizontal Pod Autoscaler
+
+nameSuffix: -prod
+
+commonLabels:
+  environment: production
+
+commonAnnotations:
+  killer.io/sla: "99.9"
+
+replicas:
+  - name: api-gateway
+    count: 3
+  - name: financial-service
+    count: 3
+
+images:
+  - name: killer/api-gateway
+    newTag: v1.0.0
+  - name: killer/financial-service
+    newTag: v1.0.0
+
+configMapGenerator:
+  - name: killer-common-config
+    behavior: merge
+    literals:
+      - RUST_LOG=warn
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 1Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "2"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 512Mi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 500m
+    target:
+      kind: Deployment

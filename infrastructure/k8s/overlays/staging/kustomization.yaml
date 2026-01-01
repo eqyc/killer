@@ -1,0 +1,37 @@
+# =============================================================================
+# KILLER ERP - 预发布环境 Overlay
+# =============================================================================
+#
+# 预发布环境配置。
+# 特点: 接近生产配置、完整监控、适度资源。
+#
+# =============================================================================
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+nameSuffix: -staging
+
+commonLabels:
+  environment: staging
+
+replicas:
+  - name: api-gateway
+    count: 2
+  - name: financial-service
+    count: 2
+
+images:
+  - name: killer/api-gateway
+    newTag: staging
+  - name: killer/financial-service
+    newTag: staging
+
+configMapGenerator:
+  - name: killer-common-config
+    behavior: merge
+    literals:
+      - RUST_LOG=info

@@ -1,0 +1,105 @@
+-- =============================================================================
+-- KILLER ERP - 审计日志表结构
+-- =============================================================================
+--
+-- 系统审计和操作日志表定义。
+--
+-- =============================================================================
+
+-- TODO: 实现完整表结构
+
+-- -----------------------------------------------------------------------------
+-- 操作审计日志
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_audit.operation_logs
+-- (
+--     log_id UUID DEFAULT generateUUIDv4(),
+--     timestamp DateTime64(3),
+--     service LowCardinality(String),
+--     operation LowCardinality(String),
+--     resource_type LowCardinality(String),
+--     resource_id String,
+--     user_id String,
+--     user_name String,
+--     client_ip IPv4,
+--     request_id String,
+--     trace_id String,
+--     span_id String,
+--     request_body String,
+--     response_code UInt16,
+--     duration_ms UInt32,
+--     success UInt8,
+--     error_message String
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMMDD(timestamp)
+-- ORDER BY (timestamp, service, operation, user_id)
+-- TTL timestamp + INTERVAL 90 DAY;
+
+-- -----------------------------------------------------------------------------
+-- 数据变更日志
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_audit.data_change_logs
+-- (
+--     log_id UUID DEFAULT generateUUIDv4(),
+--     timestamp DateTime64(3),
+--     table_name LowCardinality(String),
+--     record_id String,
+--     operation LowCardinality(String),  -- INSERT, UPDATE, DELETE
+--     old_values String,  -- JSON
+--     new_values String,  -- JSON
+--     changed_fields Array(String),
+--     user_id String,
+--     user_name String,
+--     reason String
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMM(timestamp)
+-- ORDER BY (timestamp, table_name, record_id)
+-- TTL timestamp + INTERVAL 1 YEAR;
+
+-- -----------------------------------------------------------------------------
+-- 登录日志
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_audit.login_logs
+-- (
+--     log_id UUID DEFAULT generateUUIDv4(),
+--     timestamp DateTime64(3),
+--     user_id String,
+--     user_name String,
+--     login_type LowCardinality(String),  -- PASSWORD, SSO, MFA
+--     client_ip IPv4,
+--     user_agent String,
+--     device_id String,
+--     location String,
+--     success UInt8,
+--     failure_reason String
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMM(timestamp)
+-- ORDER BY (timestamp, user_id)
+-- TTL timestamp + INTERVAL 180 DAY;
+
+-- -----------------------------------------------------------------------------
+-- API 访问日志
+-- -----------------------------------------------------------------------------
+-- CREATE TABLE killer_audit.api_access_logs
+-- (
+--     timestamp DateTime64(3),
+--     service LowCardinality(String),
+--     method LowCardinality(String),
+--     path String,
+--     query_string String,
+--     client_ip IPv4,
+--     user_id String,
+--     request_id String,
+--     trace_id String,
+--     status_code UInt16,
+--     request_size UInt32,
+--     response_size UInt32,
+--     duration_ms UInt32
+-- )
+-- ENGINE = MergeTree()
+-- PARTITION BY toYYYYMMDD(timestamp)
+-- ORDER BY (timestamp, service, path)
+-- TTL timestamp + INTERVAL 30 DAY;

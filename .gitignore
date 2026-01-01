@@ -1,0 +1,44 @@
+# Rust / Cargo
+/target/
+**/*.rs.bk
+*.pdb
+
+# Dependencies (Only for libraries, but for a microservice project we MUST track lockfiles)
+# Cargo.lock - REMOVED from ignore to ensure build consistency
+
+# Docker / Infrastructure
+**/data/
+docker/volumes/
+*.db
+*.sqlite
+
+# Environment / Secrets
+.env
+.env.*
+.env.example
+
+# IDEs & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.settings/
+
+# Logs & Temporary
+*.log
+/tmp/
+coverage/
+node_modules/
+
+# Binary & Compiled
+*.rlib
+*.so
+*.dll
+*.dylib
+*.exe
+
+.claude/
+.qoder/
+

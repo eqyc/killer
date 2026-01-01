@@ -1,0 +1,28 @@
+# Financial Service - 生产环境配置
+
+[server]
+http_port = 8080
+grpc_port = 50051
+metrics_port = 9090
+
+[database]
+host = "${DB_HOST}"
+port = 5432
+name = "killer_finance"
+user = "${DB_USER}"
+password = "${DB_PASSWORD}"
+max_connections = 50
+ssl_mode = "require"
+
+[redis]
+url = "${REDIS_URL}"
+cluster_mode = true
+
+[kafka]
+brokers = "${KAFKA_BROKERS}"
+consumer_group = "financial-service"
+security_protocol = "SASL_SSL"
+
+[telemetry]
+otlp_endpoint = "${OTEL_ENDPOINT}"
+log_level = "warn"

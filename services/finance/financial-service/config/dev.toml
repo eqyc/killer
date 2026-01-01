@@ -1,0 +1,25 @@
+# Financial Service - 开发环境配置
+
+[server]
+http_port = 8080
+grpc_port = 50051
+metrics_port = 9090
+
+[database]
+host = "localhost"
+port = 5432
+name = "killer_finance_dev"
+user = "postgres"
+password = "postgres"
+max_connections = 10
+
+[redis]
+url = "redis://localhost:6379/0"
+
+[kafka]
+brokers = ["localhost:9092"]
+consumer_group = "financial-service-dev"
+
+[telemetry]
+otlp_endpoint = "http://localhost:4317"
+log_level = "debug"

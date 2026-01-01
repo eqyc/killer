@@ -1,0 +1,79 @@
+# =============================================================================
+# Buf 代码生成配置
+# https://buf.build/docs/configuration/v2/buf-gen-yaml
+# =============================================================================
+
+version: v2
+
+# 清理输出目录
+clean: true
+
+# 托管模式 - 自动管理依赖的代码生成
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/killer-erp/killer/gen/go
+
+# 插件配置
+plugins:
+  # ==========================================================================
+  # Rust 代码生成 (Tonic + Prost)
+  # ==========================================================================
+
+  # Prost - Protocol Buffers 消息类型生成
+  - local: protoc-gen-prost
+    out: ../libs/integration/api-contracts/src/gen
+    opt:
+      - compile_well_known_types
+      - extern_path=.google.protobuf=::prost_types
+      - file_descriptor_set
+
+  # Prost Serde - 添加 Serde 支持
+  - local: protoc-gen-prost-serde
+    out: ../libs/integration/api-contracts/src/gen
+
+  # Tonic - gRPC 服务代码生成
+  - local: protoc-gen-tonic
+    out: ../libs/integration/api-contracts/src/gen
+    opt:
+      - compile_well_known_types
+      - extern_path=.google.protobuf=::prost_types
+
+  # ==========================================================================
+  # Go 代码生成 (可选，用于其他语言客户端)
+  # ==========================================================================
+
+  # - remote: buf.build/protocolbuffers/go
+  #   out: ../gen/go
+  #   opt:
+  #     - paths=source_relative
+
+  # - remote: buf.build/grpc/go
+  #   out: ../gen/go
+  #   opt:
+  #     - paths=source_relative
+
+  # ==========================================================================
+  # TypeScript 代码生成 (可选，用于前端)
+  # ==========================================================================
+
+  # - remote: buf.build/bufbuild/es
+  #   out: ../gen/ts
+
+  # - remote: buf.build/connectrpc/es
+  #   out: ../gen/ts
+
+  # ==========================================================================
+  # OpenAPI 文档生成
+  # ==========================================================================
+
+  # - remote: buf.build/grpc-ecosystem/openapiv2
+  #   out: ../docs/api
+  #   opt:
+  #     - allow_merge=true
+  #     - merge_file_name=openapi
+
+# 输入配置
+inputs:
+  - directory: .

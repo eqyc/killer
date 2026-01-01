@@ -1,0 +1,38 @@
+[package]
+name = "killer-batch"
+description = "批处理框架：Job Scheduler, Batch Processor, 断点续传"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 异步运行时
+tokio.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 错误处理
+thiserror.workspace = true
+anyhow.workspace = true
+
+# 时间和调度
+chrono.workspace = true
+
+# 可观测性
+tracing.workspace = true
+metrics.workspace = true
+
+# 项目内部依赖
+killer-types = { path = "../../common/types" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,137 @@
+# =============================================================================
+# KILLER ERP - Helm Values
+# =============================================================================
+#
+# 默认配置值。
+# 可通过 -f values-dev.yaml 或 --set 覆盖。
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 全局配置
+# -----------------------------------------------------------------------------
+global:
+  imageRegistry: ghcr.io/killer-erp
+  imagePullSecrets: []
+  storageClass: ""
+
+  # 环境
+  environment: development
+
+  # 日志级别
+  logLevel: info
+
+# -----------------------------------------------------------------------------
+# API Gateway
+# -----------------------------------------------------------------------------
+apiGateway:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: api-gateway
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 8000
+    grpcPort: 50051
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: api.killer.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+# -----------------------------------------------------------------------------
+# 财务服务
+# -----------------------------------------------------------------------------
+financialService:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: financial-service
+    tag: latest
+
+  service:
+    type: ClusterIP
+    port: 8100
+    grpcPort: 50052
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# -----------------------------------------------------------------------------
+# 销售服务
+# -----------------------------------------------------------------------------
+salesService:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: sales-service
+    tag: latest
+
+  service:
+    type: ClusterIP
+    port: 8500
+    grpcPort: 50053
+
+# -----------------------------------------------------------------------------
+# 依赖服务开关
+# -----------------------------------------------------------------------------
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: changeme
+    database: killer
+
+redis:
+  enabled: true
+  auth:
+    password: changeme
+
+kafka:
+  enabled: true
+
+# -----------------------------------------------------------------------------
+# 可观测性开关
+# -----------------------------------------------------------------------------
+prometheus:
+  enabled: true
+
+grafana:
+  enabled: true
+  adminPassword: changeme
+
+loki:
+  enabled: false
+
+tempo:
+  enabled: false

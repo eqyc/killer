@@ -1,0 +1,164 @@
+# =============================================================================
+# KILLER ERP - OpenTelemetry Collector 配置
+# =============================================================================
+#
+# 统一的遥测数据收集、处理和导出。
+#
+# =============================================================================
+
+# TODO: 实现完整配置
+
+# -----------------------------------------------------------------------------
+# 接收器 (Receivers)
+# -----------------------------------------------------------------------------
+# receivers:
+#   otlp:
+#     protocols:
+#       grpc:
+#         endpoint: 0.0.0.0:4317
+#       http:
+#         endpoint: 0.0.0.0:4318
+#
+#   # Prometheus 指标抓取
+#   prometheus:
+#     config:
+#       scrape_configs:
+#         - job_name: 'otel-collector'
+#           scrape_interval: 10s
+#           static_configs:
+#             - targets: ['localhost:8888']
+#
+#   # 主机指标
+#   hostmetrics:
+#     collection_interval: 30s
+#     scrapers:
+#       cpu:
+#       memory:
+#       disk:
+#       network:
+
+# -----------------------------------------------------------------------------
+# 处理器 (Processors)
+# -----------------------------------------------------------------------------
+# processors:
+#   # 批处理
+#   batch:
+#     timeout: 5s
+#     send_batch_size: 1000
+#
+#   # 内存限制
+#   memory_limiter:
+#     check_interval: 1s
+#     limit_mib: 512
+#     spike_limit_mib: 128
+#
+#   # 属性处理
+#   attributes:
+#     actions:
+#       - key: environment
+#         value: ${ENVIRONMENT}
+#         action: upsert
+#       - key: cluster
+#         value: killer-erp
+#         action: upsert
+#
+#   # 资源检测
+#   resourcedetection:
+#     detectors: [env, system, docker]
+#     timeout: 5s
+#
+#   # 尾部采样 (追踪)
+#   tail_sampling:
+#     decision_wait: 10s
+#     num_traces: 100
+#     expected_new_traces_per_sec: 10
+#     policies:
+#       - name: errors-policy
+#         type: status_code
+#         status_code:
+#           status_codes: [ERROR]
+#       - name: slow-traces-policy
+#         type: latency
+#         latency:
+#           threshold_ms: 1000
+#       - name: probabilistic-policy
+#         type: probabilistic
+#         probabilistic:
+#           sampling_percentage: 10
+
+# -----------------------------------------------------------------------------
+# 导出器 (Exporters)
+# -----------------------------------------------------------------------------
+# exporters:
+#   # Prometheus (指标)
+#   prometheus:
+#     endpoint: 0.0.0.0:8889
+#     namespace: killer
+#     const_labels:
+#       cluster: killer-erp
+#
+#   # 或使用 Prometheus Remote Write
+#   prometheusremotewrite:
+#     endpoint: http://prometheus:9090/api/v1/write
+#     tls:
+#       insecure: true
+#
+#   # Loki (日志)
+#   loki:
+#     endpoint: http://loki:3100/loki/api/v1/push
+#     labels:
+#       attributes:
+#         service.name: service
+#         service.namespace: namespace
+#       resource:
+#         deployment.environment: env
+#
+#   # Tempo (追踪)
+#   otlp/tempo:
+#     endpoint: tempo:4317
+#     tls:
+#       insecure: true
+#
+#   # 调试输出
+#   debug:
+#     verbosity: detailed
+
+# -----------------------------------------------------------------------------
+# 服务配置
+# -----------------------------------------------------------------------------
+# service:
+#   telemetry:
+#     logs:
+#       level: info
+#     metrics:
+#       address: 0.0.0.0:8888
+#
+#   pipelines:
+#     # 追踪管道
+#     traces:
+#       receivers: [otlp]
+#       processors: [memory_limiter, resourcedetection, attributes, tail_sampling, batch]
+#       exporters: [otlp/tempo]
+#
+#     # 指标管道
+#     metrics:
+#       receivers: [otlp, prometheus, hostmetrics]
+#       processors: [memory_limiter, resourcedetection, attributes, batch]
+#       exporters: [prometheus]
+#
+#     # 日志管道
+#     logs:
+#       receivers: [otlp]
+#       processors: [memory_limiter, resourcedetection, attributes, batch]
+#       exporters: [loki]
+
+# -----------------------------------------------------------------------------
+# 扩展 (Extensions)
+# -----------------------------------------------------------------------------
+# extensions:
+#   health_check:
+#     endpoint: 0.0.0.0:13133
+#   pprof:
+#     endpoint: 0.0.0.0:1888
+#   zpages:
+#     endpoint: 0.0.0.0:55679

@@ -1,0 +1,360 @@
+# ============================================================================
+# KILLER ERP - 生产环境配置
+# ============================================================================
+# 文件：config/production.toml
+# 环境：Production
+# 说明：生产环境配置，优化性能和安全性
+# ============================================================================
+
+[environment]
+name = "production"
+debug = false
+
+# ----------------------------------------------------------------------------
+# 服务器配置
+# ----------------------------------------------------------------------------
+[server]
+host = "0.0.0.0"
+port = 8080
+grpc_port = 50051
+worker_threads = 0      # 0 表示使用 CPU 核心数
+request_timeout = 30
+graceful_shutdown_timeout = 60
+
+# TLS 配置（强制启用）
+[server.tls]
+enabled = true
+cert_path = "/etc/killer/tls/tls.crt"
+key_path = "/etc/killer/tls/tls.key"
+min_version = "1.2"
+cipher_suites = [
+    "TLS_AES_256_GCM_SHA384",
+    "TLS_AES_128_GCM_SHA256",
+    "TLS_CHACHA20_POLY1305_SHA256"
+]
+
+# HTTP/2 配置
+[server.http2]
+enabled = true
+max_concurrent_streams = 200
+initial_connection_window_size = 2097152
+initial_stream_window_size = 1048576
+
+# ----------------------------------------------------------------------------
+# 数据库配置
+# ----------------------------------------------------------------------------
+[database]
+url = "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/erp_${SERVICE_DB}"
+
+# 连接池配置（生产环境高配置）
+pool_size = 30
+pool_min = 10
+connection_timeout = 15
+idle_timeout = 300
+max_lifetime = 1800
+
+# SSL 配置（强制验证）
+ssl_mode = "verify-full"
+ssl_root_cert = "/etc/killer/certs/db-ca.crt"
+ssl_cert = "/etc/killer/certs/db-client.crt"
+ssl_key = "/etc/killer/certs/db-client.key"
+
+# 读写分离
+[database.read_replica]
+enabled = true
+urls = [
+    "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_READ_HOST_1}:5432/erp_${SERVICE_DB}",
+    "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_READ_HOST_2}:5432/erp_${SERVICE_DB}"
+]
+pool_size = 20
+
+# 各服务数据库映射
+[database.services]
+api-gateway = "erp_gateway"
+financial-service = "erp_financial"
+controlling-service = "erp_controlling"
+treasury-service = "erp_treasury"
+sales-service = "erp_sales"
+crm-service = "erp_crm"
+purchasing-service = "erp_purchasing"
+scm-service = "erp_scm"
+materials-service = "erp_materials"
+warehouse-service = "erp_warehouse"
+shipping-service = "erp_shipping"
+production-service = "erp_production"
+quality-service = "erp_quality"
+maintenance-service = "erp_maintenance"
+hr-service = "erp_hr"
+payroll-service = "erp_payroll"
+project-service = "erp_project"
+plm-service = "erp_plm"
+mdg-service = "erp_mdg"
+iam-service = "erp_iam"
+
+# ----------------------------------------------------------------------------
+# Redis 配置
+# ----------------------------------------------------------------------------
+[redis]
+url = "rediss://:${REDIS_PASSWORD}@redis.killer.internal:6379/0"
+pool_size = 20
+connection_timeout = 3
+command_timeout = 2
+
+[redis.cache]
+default_ttl = 600
+key_prefix = "killer:prod:"
+
+# Redis Cluster 配置
+[redis.cluster]
+enabled = true
+nodes = [
+    "redis-cluster-0.killer.internal:6379",
+    "redis-cluster-1.killer.internal:6379",
+    "redis-cluster-2.killer.internal:6379",
+    "redis-cluster-3.killer.internal:6379",
+    "redis-cluster-4.killer.internal:6379",
+    "redis-cluster-5.killer.internal:6379"
+]
+read_from_replicas = true
+
+# ----------------------------------------------------------------------------
+# Kafka 配置
+# ----------------------------------------------------------------------------
+[kafka]
+brokers = [
+    "kafka-0.kafka.killer.internal:9092",
+    "kafka-1.kafka.killer.internal:9092",
+    "kafka-2.kafka.killer.internal:9092",
+    "kafka-3.kafka.killer.internal:9092",
+    "kafka-4.kafka.killer.internal:9092"
+]
+client_id = "killer-prod"
+
+[kafka.producer]
+acks = "all"
+retries = 10
+retry_backoff_ms = 100
+batch_size = 65536
+linger_ms = 20
+compression = "zstd"
+idempotence = true
+max_in_flight_requests = 5
+delivery_timeout_ms = 120000
+
+[kafka.consumer]
+group_id = "${SERVICE_NAME}-prod"
+auto_offset_reset = "earliest"
+enable_auto_commit = false
+max_poll_records = 1000
+session_timeout = 45000
+heartbeat_interval_ms = 15000
+max_poll_interval_ms = 300000
+
+[kafka.security]
+protocol = "SASL_SSL"
+sasl_mechanism = "SCRAM-SHA-512"
+sasl_username = "${KAFKA_USERNAME}"
+sasl_password = "${KAFKA_PASSWORD}"
+ssl_ca_location = "/etc/killer/certs/kafka-ca.crt"
+
+[kafka.topics]
+domain_events = "killer.prod.domain-events"
+integration_events = "killer.prod.integration-events"
+dead_letter = "killer.prod.dead-letter"
+
+# 主题分区和副本配置
+[kafka.topics.config]
+partitions = 12
+replication_factor = 3
+min_insync_replicas = 2
+
+# ----------------------------------------------------------------------------
+# ClickHouse 配置
+# ----------------------------------------------------------------------------
+[clickhouse]
+url = "https://clickhouse.killer.internal:8443"
+database = "erp_analytics"
+user = "${CLICKHOUSE_USER}"
+password = "${CLICKHOUSE_PASSWORD}"
+pool_size = 20
+connection_timeout = 10
+query_timeout = 300
+
+[clickhouse.cluster]
+name = "killer_prod"
+shards = 4
+replicas = 3
+
+[clickhouse.ssl]
+enabled = true
+ca_cert = "/etc/killer/certs/clickhouse-ca.crt"
+
+# ----------------------------------------------------------------------------
+# 日志配置
+# ----------------------------------------------------------------------------
+[logging]
+level = "warn"              # 生产环境仅记录警告和错误
+format = "json"
+output = "stdout"
+include_location = false
+include_target = false
+redact_sensitive = true     # 脱敏敏感数据
+
+# 生产环境减少日志噪音
+[logging.modules]
+sqlx = "error"
+tower_http = "warn"
+hyper = "error"
+tonic = "warn"
+h2 = "error"
+
+# 敏感数据脱敏
+[logging.redact]
+enabled = true
+fields = ["password", "secret", "token", "key", "authorization"]
+
+# ----------------------------------------------------------------------------
+# 可观测性配置
+# ----------------------------------------------------------------------------
+[observability]
+enabled = true
+
+[observability.tracing]
+enabled = true
+sampler_ratio = 0.01    # 1% 采样（生产环境降低开销）
+otlp_endpoint = "http://otel-collector.monitoring:4317"
+propagators = ["tracecontext", "baggage"]
+
+# 自适应采样
+[observability.tracing.adaptive]
+enabled = true
+target_traces_per_second = 100
+min_sampler_ratio = 0.001
+max_sampler_ratio = 0.1
+
+[observability.metrics]
+enabled = true
+port = 9090
+path = "/metrics"
+include_runtime_metrics = true
+
+[observability.health]
+enabled = true
+path = "/health"
+liveness_path = "/health/live"
+readiness_path = "/health/ready"
+
+# ----------------------------------------------------------------------------
+# 安全配置
+# ----------------------------------------------------------------------------
+[security]
+jwt_secret = "${JWT_SECRET}"
+jwt_access_token_expiration = 900       # 15 分钟
+jwt_refresh_token_expiration = 43200    # 12 小时
+
+# 加密配置
+[security.encryption]
+algorithm = "AES-256-GCM"
+key = "${ENCRYPTION_KEY}"
+key_rotation_enabled = true
+key_rotation_interval = 86400
+
+[security.cors]
+enabled = true
+allowed_origins = ["https://app.killer.com", "https://admin.killer.com"]
+allowed_methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+allowed_headers = ["Content-Type", "Authorization", "X-Request-ID"]
+expose_headers = ["X-Request-ID", "X-Trace-ID"]
+max_age = 3600
+allow_credentials = true
+
+[security.vault]
+enabled = true
+addr = "https://vault.killer.internal:8200"
+auth_method = "kubernetes"
+k8s_role = "killer-prod"
+secret_path = "secret/data/killer/prod"
+cache_ttl = 300
+retry_attempts = 3
+
+# 安全头配置
+[security.headers]
+strict_transport_security = "max-age=31536000; includeSubDomains"
+content_security_policy = "default-src 'self'"
+x_frame_options = "DENY"
+x_content_type_options = "nosniff"
+referrer_policy = "strict-origin-when-cross-origin"
+
+# ----------------------------------------------------------------------------
+# 服务发现配置
+# ----------------------------------------------------------------------------
+[service_discovery]
+type = "kubernetes"
+namespace = "killer-prod"
+
+[service_discovery.dns]
+suffix = ".killer-prod.svc.cluster.local"
+port = 50051
+
+# 服务健康检查
+[service_discovery.health_check]
+enabled = true
+interval = 10
+timeout = 5
+healthy_threshold = 2
+unhealthy_threshold = 3
+
+# ----------------------------------------------------------------------------
+# 限流与熔断配置
+# ----------------------------------------------------------------------------
+[rate_limit]
+enabled = true
+requests_per_second = 2000
+burst_size = 4000
+per_user_rps = 100
+
+# 分级限流
+[rate_limit.tiers]
+anonymous = 10
+basic = 50
+premium = 200
+enterprise = 1000
+
+[circuit_breaker]
+enabled = true
+failure_threshold = 50
+slow_call_threshold = 80
+slow_call_duration = 2000
+wait_duration = 30
+permitted_calls = 10
+
+# 降级配置
+[circuit_breaker.fallback]
+enabled = true
+cache_ttl = 60
+return_cached_response = true
+
+# ----------------------------------------------------------------------------
+# 功能开关
+# ----------------------------------------------------------------------------
+[features]
+event_sourcing = true
+cqrs = true
+distributed_tracing = true
+request_logging = true
+profiling = false
+hot_reload = false
+
+# 灰度发布
+[features.gradual_rollout]
+enabled = true
+new_pricing_engine = 0.1    # 10% 流量
+new_inventory_algo = 0.05   # 5% 流量
+
+# ----------------------------------------------------------------------------
+# 容灾配置
+# ----------------------------------------------------------------------------
+[disaster_recovery]
+enabled = true
+backup_region = "cn-east-2"
+failover_threshold = 30     # 30 秒无响应触发故障转移

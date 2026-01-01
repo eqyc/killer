@@ -1,0 +1,43 @@
+# =============================================================================
+# Buf 工作区配置
+# https://buf.build/docs/configuration/v2/buf-yaml
+# =============================================================================
+
+version: v2
+
+# 模块配置
+modules:
+  - path: .
+    name: buf.build/killer-erp/killer
+
+# Lint 规则配置
+lint:
+  use:
+    - STANDARD           # 标准规则集
+    - COMMENTS           # 注释规则
+  except:
+    - PACKAGE_VERSION_SUFFIX  # 允许不带版本后缀
+
+  # 自定义规则
+  enum_zero_value_suffix: _UNSPECIFIED
+  rpc_allow_same_request_response: false
+  rpc_allow_google_protobuf_empty_requests: true
+  rpc_allow_google_protobuf_empty_responses: true
+  service_suffix: Service
+
+  # 忽略特定文件
+  ignore:
+    - google/
+
+# Breaking Change 检测配置
+breaking:
+  use:
+    - FILE               # 文件级别的破坏性变更检测
+  except:
+    - EXTENSION_NO_DELETE
+    - FIELD_SAME_DEFAULT
+
+# 依赖配置
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway

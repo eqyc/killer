@@ -1,0 +1,66 @@
+[package]
+name = "killer-maintenance-service"
+description = "设备维护服务 (PM) - 预防性维护、故障维修、备件管理"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "maintenance-service"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+axum.workspace = true
+axum-extra.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tonic.workspace = true
+prost.workspace = true
+sqlx.workspace = true
+redis.workspace = true
+rdkafka.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+opentelemetry.workspace = true
+opentelemetry_sdk.workspace = true
+opentelemetry-otlp.workspace = true
+metrics.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+rust_decimal.workspace = true
+config.workspace = true
+dotenvy.workspace = true
+validator.workspace = true
+
+killer-types = { path = "../../../libs/common/types" }
+killer-domain-primitives = { path = "../../../libs/common/domain-primitives" }
+killer-cqrs = { path = "../../../libs/frameworks/cqrs" }
+killer-messaging = { path = "../../../libs/infrastructure/messaging" }
+killer-observability = { path = "../../../libs/infrastructure/observability" }
+killer-auth = { path = "../../../libs/infrastructure/auth" }
+killer-persistence = { path = "../../../libs/infrastructure/persistence" }
+killer-material = { path = "../../../libs/master-data/material" }
+killer-organizational-units = { path = "../../../libs/master-data/organizational-units" }
+killer-api-contracts = { path = "../../../libs/integration/api-contracts" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+testcontainers.workspace = true
+testcontainers-modules.workspace = true
+fake.workspace = true
+
+[build-dependencies]
+#tonic-build.workspace = true
+tonic-prost-build = { workspace = true }
+
+[lints]
+workspace = true

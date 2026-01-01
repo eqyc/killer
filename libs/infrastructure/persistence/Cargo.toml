@@ -1,0 +1,36 @@
+[package]
+name = "killer-persistence"
+description = "持久化基础设施：Repository Trait, Unit of Work, 数据库连接池"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 异步运行时
+tokio.workspace = true
+async-trait.workspace = true
+
+# 数据库
+sqlx.workspace = true
+
+# 序列化
+serde.workspace = true
+
+# 错误处理
+thiserror.workspace = true
+
+# 可观测性
+tracing.workspace = true
+
+# 项目内部依赖
+killer-types = { path = "../../common/types" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+testcontainers.workspace = true
+testcontainers-modules = { workspace = true, features = ["postgres"] }
+
+[lints]
+workspace = true

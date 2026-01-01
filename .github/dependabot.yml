@@ -1,0 +1,217 @@
+# ============================================================================
+# KILLER ERP - Dependabot 配置
+# ============================================================================
+# 自动检测依赖更新并创建 Pull Request
+# ============================================================================
+
+version: 2
+
+registries:
+  # 私有 crates registry（如果有的话）
+  # killer-crates:
+  #   type: cargo-registry
+  #   registry: https://crates.killer.dev
+  #   token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+updates:
+  # ==========================================================================
+  # Cargo 依赖更新
+  # ==========================================================================
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      # 每周一检查更新
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "Asia/Shanghai"
+
+    # 并发 PR 数量限制
+    open-pull-requests-limit: 10
+
+    # PR 配置
+    commit-message:
+      prefix: "deps(cargo)"
+      include: "scope"
+
+    labels:
+      - "dependencies"
+      - "rust"
+      - "automated"
+
+    # 审查者配置
+    reviewers:
+      - "killer-team/backend"
+
+    # 分组相关依赖的更新
+    groups:
+      # Tokio 生态系统
+      tokio:
+        patterns:
+          - "tokio"
+          - "tokio-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Web 框架相关
+      web-framework:
+        patterns:
+          - "axum"
+          - "axum-*"
+          - "tower"
+          - "tower-*"
+          - "hyper"
+          - "hyper-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # gRPC 相关
+      grpc:
+        patterns:
+          - "tonic"
+          - "tonic-*"
+          - "prost"
+          - "prost-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # 数据库相关
+      database:
+        patterns:
+          - "sqlx"
+          - "sqlx-*"
+          - "deadpool"
+          - "deadpool-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # 序列化相关
+      serde:
+        patterns:
+          - "serde"
+          - "serde_*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # 可观测性相关
+      observability:
+        patterns:
+          - "tracing"
+          - "tracing-*"
+          - "opentelemetry"
+          - "opentelemetry-*"
+          - "metrics"
+          - "metrics-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # 测试相关
+      testing:
+        patterns:
+          - "criterion"
+          - "proptest"
+          - "quickcheck"
+          - "mockall"
+          - "fake"
+          - "rstest"
+        update-types:
+          - "minor"
+          - "patch"
+
+    # 忽略特定依赖的特定版本
+    ignore:
+      # 示例：忽略某个依赖的特定主版本更新
+      # - dependency-name: "some-crate"
+      #   versions: ["2.x"]
+
+    # 允许不安全更新（用于紧急安全修复）
+    allow:
+      - dependency-type: "all"
+
+  # ==========================================================================
+  # GitHub Actions 更新
+  # ==========================================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # 每月检查更新
+      interval: "monthly"
+      day: "monday"
+      time: "03:00"
+      timezone: "Asia/Shanghai"
+
+    open-pull-requests-limit: 5
+
+    commit-message:
+      prefix: "ci(actions)"
+      include: "scope"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+
+    reviewers:
+      - "killer-team/devops"
+
+    groups:
+      # Actions 版本更新分组
+      github-actions:
+        patterns:
+          - "actions/*"
+        update-types:
+          - "major"
+          - "minor"
+
+  # ==========================================================================
+  # Docker 基础镜像更新
+  # ==========================================================================
+  - package-ecosystem: "docker"
+    directory: "/infrastructure/docker"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "03:00"
+      timezone: "Asia/Shanghai"
+
+    open-pull-requests-limit: 5
+
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"
+
+    labels:
+      - "dependencies"
+      - "docker"
+      - "automated"
+
+    reviewers:
+      - "killer-team/devops"
+
+  # ==========================================================================
+  # npm 依赖更新（如果有前端项目）
+  # ==========================================================================
+  # - package-ecosystem: "npm"
+  #   directory: "/web"
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "tuesday"
+  #     time: "03:00"
+  #     timezone: "Asia/Shanghai"
+  #
+  #   open-pull-requests-limit: 10
+  #
+  #   commit-message:
+  #     prefix: "deps(npm)"
+  #     include: "scope"
+  #
+  #   labels:
+  #     - "dependencies"
+  #     - "javascript"
+  #     - "automated"

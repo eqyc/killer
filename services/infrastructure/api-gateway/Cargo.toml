@@ -1,0 +1,48 @@
+[package]
+name = "killer-api-gateway"
+description = "统一 API 网关 - 流量入口、鉴权、路由、限流"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "api-gateway"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+axum.workspace = true
+axum-extra.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+hyper.workspace = true
+tonic.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+opentelemetry.workspace = true
+opentelemetry_sdk.workspace = true
+opentelemetry-otlp.workspace = true
+metrics.workspace = true
+config.workspace = true
+dotenvy.workspace = true
+jsonwebtoken.workspace = true
+redis.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+
+killer-types = { path = "../../../libs/common/types" }
+killer-observability = { path = "../../../libs/infrastructure/observability" }
+killer-auth = { path = "../../../libs/infrastructure/auth" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+wiremock.workspace = true
+
+[lints]
+workspace = true

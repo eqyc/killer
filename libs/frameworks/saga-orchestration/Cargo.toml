@@ -1,0 +1,41 @@
+[package]
+name = "killer-saga"
+description = "Saga 编排框架：分布式事务协调、补偿事务"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 异步运行时
+tokio.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 错误处理
+thiserror.workspace = true
+anyhow.workspace = true
+
+# UUID 和时间
+uuid.workspace = true
+chrono.workspace = true
+
+# 可观测性
+tracing.workspace = true
+
+# 状态机
+# （如需要可添加状态机库）
+
+# 项目内部依赖
+killer-types = { path = "../../common/types" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+
+[lints]
+workspace = true

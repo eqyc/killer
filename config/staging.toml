@@ -1,0 +1,244 @@
+# ============================================================================
+# KILLER ERP - 预发布环境配置
+# ============================================================================
+# 文件：config/staging.toml
+# 环境：Staging
+# 说明：预发布环境配置，接近生产环境但允许更多日志
+# ============================================================================
+
+[environment]
+name = "staging"
+debug = false
+
+# ----------------------------------------------------------------------------
+# 服务器配置
+# ----------------------------------------------------------------------------
+[server]
+host = "0.0.0.0"
+port = 8080
+grpc_port = 50051
+worker_threads = 4
+request_timeout = 30
+graceful_shutdown_timeout = 30
+
+# TLS 配置
+[server.tls]
+enabled = true
+cert_path = "/etc/killer/tls/tls.crt"
+key_path = "/etc/killer/tls/tls.key"
+
+# ----------------------------------------------------------------------------
+# 数据库配置
+# ----------------------------------------------------------------------------
+[database]
+url = "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/erp_${SERVICE_DB}"
+
+# 连接池配置（中等规模）
+pool_size = 15
+pool_min = 5
+connection_timeout = 20
+idle_timeout = 600
+max_lifetime = 3600
+
+# SSL 配置
+ssl_mode = "require"
+ssl_root_cert = "/etc/killer/certs/db-ca.crt"
+
+# 各服务数据库映射
+[database.services]
+api-gateway = "erp_gateway"
+financial-service = "erp_financial"
+controlling-service = "erp_controlling"
+treasury-service = "erp_treasury"
+sales-service = "erp_sales"
+crm-service = "erp_crm"
+purchasing-service = "erp_purchasing"
+scm-service = "erp_scm"
+materials-service = "erp_materials"
+warehouse-service = "erp_warehouse"
+shipping-service = "erp_shipping"
+production-service = "erp_production"
+quality-service = "erp_quality"
+maintenance-service = "erp_maintenance"
+hr-service = "erp_hr"
+payroll-service = "erp_payroll"
+project-service = "erp_project"
+plm-service = "erp_plm"
+mdg-service = "erp_mdg"
+iam-service = "erp_iam"
+
+# ----------------------------------------------------------------------------
+# Redis 配置
+# ----------------------------------------------------------------------------
+[redis]
+url = "redis://:${REDIS_PASSWORD}@redis-staging.killer.internal:6379/0"
+pool_size = 10
+connection_timeout = 5
+command_timeout = 3
+
+[redis.cache]
+default_ttl = 300
+key_prefix = "killer:staging:"
+
+# Redis Sentinel 配置（高可用）
+[redis.sentinel]
+enabled = true
+master_name = "killer-staging"
+nodes = [
+    "redis-sentinel-0.killer.internal:26379",
+    "redis-sentinel-1.killer.internal:26379",
+    "redis-sentinel-2.killer.internal:26379"
+]
+
+# ----------------------------------------------------------------------------
+# Kafka 配置
+# ----------------------------------------------------------------------------
+[kafka]
+brokers = [
+    "kafka-0.kafka-staging.killer.internal:9092",
+    "kafka-1.kafka-staging.killer.internal:9092",
+    "kafka-2.kafka-staging.killer.internal:9092"
+]
+client_id = "killer-staging"
+
+[kafka.producer]
+acks = "all"
+retries = 5
+batch_size = 32768
+linger_ms = 10
+compression = "lz4"
+idempotence = true
+
+[kafka.consumer]
+group_id = "${SERVICE_NAME}-staging"
+auto_offset_reset = "earliest"
+enable_auto_commit = false
+max_poll_records = 500
+session_timeout = 30000
+
+[kafka.security]
+protocol = "SASL_SSL"
+sasl_mechanism = "SCRAM-SHA-512"
+sasl_username = "${KAFKA_USERNAME}"
+sasl_password = "${KAFKA_PASSWORD}"
+
+[kafka.topics]
+domain_events = "killer.staging.domain-events"
+integration_events = "killer.staging.integration-events"
+dead_letter = "killer.staging.dead-letter"
+
+# ----------------------------------------------------------------------------
+# ClickHouse 配置
+# ----------------------------------------------------------------------------
+[clickhouse]
+url = "https://clickhouse-staging.killer.internal:8443"
+database = "erp_analytics_staging"
+user = "${CLICKHOUSE_USER}"
+password = "${CLICKHOUSE_PASSWORD}"
+pool_size = 10
+connection_timeout = 10
+query_timeout = 120
+
+[clickhouse.cluster]
+name = "killer_staging"
+shards = 2
+replicas = 2
+
+# ----------------------------------------------------------------------------
+# 日志配置
+# ----------------------------------------------------------------------------
+[logging]
+level = "info"
+format = "json"
+output = "stdout"
+include_location = false
+include_target = true
+
+[logging.modules]
+sqlx = "warn"
+tower_http = "info"
+hyper = "warn"
+tonic = "warn"
+
+# ----------------------------------------------------------------------------
+# 可观测性配置
+# ----------------------------------------------------------------------------
+[observability]
+enabled = true
+
+[observability.tracing]
+enabled = true
+sampler_ratio = 0.1     # 10% 采样
+otlp_endpoint = "http://otel-collector.monitoring:4317"
+
+[observability.metrics]
+enabled = true
+port = 9090
+path = "/metrics"
+
+[observability.health]
+enabled = true
+path = "/health"
+liveness_path = "/health/live"
+readiness_path = "/health/ready"
+
+# ----------------------------------------------------------------------------
+# 安全配置
+# ----------------------------------------------------------------------------
+[security]
+jwt_secret = "${JWT_SECRET}"
+jwt_access_token_expiration = 1800      # 30 分钟
+jwt_refresh_token_expiration = 86400    # 1 天
+
+[security.cors]
+enabled = true
+allowed_origins = ["https://staging.killer.app"]
+allowed_methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+allowed_headers = ["Content-Type", "Authorization", "X-Request-ID"]
+max_age = 3600
+
+[security.vault]
+enabled = true
+addr = "https://vault.killer.internal:8200"
+auth_method = "kubernetes"
+k8s_role = "killer-staging"
+secret_path = "secret/data/killer/staging"
+
+# ----------------------------------------------------------------------------
+# 服务发现配置
+# ----------------------------------------------------------------------------
+[service_discovery]
+type = "kubernetes"
+namespace = "killer-staging"
+
+[service_discovery.dns]
+suffix = ".killer-staging.svc.cluster.local"
+port = 50051
+
+# ----------------------------------------------------------------------------
+# 限流与熔断配置
+# ----------------------------------------------------------------------------
+[rate_limit]
+enabled = true
+requests_per_second = 500
+burst_size = 1000
+per_user_rps = 50
+
+[circuit_breaker]
+enabled = true
+failure_threshold = 50
+slow_call_threshold = 80
+slow_call_duration = 3000
+wait_duration = 30
+permitted_calls = 10
+
+# ----------------------------------------------------------------------------
+# 功能开关
+# ----------------------------------------------------------------------------
+[features]
+event_sourcing = true
+cqrs = true
+distributed_tracing = true
+request_logging = true
+profiling = false
+hot_reload = false

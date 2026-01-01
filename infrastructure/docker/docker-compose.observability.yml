@@ -1,0 +1,135 @@
+# =============================================================================
+# KILLER ERP - 可观测性栈
+# =============================================================================
+#
+# 包含完整的监控、日志、追踪基础设施。
+# 可与其他 docker-compose 文件组合使用。
+#
+# 使用方式:
+#   docker compose -f docker-compose.core.yml -f docker-compose.observability.yml up -d
+#
+# =============================================================================
+
+# =============================================================================
+# 指标收集 (Metrics)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Prometheus
+# -----------------------------------------------------------------------------
+# 服务名: prometheus
+# 镜像: prom/prometheus:v2.51.0
+# 端口: 9090:9090
+# 配置卷: ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+# 告警规则: ../monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml
+# 数据卷: prometheus_data:/prometheus
+# 命令:
+#   - '--config.file=/etc/prometheus/prometheus.yml'
+#   - '--storage.tsdb.path=/prometheus'
+#   - '--storage.tsdb.retention.time=15d'
+#   - '--web.enable-lifecycle'
+
+# -----------------------------------------------------------------------------
+# Alertmanager
+# -----------------------------------------------------------------------------
+# 服务名: alertmanager
+# 镜像: prom/alertmanager:v0.27.0
+# 端口: 9093:9093
+# 配置卷: alertmanager.yml:/etc/alertmanager/alertmanager.yml
+# 依赖: prometheus
+
+# =============================================================================
+# 日志收集 (Logging)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Loki
+# -----------------------------------------------------------------------------
+# 服务名: loki
+# 镜像: grafana/loki:2.9.0
+# 端口: 3100:3100
+# 配置卷: ../monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml
+# 数据卷: loki_data:/loki
+# 命令: -config.file=/etc/loki/local-config.yaml
+
+# -----------------------------------------------------------------------------
+# Promtail (日志采集器)
+# -----------------------------------------------------------------------------
+# 服务名: promtail
+# 镜像: grafana/promtail:2.9.0
+# 配置卷: promtail-config.yml:/etc/promtail/config.yml
+# 日志卷: /var/log:/var/log:ro
+# 命令: -config.file=/etc/promtail/config.yml
+# 依赖: loki
+
+# =============================================================================
+# 分布式追踪 (Tracing)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Tempo
+# -----------------------------------------------------------------------------
+# 服务名: tempo
+# 镜像: grafana/tempo:2.4.0
+# 端口:
+#   - 3200:3200   (Tempo)
+#   - 4317:4317   (OTLP gRPC)
+#   - 4318:4318   (OTLP HTTP)
+# 配置卷: ../monitoring/tempo/tempo-config.yml:/etc/tempo/tempo.yaml
+# 数据卷: tempo_data:/var/tempo
+# 命令: -config.file=/etc/tempo/tempo.yaml
+
+# =============================================================================
+# OpenTelemetry Collector
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# OTel Collector
+# -----------------------------------------------------------------------------
+# 服务名: otel-collector
+# 镜像: otel/opentelemetry-collector-contrib:0.96.0
+# 端口:
+#   - 4317:4317   (OTLP gRPC receiver)
+#   - 4318:4318   (OTLP HTTP receiver)
+#   - 8888:8888   (Prometheus metrics)
+#   - 8889:8889   (Prometheus exporter)
+# 配置卷: ../monitoring/otel-collector/otel-config.yml:/etc/otelcol-contrib/config.yaml
+# 命令: --config=/etc/otelcol-contrib/config.yaml
+# 依赖: tempo, loki, prometheus
+
+# =============================================================================
+# 可视化 (Visualization)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Grafana
+# -----------------------------------------------------------------------------
+# 服务名: grafana
+# 镜像: grafana/grafana:10.4.0
+# 端口: 3000:3000
+# 环境变量:
+#   - GF_SECURITY_ADMIN_USER=admin
+#   - GF_SECURITY_ADMIN_PASSWORD=killer_grafana
+#   - GF_USERS_ALLOW_SIGN_UP=false
+#   - GF_AUTH_ANONYMOUS_ENABLED=true
+#   - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+# 配置卷:
+#   - ../monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+#   - ../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+# 数据卷: grafana_data:/var/lib/grafana
+# 依赖: prometheus, loki, tempo
+
+# =============================================================================
+# 网络配置
+# =============================================================================
+# 继承自 docker-compose.core.yml
+
+# =============================================================================
+# 数据卷
+# =============================================================================
+# - prometheus_data
+# - loki_data
+# - tempo_data
+# - grafana_data
+
+# TODO: 实现完整的 docker-compose 配置

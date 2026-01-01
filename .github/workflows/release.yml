@@ -1,0 +1,340 @@
+# ============================================================================
+# KILLER ERP - 发布工作流
+# ============================================================================
+# 触发条件：
+# - push tag（v*.*.*）
+# ============================================================================
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'  # 预发布版本 (v1.0.0-alpha.1)
+
+# 并发控制：同一 tag 只运行一次
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/killer
+
+jobs:
+  # ==========================================================================
+  # 准备阶段：提取版本信息
+  # ==========================================================================
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # 检查是否为预发布版本
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "Version: $VERSION"
+          echo "Prerelease: ${{ steps.version.outputs.prerelease }}"
+
+  # ==========================================================================
+  # 构建二进制文件（多平台）
+  # ==========================================================================
+  build-binaries:
+    name: Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    needs: prepare
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux x86_64
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: killer-linux-amd64
+            cross: false
+
+          # Linux aarch64
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact_name: killer-linux-arm64
+            cross: true
+
+          # macOS x86_64
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: killer-darwin-amd64
+            cross: false
+
+          # macOS aarch64 (Apple Silicon)
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: killer-darwin-arm64
+            cross: false
+
+          # Windows x86_64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: killer-windows-amd64
+            cross: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+
+      - name: Install cross (for cross-compilation)
+        if: matrix.cross
+        run: cargo install cross
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "release-${{ matrix.target }}"
+
+      - name: Build release binaries
+        run: |
+          if [[ "${{ matrix.cross }}" == "true" ]]; then
+            cross build --release --target ${{ matrix.target }}
+          else
+            cargo build --release --target ${{ matrix.target }}
+          fi
+        shell: bash
+
+      - name: Package binaries (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p dist
+          # 打包主要服务二进制
+          for bin in api-gateway killer-cli; do
+            if [ -f "target/${{ matrix.target }}/release/$bin" ]; then
+              cp "target/${{ matrix.target }}/release/$bin" dist/
+            fi
+          done
+          cd dist
+          tar -czvf ../${{ matrix.artifact_name }}.tar.gz *
+
+      - name: Package binaries (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist
+          # 打包主要服务二进制
+          $binaries = @("api-gateway.exe", "killer-cli.exe")
+          foreach ($bin in $binaries) {
+            $path = "target/${{ matrix.target }}/release/$bin"
+            if (Test-Path $path) {
+              Copy-Item $path dist/
+            }
+          }
+          Compress-Archive -Path dist/* -DestinationPath ${{ matrix.artifact_name }}.zip
+
+      - name: Upload artifacts (Unix)
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}.tar.gz
+          retention-days: 1
+
+      - name: Upload artifacts (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}.zip
+          retention-days: 1
+
+  # ==========================================================================
+  # 构建 Docker 镜像（多架构）
+  # ==========================================================================
+  build-docker:
+    name: Build Docker (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    needs: prepare
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - api-gateway
+          - financial-service
+          - sales-service
+          - purchasing-service
+          - materials-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix=
+            type=raw,value=latest,enable=${{ needs.prepare.outputs.prerelease == 'false' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infrastructure/docker/Dockerfile.${{ matrix.service }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ needs.prepare.outputs.version }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+  # ==========================================================================
+  # 创建 GitHub Release
+  # ==========================================================================
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build-binaries
+      - build-docker
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: find artifacts -type f -ls
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## KILLER ERP v${{ needs.prepare.outputs.version }}
+
+          ### 📦 Downloads
+
+          | Platform | Architecture | Download |
+          |----------|--------------|----------|
+          | Linux | x86_64 | `killer-linux-amd64.tar.gz` |
+          | Linux | aarch64 | `killer-linux-arm64.tar.gz` |
+          | macOS | x86_64 | `killer-darwin-amd64.tar.gz` |
+          | macOS | Apple Silicon | `killer-darwin-arm64.tar.gz` |
+          | Windows | x86_64 | `killer-windows-amd64.zip` |
+
+          ### 🐳 Docker Images
+
+          ```bash
+          # API Gateway
+          docker pull ${{ env.IMAGE_PREFIX }}/api-gateway:${{ needs.prepare.outputs.version }}
+
+          # Financial Service
+          docker pull ${{ env.IMAGE_PREFIX }}/financial-service:${{ needs.prepare.outputs.version }}
+
+          # Sales Service
+          docker pull ${{ env.IMAGE_PREFIX }}/sales-service:${{ needs.prepare.outputs.version }}
+          ```
+
+          ### 📋 Changelog
+
+          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
+
+          ---
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/...v${{ needs.prepare.outputs.version }}
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: KILLER ERP v${{ needs.prepare.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ needs.prepare.outputs.prerelease == 'true' }}
+          files: |
+            artifacts/**/*.tar.gz
+            artifacts/**/*.zip
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==========================================================================
+  # 发布后通知
+  # ==========================================================================
+  notify:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - create-release
+    if: success()
+
+    steps:
+      - name: Release notification
+        run: |
+          echo "🎉 KILLER ERP v${{ needs.prepare.outputs.version }} has been released!"
+          echo ""
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.prepare.outputs.version }}"
+
+      # 可选：发送 Slack/Discord 通知
+      # - name: Send Slack notification
+      #   uses: slackapi/slack-github-action@v1
+      #   with:
+      #     payload: |
+      #       {
+      #         "text": "🎉 KILLER ERP v${{ needs.prepare.outputs.version }} released!"
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

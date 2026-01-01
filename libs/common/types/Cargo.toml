@@ -1,0 +1,25 @@
+[package]
+name = "killer-types"
+description = "通用类型定义：Result, Error, Id 等基础类型"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 错误处理
+thiserror.workspace = true
+anyhow.workspace = true
+
+# UUID 支持
+uuid.workspace = true
+
+# 序列化
+serde.workspace = true
+
+# 类型派生
+derive_more.workspace = true
+
+[lints]
+workspace = true

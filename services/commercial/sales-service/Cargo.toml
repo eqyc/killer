@@ -1,0 +1,98 @@
+[package]
+name = "killer-sales-service"
+description = "销售订单服务 (SD) - 报价、订单、发货、开票"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "sales-service"
+path = "src/main.rs"
+
+[dependencies]
+# ===== 异步运行时 =====
+tokio.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+
+# ===== Web 框架 =====
+axum.workspace = true
+axum-extra.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+
+# ===== gRPC =====
+tonic.workspace = true
+prost.workspace = true
+
+# ===== 数据库 =====
+sqlx.workspace = true
+
+# ===== 缓存 =====
+redis.workspace = true
+moka.workspace = true
+
+# ===== 消息队列 =====
+rdkafka.workspace = true
+
+# ===== 可观测性 =====
+tracing.workspace = true
+tracing-subscriber.workspace = true
+opentelemetry.workspace = true
+opentelemetry_sdk.workspace = true
+opentelemetry-otlp.workspace = true
+metrics.workspace = true
+
+# ===== 序列化 =====
+serde.workspace = true
+serde_json.workspace = true
+
+# ===== 错误处理 =====
+thiserror.workspace = true
+anyhow.workspace = true
+
+# ===== 通用类型 =====
+uuid.workspace = true
+chrono.workspace = true
+rust_decimal.workspace = true
+
+# ===== 配置 =====
+config.workspace = true
+dotenvy.workspace = true
+
+# ===== 验证 =====
+validator.workspace = true
+
+# ===== 项目内部依赖 =====
+killer-types = { path = "../../../libs/common/types" }
+killer-domain-primitives = { path = "../../../libs/common/domain-primitives" }
+killer-utils = { path = "../../../libs/common/utils" }
+killer-cqrs = { path = "../../../libs/frameworks/cqrs" }
+killer-saga = { path = "../../../libs/frameworks/saga-orchestration" }
+killer-messaging = { path = "../../../libs/infrastructure/messaging" }
+killer-observability = { path = "../../../libs/infrastructure/observability" }
+killer-auth = { path = "../../../libs/infrastructure/auth" }
+killer-persistence = { path = "../../../libs/infrastructure/persistence" }
+killer-business-partner = { path = "../../../libs/master-data/business-partner" }
+killer-material = { path = "../../../libs/master-data/material" }
+killer-organizational-units = { path = "../../../libs/master-data/organizational-units" }
+killer-api-contracts = { path = "../../../libs/integration/api-contracts" }
+
+[dev-dependencies]
+tokio-test.workspace = true
+testcontainers.workspace = true
+testcontainers-modules.workspace = true
+fake.workspace = true
+wiremock.workspace = true
+proptest.workspace = true
+criterion.workspace = true
+
+[build-dependencies]
+#tonic-build.workspace = true
+#tonic-prost-build = "0.14.2"
+tonic-prost-build = { workspace = true }
+
+[lints]
+workspace = true

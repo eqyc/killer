@@ -1,0 +1,162 @@
+# =============================================================================
+# KILLER ERP - 生产优化 Dockerfile
+# =============================================================================
+#
+# 多阶段构建，生成最小化生产镜像。
+# 最终镜像基于 distroless，仅包含二进制和运行时依赖。
+#
+# 构建:
+#   docker build -f Dockerfile.optimized \
+#     --build-arg SERVICE_NAME=api-gateway \
+#     --build-arg PROFILE=release \
+#     -t killer/api-gateway:latest .
+#
+# =============================================================================
+
+# =============================================================================
+# 构建参数
+# =============================================================================
+# ARG RUST_VERSION=1.85
+# ARG SERVICE_NAME
+# ARG PROFILE=release
+
+# =============================================================================
+# 阶段 1: Chef (依赖规划)
+# =============================================================================
+# FROM rust:${RUST_VERSION}-slim-bookworm AS chef
+#
+# 安装 cargo-chef:
+#   - cargo install cargo-chef
+#
+# 工作目录: /app
+
+# =============================================================================
+# 阶段 2: Planner (依赖分析)
+# =============================================================================
+# FROM chef AS planner
+#
+# 复制所有源码
+# 运行: cargo chef prepare --recipe-path recipe.json
+#
+# 输出: recipe.json (依赖清单)
+
+# =============================================================================
+# 阶段 3: Builder (编译)
+# =============================================================================
+# FROM chef AS builder
+#
+# 安装编译依赖:
+#   - protobuf-compiler
+#   - libssl-dev
+#   - libpq-dev
+#   - pkg-config
+#
+# 复制 recipe.json 从 planner 阶段
+# 运行: cargo chef cook --release --recipe-path recipe.json
+# (此步骤缓存依赖编译结果)
+#
+# 复制源码
+# 运行: cargo build --release -p ${SERVICE_NAME}
+#
+# 编译优化:
+#   - LTO=thin (链接时优化)
+#   - codegen-units=1 (单代码生成单元)
+#   - strip=symbols (去除调试符号)
+
+# =============================================================================
+# 阶段 4: Runtime (最小运行时)
+# =============================================================================
+# FROM gcr.io/distroless/cc-debian12 AS runtime
+#
+# 或者使用 scratch 镜像 (更小但需要静态链接):
+# FROM scratch AS runtime
+#
+# 复制二进制:
+#   COPY --from=builder /app/target/release/${SERVICE_NAME} /app/service
+#
+# 复制运行时依赖:
+#   - CA 证书 (TLS)
+#   - 时区数据
+#   - 配置文件 (如需要)
+#
+# 设置非 root 用户:
+#   USER nonroot:nonroot
+#
+# 暴露端口:
+#   EXPOSE 8080
+#   EXPOSE 50051
+#
+# 健康检查:
+#   HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+#     CMD ["/app/service", "health"]
+#
+# 入口点:
+#   ENTRYPOINT ["/app/service"]
+
+# =============================================================================
+# 镜像大小优化
+# =============================================================================
+#
+# 优化策略:
+#
+# 1. 多阶段构建
+#    - 构建阶段: ~2GB (包含工具链)
+#    - 最终镜像: ~30-50MB
+#
+# 2. Cargo Chef
+#    - 分离依赖和源码编译
+#    - 依赖变化时才重新编译
+#
+# 3. 静态链接 (可选)
+#    - RUSTFLAGS="-C target-feature=+crt-static"
+#    - 可使用 scratch 镜像
+#
+# 4. UPX 压缩 (可选)
+#    - 进一步减小二进制大小
+#    - 启动时有解压开销
+#
+# 5. 剥离调试信息
+#    - strip=symbols
+#    - 生产环境无需调试符号
+
+# =============================================================================
+# 安全加固
+# =============================================================================
+#
+# 1. Distroless 基础镜像
+#    - 无 shell
+#    - 无包管理器
+#    - 最小攻击面
+#
+# 2. 非 root 用户
+#    - 限制权限
+#    - 遵循最小权限原则
+#
+# 3. 只读文件系统
+#    - docker run --read-only
+#
+# 4. 安全扫描
+#    - trivy image killer/api-gateway:latest
+#    - grype killer/api-gateway:latest
+
+# =============================================================================
+# CI/CD 集成示例
+# =============================================================================
+#
+# GitHub Actions:
+#
+# - name: Build and push
+#   uses: docker/build-push-action@v5
+#   with:
+#     context: .
+#     file: infrastructure/docker/Dockerfile.optimized
+#     build-args: |
+#       SERVICE_NAME=api-gateway
+#       PROFILE=release
+#     tags: |
+#       ghcr.io/killer-erp/api-gateway:${{ github.sha }}
+#       ghcr.io/killer-erp/api-gateway:latest
+#     cache-from: type=gha
+#     cache-to: type=gha,mode=max
+
+# TODO: 实现完整的 Dockerfile

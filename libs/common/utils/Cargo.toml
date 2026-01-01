@@ -1,0 +1,31 @@
+[package]
+name = "killer-utils"
+description = "通用工具函数：日期处理、字符串处理、验证工具等"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+# 时间处理
+chrono.workspace = true
+
+# 正则表达式
+regex.workspace = true
+
+# 序列化
+serde.workspace = true
+serde_json.workspace = true
+
+# 验证
+validator.workspace = true
+
+# 延迟初始化
+once_cell.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+
+[lints]
+workspace = true
