@@ -1,0 +1,217 @@
+syntax = "proto3";
+
+package killer.mdg.events.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+option java_multiple_files = true;
+option java_package = "com.killer.erp.mdg.events.v1";
+
+// =============================================================================
+// 事件信封
+// =============================================================================
+
+message EventEnvelope {
+    string event_id = 1;
+    string event_type = 2;  // created, updated, deleted, blocked
+    string entity_type = 3;  // material, business_partner, company_code, etc.
+    string tenant_id = 4;
+    string actor_id = 5;
+    google.protobuf.Timestamp timestamp = 6;
+    int32 version = 7;
+    string correlation_id = 8;
+    
+    oneof payload {
+        MaterialEvent material = 10;
+        BusinessPartnerEvent business_partner = 11;
+        CompanyCodeEvent company_code = 12;
+        PlantEvent plant = 13;
+        CostCenterEvent cost_center = 14;
+    }
+}
+
+// =============================================================================
+// 字段变更
+// =============================================================================
+
+message FieldChange {
+    string field_name = 1;
+    string old_value = 2;
+    string new_value = 3;
+}
+
+// =============================================================================
+// 物料事件
+// =============================================================================
+
+message MaterialEvent {
+    string material_number = 1;
+    string tenant_id = 2;
+    
+    oneof event {
+        MaterialCreated created = 10;
+        MaterialUpdated updated = 11;
+        MaterialDeleted deleted = 12;
+    }
+}
+
+message MaterialCreated {
+    string description = 1;
+    string material_type = 2;
+    string base_unit = 3;
+    google.protobuf.Struct snapshot = 4;
+}
+
+message MaterialUpdated {
+    repeated FieldChange changes = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message MaterialDeleted {
+    string reason = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+// =============================================================================
+// 业务伙伴事件
+// =============================================================================
+
+message BusinessPartnerEvent {
+    string partner_id = 1;
+    string tenant_id = 2;
+    
+    oneof event {
+        BusinessPartnerCreated created = 10;
+        BusinessPartnerUpdated updated = 11;
+        BusinessPartnerDeleted deleted = 12;
+        CustomerRoleAssigned customer_role_assigned = 13;
+        SupplierRoleAssigned supplier_role_assigned = 14;
+    }
+}
+
+message BusinessPartnerCreated {
+    string name = 1;
+    string partner_type = 2;
+    google.protobuf.Struct snapshot = 3;
+}
+
+message BusinessPartnerUpdated {
+    repeated FieldChange changes = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message BusinessPartnerDeleted {
+    string reason = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message CustomerRoleAssigned {
+    string sales_org = 1;
+    string payment_terms = 2;
+    double credit_limit = 3;
+}
+
+message SupplierRoleAssigned {
+    string purchasing_org = 1;
+    string reconciliation_account = 2;
+}
+
+// =============================================================================
+// 公司代码事件
+// =============================================================================
+
+message CompanyCodeEvent {
+    string code = 1;
+    string tenant_id = 2;
+    
+    oneof event {
+        CompanyCodeCreated created = 10;
+        CompanyCodeUpdated updated = 11;
+        CompanyCodeDeleted deleted = 12;
+    }
+}
+
+message CompanyCodeCreated {
+    string name = 1;
+    string country = 2;
+    string currency_code = 3;
+    google.protobuf.Struct snapshot = 4;
+}
+
+message CompanyCodeUpdated {
+    repeated FieldChange changes = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message CompanyCodeDeleted {
+    string reason = 1;
+}
+
+// =============================================================================
+// 工厂事件
+// =============================================================================
+
+message PlantEvent {
+    string code = 1;
+    string tenant_id = 2;
+    
+    oneof event {
+        PlantCreated created = 10;
+        PlantUpdated updated = 11;
+        PlantDeleted deleted = 12;
+    }
+}
+
+message PlantCreated {
+    string company_code = 1;
+    string name = 2;
+    google.protobuf.Timestamp valid_from = 3;
+    google.protobuf.Timestamp valid_to = 4;
+    google.protobuf.Struct snapshot = 5;
+}
+
+message PlantUpdated {
+    repeated FieldChange changes = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message PlantDeleted {
+    string reason = 1;
+}
+
+// =============================================================================
+// 成本中心事件
+// =============================================================================
+
+message CostCenterEvent {
+    string code = 1;
+    string tenant_id = 2;
+    
+    oneof event {
+        CostCenterCreated created = 10;
+        CostCenterUpdated updated = 11;
+        CostCenterLocked locked = 12;
+        CostCenterUnlocked unlocked = 13;
+    }
+}
+
+message CostCenterCreated {
+    string controlling_area = 1;
+    string name = 2;
+    string category = 3;
+    google.protobuf.Struct snapshot = 4;
+}
+
+message CostCenterUpdated {
+    repeated FieldChange changes = 1;
+    google.protobuf.Struct snapshot = 2;
+}
+
+message CostCenterLocked {
+    string reason = 1;
+}
+
+message CostCenterUnlocked {
+    string reason = 1;
+}

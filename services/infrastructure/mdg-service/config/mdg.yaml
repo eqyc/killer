@@ -1,0 +1,76 @@
+# MDG 服务配置
+
+server:
+  grpc_addr: "0.0.0.0"
+  grpc_port: 50051
+  http_addr: "0.0.0.0"
+  http_port: 8080
+  shutdown_timeout_secs: 30
+
+database:
+  url: "postgres://mdg:password@localhost:5432/killer_mdg"
+  max_connections: 20
+  min_connections: 5
+  connection_timeout_secs: 30
+  idle_timeout_secs: 600
+
+kafka:
+  brokers:
+    - "localhost:9092"
+  topic_prefix: "killer.mdg"
+  producer:
+    acks: "all"
+    retries: 3
+    compression: "snappy"
+  topics:
+    events: "killer.mdg.events"
+    material: "killer.mdg.material.events"
+    business_partner: "killer.mdg.business_partner.events"
+    organization: "killer.mdg.organization.events"
+    cost_object: "killer.mdg.cost_object.events"
+
+redis:
+  url: "redis://localhost:6379"
+  pool_size: 10
+  ttl_secs: 3600
+  key_prefix: "mdg:"
+
+governance:
+  validation:
+    enabled: true
+    rules_path: "config/validation_rules.yaml"
+  duplicate_detection:
+    enabled: true
+    threshold: 0.85
+    fields:
+      - name
+      - tax_number
+      - email
+  data_quality:
+    enabled: true
+    min_score: 60.0
+
+observability:
+  tracing:
+    enabled: true
+    endpoint: "http://localhost:4317"
+    service_name: "mdg-service"
+  metrics:
+    enabled: true
+    port: 9090
+  logging:
+    level: "info"
+    format: "json"
+
+security:
+  jwt:
+    enabled: true
+    secret: "${JWT_SECRET}"
+    issuer: "killer-erp"
+  rbac:
+    enabled: true
+    permissions:
+      - "mdg:read"
+      - "mdg:write"
+      - "mdg:delete"
+      - "mdg:admin"

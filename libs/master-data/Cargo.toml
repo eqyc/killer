@@ -1,0 +1,65 @@
+# =============================================================================
+# KILLER ERP - 主数据契约模块
+# Master Data Contracts Workspace
+# =============================================================================
+
+[workspace]
+resolver = "2"
+
+members = [
+    "organizational-units",
+    "business-partner",
+    "material",
+    "cost-center",
+]
+
+# =============================================================================
+# 共享依赖版本管理
+# =============================================================================
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.70"
+repository = "https://github.com/your-org/killer-erp"
+
+[workspace.dependencies]
+# 序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# 验证
+validator = { version = "0.16", features = ["derive"] }
+
+# 时间处理
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# 错误处理
+thiserror = "1.0"
+derive_more = "0.99"
+
+# 枚举工具
+strum = { version = "0.25", features = ["derive"] }
+
+# Protobuf (可选)
+prost = "0.12"
+prost-types = "0.12"
+tonic = "0.10"
+tonic-build = "0.10"
+
+# 测试工具
+fake = { version = "2.9", features = ["derive", "chrono"] }
+proptest = "1.4"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"

@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package killer.master_data.organizational_units.v1.events;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/any.proto";
+
+option java_multiple_files = true;
+option java_package = "com.killer.erp.masterdata.organizational.events.v1";
+
+// =============================================================================
+// 组织单元变更事件
+// =============================================================================
+
+// 基础事件头
+message EventHeader {
+    string event_id = 1;           // 事件ID (UUID)
+    string tenant_id = 2;          // 租户ID
+    google.protobuf.Timestamp timestamp = 3;  // 事件时间戳
+    string actor_id = 4;           // 操作者ID
+    string event_type = 5;         // 事件类型
+    int32 version = 6;             // 事件版本 (当前为1)
+    string correlation_id = 7;     // 关联ID (用于追踪)
+}
+
+// 字段变更 delta
+message FieldDelta {
+    string field_name = 1;         // 字段名
+    google.protobuf.Any old_value = 2;   // 旧值
+    google.protobuf.Any new_value = 3;   // 新值
+}
+
+// 公司代码变更事件
+message CompanyCodeCreatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    string name = 3;
+    string country = 4;
+    string currency_code = 5;
+    google.protobuf.Struct extensions = 6;
+}
+
+message CompanyCodeUpdatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    repeated FieldDelta changes = 3;  // 变更字段列表
+    google.protobuf.Struct full_snapshot = 4;  // 完整快照
+}
+
+message CompanyCodeDeletedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    google.protobuf.Struct snapshot = 3;  // 删除前快照
+}
+
+message CompanyCodeBlockedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    string reason = 3;
+}
+
+// 工厂变更事件
+message PlantCreatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    string company_code = 3;
+    string name = 4;
+    google.protobuf.Timestamp valid_from = 5;
+    google.protobuf.Timestamp valid_to = 6;
+    google.protobuf.Struct extensions = 7;
+}
+
+message PlantUpdatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    repeated FieldDelta changes = 3;
+    google.protobuf.Struct full_snapshot = 4;
+}
+
+message PlantDeletedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    google.protobuf.Struct snapshot = 3;
+}
+
+message PlantValidityChangedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    google.protobuf.Timestamp old_valid_from = 3;
+    google.protobuf.Timestamp old_valid_to = 4;
+    google.protobuf.Timestamp new_valid_from = 5;
+    google.protobuf.Timestamp new_valid_to = 6;
+}
+
+// 库存地点变更事件
+message StorageLocationCreatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    string plant_code = 3;
+    string name = 4;
+}
+
+message StorageLocationUpdatedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    repeated FieldDelta changes = 3;
+}
+
+message StorageLocationDeletedEvent {
+    EventHeader header = 1;
+    string code = 2;
+    string plant_code = 3;
+}
+
+// 层级一致性验证失败事件
+message HierarchyValidationFailedEvent {
+    EventHeader header = 1;
+    string entity_type = 2;        // 实体类型 (Plant/StorageLocation)
+    string entity_code = 3;        // 实体代码
+    string parent_type = 4;        // 父实体类型
+    string parent_code = 5;        // 父实体代码
+    string reason = 6;             // 失败原因
+}
+
+// =============================================================================
+// 事件主题命名
+// =============================================================================
+
+// Kafka 主题常量
+enum EventTopic {
+    COMPANY_CODE_EVENTS = 0;
+    PLANT_EVENTS = 1;
+    STORAGE_LOCATION_EVENTS = 2;
+    PURCHASING_ORG_EVENTS = 3;
+    SALES_ORG_EVENTS = 4;
+    CONTROLLING_AREA_EVENTS = 5;
+    HIERARCHY_EVENTS = 6;
+}
+
+// 事件路由键
+message EventRoutingKey {
+    string tenant_id = 1;
+    string entity_type = 2;
+    string entity_code = 3;
+    string event_action = 4;  // created/updated/deleted/blocked
+}

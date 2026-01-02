@@ -1,0 +1,413 @@
+syntax = "proto3";
+
+package killer.mdg.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.killer.erp.mdg.v1";
+
+// =============================================================================
+// 通用消息
+// =============================================================================
+
+// 通用请求元数据
+message RequestMetadata {
+    string tenant_id = 1;
+    string actor_id = 2;
+    string correlation_id = 3;
+}
+
+// 分页请求
+message PageRequest {
+    int32 page_size = 1;
+    string page_token = 2;
+}
+
+// 分页响应
+message PageInfo {
+    string next_page_token = 1;
+    int64 total_count = 2;
+}
+
+// 过滤条件
+message Filter {
+    string field = 1;
+    string operator = 2;  // eq, ne, gt, lt, like, in
+    string value = 3;
+}
+
+// 通用获取请求
+message GetRequest {
+    RequestMetadata metadata = 1;
+    string id = 2;
+    google.protobuf.Timestamp at_date = 3;  // 时间点查询
+}
+
+// 通用列表请求
+message ListRequest {
+    RequestMetadata metadata = 1;
+    repeated Filter filters = 2;
+    PageRequest page = 3;
+    google.protobuf.Timestamp since_timestamp = 4;  // 增量查询
+}
+
+// 通用删除请求
+message DeleteRequest {
+    RequestMetadata metadata = 1;
+    string id = 2;
+    string reason = 3;
+}
+
+// 数据质量评分
+message DataQualityScore {
+    double overall_score = 1;  // 0-100
+    double completeness = 2;
+    double consistency = 3;
+    double accuracy = 4;
+    repeated string issues = 5;
+}
+
+// =============================================================================
+// 物料服务
+// =============================================================================
+
+service MaterialService {
+    // 创建物料
+    rpc CreateMaterial(CreateMaterialRequest) returns (MaterialResponse);
+    
+    // 获取物料
+    rpc GetMaterial(GetRequest) returns (MaterialResponse);
+    
+    // 列表物料
+    rpc ListMaterials(ListRequest) returns (stream MaterialResponse);
+    
+    // 更新物料
+    rpc UpdateMaterial(UpdateMaterialRequest) returns (MaterialResponse);
+    
+    // 删除物料 (软删除)
+    rpc DeleteMaterial(DeleteRequest) returns (google.protobuf.Empty);
+    
+    // 创建物料工厂数据
+    rpc CreateMaterialPlantData(CreateMaterialPlantDataRequest) returns (MaterialPlantDataResponse);
+    
+    // 获取物料工厂数据
+    rpc GetMaterialPlantData(GetMaterialPlantDataRequest) returns (MaterialPlantDataResponse);
+    
+    // 批量导出
+    rpc ExportMaterials(ExportRequest) returns (stream ExportChunk);
+}
+
+message CreateMaterialRequest {
+    RequestMetadata metadata = 1;
+    string material_number = 2;
+    string description = 3;
+    string material_type = 4;
+    string base_unit = 5;
+    string material_group = 6;
+    google.protobuf.Struct extensions = 7;
+}
+
+message UpdateMaterialRequest {
+    RequestMetadata metadata = 1;
+    string material_number = 2;
+    int32 version = 3;  // 乐观锁
+    string description = 4;
+    google.protobuf.Struct extensions = 5;
+}
+
+message MaterialResponse {
+    string material_number = 1;
+    string tenant_id = 2;
+    string description = 3;
+    string material_type = 4;
+    string base_unit = 5;
+    string material_group = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+    int32 version = 9;
+    bool deleted = 10;
+    google.protobuf.Struct extensions = 11;
+    DataQualityScore quality_score = 12;
+}
+
+message CreateMaterialPlantDataRequest {
+    RequestMetadata metadata = 1;
+    string material_number = 2;
+    string plant_code = 3;
+    string mrp_type = 4;
+    string procurement_type = 5;
+}
+
+message GetMaterialPlantDataRequest {
+    RequestMetadata metadata = 1;
+    string material_number = 2;
+    string plant_code = 3;
+}
+
+message MaterialPlantDataResponse {
+    string material_number = 1;
+    string plant_code = 2;
+    string mrp_type = 3;
+    string procurement_type = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+// =============================================================================
+// 业务伙伴服务
+// =============================================================================
+
+service BusinessPartnerService {
+    rpc CreateBusinessPartner(CreateBusinessPartnerRequest) returns (BusinessPartnerResponse);
+    rpc GetBusinessPartner(GetRequest) returns (BusinessPartnerResponse);
+    rpc ListBusinessPartners(ListRequest) returns (stream BusinessPartnerResponse);
+    rpc UpdateBusinessPartner(UpdateBusinessPartnerRequest) returns (BusinessPartnerResponse);
+    rpc DeleteBusinessPartner(DeleteRequest) returns (google.protobuf.Empty);
+    
+    // 角色管理
+    rpc AssignCustomerRole(AssignCustomerRoleRequest) returns (CustomerRoleResponse);
+    rpc AssignSupplierRole(AssignSupplierRoleRequest) returns (SupplierRoleResponse);
+    
+    // 重复检测
+    rpc DetectDuplicates(DetectDuplicatesRequest) returns (DetectDuplicatesResponse);
+}
+
+message CreateBusinessPartnerRequest {
+    RequestMetadata metadata = 1;
+    string partner_id = 2;
+    string name = 3;
+    string partner_type = 4;  // person, organization
+    AddressProto address = 5;
+    string tax_number = 6;
+}
+
+message UpdateBusinessPartnerRequest {
+    RequestMetadata metadata = 1;
+    string partner_id = 2;
+    int32 version = 3;
+    string name = 4;
+    AddressProto address = 5;
+}
+
+message BusinessPartnerResponse {
+    string partner_id = 1;
+    string tenant_id = 2;
+    string name = 3;
+    string partner_type = 4;
+    AddressProto address = 5;
+    string tax_number = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+    int32 version = 9;
+    bool deleted = 10;
+    DataQualityScore quality_score = 11;
+}
+
+message AddressProto {
+    string street = 1;
+    string city = 2;
+    string postal_code = 3;
+    string country = 4;
+    string region = 5;
+}
+
+message AssignCustomerRoleRequest {
+    RequestMetadata metadata = 1;
+    string partner_id = 2;
+    string sales_org = 3;
+    string payment_terms = 4;
+    double credit_limit_amount = 5;
+    string credit_limit_currency = 6;
+}
+
+message CustomerRoleResponse {
+    string partner_id = 1;
+    string sales_org = 2;
+    string payment_terms = 3;
+    double credit_limit_amount = 4;
+    string credit_limit_currency = 5;
+    string block_status = 6;
+}
+
+message AssignSupplierRoleRequest {
+    RequestMetadata metadata = 1;
+    string partner_id = 2;
+    string purchasing_org = 3;
+    string reconciliation_account = 4;
+    string payment_terms = 5;
+}
+
+message SupplierRoleResponse {
+    string partner_id = 1;
+    string purchasing_org = 2;
+    string reconciliation_account = 3;
+    string payment_terms = 4;
+    string block_status = 5;
+}
+
+message DetectDuplicatesRequest {
+    RequestMetadata metadata = 1;
+    string name = 2;
+    string tax_number = 3;
+    double threshold = 4;  // 0.0-1.0
+}
+
+message DetectDuplicatesResponse {
+    repeated DuplicateCandidate candidates = 1;
+}
+
+message DuplicateCandidate {
+    string partner_id = 1;
+    string name = 2;
+    double similarity_score = 3;
+    repeated string matching_fields = 4;
+}
+
+// =============================================================================
+// 组织单元服务
+// =============================================================================
+
+service OrganizationService {
+    // 公司代码
+    rpc CreateCompanyCode(CreateCompanyCodeRequest) returns (CompanyCodeResponse);
+    rpc GetCompanyCode(GetRequest) returns (CompanyCodeResponse);
+    rpc ListCompanyCodes(ListRequest) returns (stream CompanyCodeResponse);
+    
+    // 工厂
+    rpc CreatePlant(CreatePlantRequest) returns (PlantResponse);
+    rpc GetPlant(GetRequest) returns (PlantResponse);
+    rpc ListPlants(ListRequest) returns (stream PlantResponse);
+    
+    // 层级验证
+    rpc ValidateHierarchy(ValidateHierarchyRequest) returns (ValidateHierarchyResponse);
+}
+
+message CreateCompanyCodeRequest {
+    RequestMetadata metadata = 1;
+    string code = 2;
+    string name = 3;
+    string country = 4;
+    string currency_code = 5;
+}
+
+message CompanyCodeResponse {
+    string code = 1;
+    string tenant_id = 2;
+    string name = 3;
+    string country = 4;
+    string currency_code = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    int32 version = 8;
+    bool deleted = 9;
+}
+
+message CreatePlantRequest {
+    RequestMetadata metadata = 1;
+    string code = 2;
+    string company_code = 3;
+    string name = 4;
+    string city = 5;
+    string country = 6;
+    google.protobuf.Timestamp valid_from = 7;
+    google.protobuf.Timestamp valid_to = 8;
+}
+
+message PlantResponse {
+    string code = 1;
+    string tenant_id = 2;
+    string company_code = 3;
+    string name = 4;
+    string city = 5;
+    string country = 6;
+    google.protobuf.Timestamp valid_from = 7;
+    google.protobuf.Timestamp valid_to = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    int32 version = 11;
+    bool deleted = 12;
+}
+
+message ValidateHierarchyRequest {
+    RequestMetadata metadata = 1;
+    string plant_code = 2;
+    string company_code = 3;
+}
+
+message ValidateHierarchyResponse {
+    bool valid = 1;
+    repeated string errors = 2;
+}
+
+// =============================================================================
+// 成本对象服务
+// =============================================================================
+
+service CostObjectService {
+    rpc CreateCostCenter(CreateCostCenterRequest) returns (CostCenterResponse);
+    rpc GetCostCenter(GetRequest) returns (CostCenterResponse);
+    rpc ListCostCenters(ListRequest) returns (stream CostCenterResponse);
+    
+    rpc CreateProfitCenter(CreateProfitCenterRequest) returns (ProfitCenterResponse);
+    rpc GetProfitCenter(GetRequest) returns (ProfitCenterResponse);
+}
+
+message CreateCostCenterRequest {
+    RequestMetadata metadata = 1;
+    string code = 2;
+    string controlling_area = 3;
+    string name = 4;
+    string category = 5;
+}
+
+message CostCenterResponse {
+    string code = 1;
+    string tenant_id = 2;
+    string controlling_area = 3;
+    string name = 4;
+    string category = 5;
+    google.protobuf.Timestamp valid_from = 6;
+    google.protobuf.Timestamp valid_to = 7;
+    bool locked = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    int32 version = 11;
+}
+
+message CreateProfitCenterRequest {
+    RequestMetadata metadata = 1;
+    string code = 2;
+    string controlling_area = 3;
+    string name = 4;
+}
+
+message ProfitCenterResponse {
+    string code = 1;
+    string tenant_id = 2;
+    string controlling_area = 3;
+    string name = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+    int32 version = 7;
+}
+
+// =============================================================================
+// 批量导出
+// =============================================================================
+
+message ExportRequest {
+    RequestMetadata metadata = 1;
+    string entity_type = 2;  // material, business_partner, etc.
+    repeated Filter filters = 3;
+    string format = 4;  // csv, json
+    google.protobuf.Timestamp since_timestamp = 5;
+}
+
+message ExportChunk {
+    bytes data = 1;
+    int64 offset = 2;
+    bool is_last = 3;
+}

@@ -1,30 +1,48 @@
 [package]
-name = "killer-organizational-units"
-description = "组织单元主数据：CompanyCode, Plant, StorageLocation 等组织架构定义"
+name = "killer-master-data-organizational-units"
+description = "组织单元主数据域 - 公司代码、工厂、库存地点等组织结构定义"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 
+[features]
+prost = ["prost", "prost-types"]
+serde = ["serde", "serde_json", "dep:serde_with"]
+validator = ["validator/derive"]
+default = ["prost", "validator"]
+
 [dependencies]
-# 序列化
-serde.workspace = true
-serde_json.workspace = true
-
-# 类型派生
-derive_more.workspace = true
-strum.workspace = true
-
-# 验证
-validator.workspace = true
-
-# 项目内部依赖
-killer-types = { path = "../../common/types" }
+# Workspace
 killer-domain-primitives = { path = "../../common/domain-primitives" }
+killer-types = { path = "../../common/types" }
+
+# Serde & Validation
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+validator = { version = "0.16", features = ["derive"] }
+serde_with = { version = "3.0", optional = true }
+
+# Protobuf & gRPC
+prost = { version = "0.12", optional = true }
+prost-types = { version = "0.12", optional = true }
+tonic = { version = "0.10", optional = true }
+tonic-build = { version = "0.10", optional = true }
+
+# Utilities
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+derive_more = "0.99"
+strum = { version = "0.25", features = ["derive"] }
+thiserror = "1.0"
 
 [dev-dependencies]
-fake.workspace = true
+serde_test = "1.0"
+validator_test = "0.5"
 
 [lints]
 workspace = true
+
+[build-dependencies]
+tonic-build = { version = "0.10", optional = true }

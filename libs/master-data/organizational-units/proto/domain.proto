@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package killer.master_data.organizational_units.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+option java_multiple_files = true;
+option java_package = "com.killer.erp.masterdata.organizational.v1";
+
+// =============================================================================
+// 组织单元主数据定义
+// =============================================================================
+
+// 有效性时间范围
+message ValidityRangeProto {
+    google.protobuf.Timestamp valid_from = 1;
+    google.protobuf.Timestamp valid_to = 2;  // 空值表示无结束日期
+}
+
+// 公司代码 (T001)
+message CompanyCodeProto {
+    string code = 1;              // 公司代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string name = 3;              // 公司名称
+    string street_address = 4;    // 街道地址
+    string city = 5;              // 城市
+    string postal_code = 6;       // 邮政编码
+    string country = 7;           // 国家代码 (ISO 3166)
+    string currency_code = 8;     // 本位币代码 (ISO 4217)
+    string fiscal_year_variant = 9; // 会计年度变式
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
+    google.protobuf.Struct extensions = 12;  // 扩展字段
+    bool deleted = 13;  // 软删除标记
+}
+
+// 工厂 (T001W)
+message PlantProto {
+    string code = 1;              // 工厂代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string company_code = 3;      // 所属公司代码 (引用 CompanyCode.code)
+    string name = 4;              // 工厂名称
+    string city = 5;              // 城市
+    string country = 6;           // 国家代码
+    string region = 7;            // 地区/州
+    google.protobuf.Timestamp valid_from = 8;
+    google.protobuf.Timestamp valid_to = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
+    google.protobuf.Struct extensions = 12;
+    bool deleted = 13;
+}
+
+// 库存地点 (T001L)
+message StorageLocationProto {
+    string code = 1;              // 库存地点代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string plant_code = 3;        // 所属工厂 (引用 Plant.code)
+    string name = 4;              // 库存地点名称
+    string address = 5;           // 地址
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Struct extensions = 8;
+    bool deleted = 9;
+}
+
+// 采购组织 (T024E)
+message PurchasingOrganizationProto {
+    string code = 1;              // 采购组织代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string company_code = 3;      // 所属公司代码
+    string name = 4;              // 采购组织名称
+    bool cross_company = 5;       // 跨公司采购
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Struct extensions = 8;
+    bool deleted = 9;
+}
+
+// 销售组织 (TVKO)
+message SalesOrganizationProto {
+    string code = 1;              // 销售组织代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string company_code = 3;      // 所属公司代码
+    string name = 4;              // 销售组织名称
+    string sales_channel = 5;     // 销售渠道
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Struct extensions = 8;
+    bool deleted = 9;
+}
+
+// 控制范围 (T000)
+message ControllingAreaProto {
+    string code = 1;              // 控制范围代码 (4位)
+    string tenant_id = 2;         // 租户ID
+    string name = 3;              // 控制范围名称
+    string currency_code = 4;     // 控制范围本位币
+    bool active = 5;              // 是否激活
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Struct extensions = 8;
+    bool deleted = 9;
+}
+
+// =============================================================================
+// 请求/响应消息
+// =============================================================================
+
+message GetCompanyCodeRequest {
+    string tenant_id = 1;
+    string code = 2;
+}
+
+message GetCompanyCodeResponse {
+    CompanyCodeProto company_code = 1;
+}
+
+message ListPlantsRequest {
+    string tenant_id = 1;
+    string company_code = 2;  // 可选过滤
+    bool active_only = 3;
+}
+
+message ListPlantsResponse {
+    repeated PlantProto plants = 1;
+}
+
+message ListStorageLocationsRequest {
+    string tenant_id = 1;
+    string plant_code = 2;  // 必填
+}
+
+message ListStorageLocationsResponse {
+    repeated StorageLocationProto storage_locations = 1;
+}
+
+message ValidateHierarchyRequest {
+    string tenant_id = 1;
+    string plant_code = 2;
+    string storage_location_code = 3;
+}
+
+message ValidateHierarchyResponse {
+    bool valid = 1;
+    string error_message = 2;
+}
