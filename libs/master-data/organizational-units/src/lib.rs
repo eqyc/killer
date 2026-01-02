@@ -25,7 +25,7 @@
 //! # 示例
 //!
 //! ```rust
-//! use killer_master_data_organizational_units::*;
+//! use killer_organizational_units::*;
 //!
 //! let company = CompanyCode::new(
 //!     "tenant-001",
@@ -50,17 +50,13 @@
 #![warn(missing_docs, unreachable_pub)]
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
-use chrono::{Date, DateTime, NaiveDate, Utc};
-use derive_more::{Display, Error, From};
-use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
+use chrono::{DateTime, NaiveDate, Utc};
+use killer_domain_primitives::{CompanyCode as CompanyCodeCode, CurrencyCode, Plant as PlantCode};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::{self, Debug};
-use std::hash::Hash;
 use thiserror::Error;
 use uuid::Uuid;
-use validator::Validate;
 
 // =============================================================================
 // 有效性时间范围
@@ -69,30 +65,23 @@ use validator::Validate;
 /// 有效性时间范围
 ///
 /// 用于支持时间依赖的主数据，如工厂的有效期、成本中心的分配有效期等。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Display, From,
-)]
-#[display(
-    fmt = "valid from {} to {}",
-    "valid_from",
-    "valid_to.as_ref().map_or(\"unlimited\", |d| d.format(\"%Y-%m-%d\").to_string())"
-)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ValidityRange {
     /// 生效日期
-    pub valid_from: Date<Utc>,
+    pub valid_from: NaiveDate,
     /// 失效日期 (None 表示无结束日期)
     #[serde(default)]
-    pub valid_to: Option<Date<Utc>>,
+    pub valid_to: Option<NaiveDate>,
 }
 
 impl ValidityRange {
     /// 创建新的有效性范围
-    pub fn new(valid_from: Date<Utc>, valid_to: Option<Date<Utc>>) -> Self {
+    pub fn new(valid_from: NaiveDate, valid_to: Option<NaiveDate>) -> Self {
         Self { valid_from, valid_to }
     }
 
     /// 检查在指定日期是否有效
-    pub fn is_valid_at(&self, date: Date<Utc>) -> bool {
+    pub fn is_valid_at(&self, date: NaiveDate) -> bool {
         if date < self.valid_from {
             return false;
         }
@@ -106,7 +95,7 @@ impl ValidityRange {
 
     /// 检查当前是否有效
     pub fn is_currently_valid(&self) -> bool {
-        self.is_valid_at(Utc::now().date())
+        self.is_valid_at(Utc::now().date_naive())
     }
 
     /// 获取与另一个范围的交集
@@ -131,8 +120,17 @@ impl ValidityRange {
 impl Default for ValidityRange {
     fn default() -> Self {
         Self {
-            valid_from: Utc::now().date(),
+            valid_from: Utc::now().date_naive(),
             valid_to: None,
+        }
+    }
+}
+
+impl fmt::Display for ValidityRange {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.valid_to {
+            Some(valid_to) => write!(f, "valid from {} to {}", self.valid_from, valid_to),
+            None => write!(f, "valid from {} to unlimited", self.valid_from),
         }
     }
 }
@@ -176,10 +174,16 @@ pub enum OrganizationalUnitsError {
 
     #[error("无效的库存地点代码格式: {code}")]
     InvalidStorageLocationFormat { code: String },
+
+    #[error("字段验证失败: {field}: {message}")]
+    FieldValidationFailed { field: String, message: String },
 }
 
 /// 组织单元结果类型
 pub type OrganizationalUnitsResult<T> = Result<T, OrganizationalUnitsError>;
+
+/// 兼容旧签名：构造器返回的验证结果类型
+pub type ValidationResult<T> = OrganizationalUnitsResult<T>;
 
 // =============================================================================
 // 扩展字段支持
@@ -238,44 +242,34 @@ impl From<HashMap<String, serde_json::Value>> for Extensions {
 /// 公司代码
 ///
 /// SAP 表 T001，代表法务实体或公司。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CompanyCode {
     /// 公司代码 (4位)
-    #[validate(length(min = 4, max = 4, message = "公司代码必须为4位"))]
-    pub code: CompanyCodeValue,
+    pub code: CompanyCodeCode,
 
     /// 租户ID (多租户支持)
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 公司名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 街道地址
-    #[validate(length(max = 200))]
     #[serde(default)]
     pub street_address: Option<String>,
 
     /// 城市
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub city: Option<String>,
 
     /// 邮政编码
-    #[validate(length(max = 20))]
     #[serde(default)]
     pub postal_code: Option<String>,
 
     /// 国家代码 (ISO 3166)
-    #[validate(length(min = 2, max = 3))]
-    pub country: CountryCodeValue,
+    pub country: String,
 
     /// 本位币代码 (ISO 4217)
-    pub currency_code: CurrencyCodeValue,
+    pub currency_code: CurrencyCode,
 
     /// 会计年度变式
     #[serde(default)]
@@ -300,20 +294,38 @@ impl CompanyCode {
     /// 创建新的公司代码
     pub fn new(
         tenant_id: impl Into<String>,
-        code: impl Into<CompanyCodeValue>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
-        country: impl Into<CountryCodeValue>,
-        currency_code: impl Into<CurrencyCodeValue>,
+        country: impl AsRef<str>,
+        currency_code: impl AsRef<str>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
-        let code = code.into();
-        let country = country.into();
-        let currency_code = currency_code.into();
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 100)?;
+
+        let code = CompanyCodeCode::new(code.as_ref())
+            .map_err(|_| OrganizationalUnitsError::InvalidCompanyCodeFormat {
+                code: code.as_ref().to_string(),
+            })?;
+
+        let country = country.as_ref().trim().to_uppercase();
+        validate_country_code(&country)?;
+
+        let currency_code =
+            CurrencyCode::new(currency_code.as_ref()).map_err(|_| {
+                OrganizationalUnitsError::FieldValidationFailed {
+                    field: "currency_code".to_string(),
+                    message: "无效的币种代码 (ISO 4217)".to_string(),
+                }
+            })?;
 
         let company = Self {
             code,
-            tenant_id: tenant_id.into(),
-            name: name.into(),
+            tenant_id,
+            name,
             street_address: None,
             city: None,
             postal_code: None,
@@ -326,7 +338,6 @@ impl CompanyCode {
             deleted: false,
         };
 
-        company.validate()?;
         Ok(company)
     }
 
@@ -339,7 +350,7 @@ impl CompanyCode {
     /// 更新公司名称
     pub fn update_name(&mut self, name: impl Into<String>) -> ValidationResult<()> {
         let name = name.into();
-        validator::ValidateVal::validate_val(&name)?;
+        validate_string_len("name", &name, 1, 100)?;
         self.name = name;
         self.updated_at = Utc::now();
         Ok(())
@@ -353,42 +364,32 @@ impl CompanyCode {
 /// 工厂
 ///
 /// SAP 表 T001W，代表一个工厂或生产基地。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Plant {
     /// 工厂代码 (4位)
-    #[validate(length(min = 4, max = 4, message = "工厂代码必须为4位"))]
-    pub code: PlantValue,
+    pub code: PlantCode,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 所属公司代码 (引用)
-    #[validate(non_empty)]
-    pub company_code: CompanyCodeValue,
+    pub company_code: CompanyCodeCode,
 
     /// 工厂名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 城市
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub city: Option<String>,
 
     /// 国家代码
-    #[validate(length(min = 2, max = 3))]
-    pub country: CountryCodeValue,
+    pub country: String,
 
     /// 地区/州
     #[serde(default)]
     pub region: Option<String>,
 
     /// 有效性范围
-    #[validate]
     pub validity: ValidityRange,
 
     /// 创建时间
@@ -410,28 +411,48 @@ impl Plant {
     /// 创建新的工厂
     pub fn new(
         tenant_id: impl Into<String>,
-        company_code: impl Into<CompanyCodeValue>,
-        code: impl Into<PlantValue>,
+        company_code: impl AsRef<str>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
         city: impl Into<String>,
-        country: impl Into<CountryCodeValue>,
-        valid_from: Option<Date<Utc>>,
-        valid_to: Option<Date<Utc>>,
+        country: impl AsRef<str>,
+        valid_from: Option<NaiveDate>,
+        valid_to: Option<NaiveDate>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
-        let code = code.into();
-        let country = country.into();
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let company_code = CompanyCodeCode::new(company_code.as_ref())
+            .map_err(|_| OrganizationalUnitsError::InvalidCompanyCodeFormat {
+                code: company_code.as_ref().to_string(),
+            })?;
+
+        let code = PlantCode::new(code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::InvalidPlantFormat {
+                code: code.as_ref().to_string(),
+            }
+        })?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 100)?;
+
+        let city = city.into();
+        validate_string_len("city", &city, 1, 50)?;
+
+        let country = country.as_ref().trim().to_uppercase();
+        validate_country_code(&country)?;
 
         let plant = Self {
             code,
-            tenant_id: tenant_id.into(),
-            company_code: company_code.into(),
-            name: name.into(),
-            city: Some(city.into()),
+            tenant_id,
+            company_code,
+            name,
+            city: Some(city),
             country,
             region: None,
             validity: ValidityRange::new(
-                valid_from.unwrap_or(now.date()),
+                valid_from.unwrap_or(now.date_naive()),
                 valid_to,
             ),
             created_at: now,
@@ -440,12 +461,11 @@ impl Plant {
             deleted: false,
         };
 
-        plant.validate()?;
         Ok(plant)
     }
 
     /// 检查在指定日期是否有效
-    pub fn is_valid_at(&self, date: Date<Utc>) -> bool {
+    pub fn is_valid_at(&self, date: NaiveDate) -> bool {
         self.validity.is_valid_at(date)
     }
 
@@ -463,8 +483,8 @@ impl Plant {
     /// 更新有效期
     pub fn update_validity(
         &mut self,
-        valid_from: Date<Utc>,
-        valid_to: Option<Date<Utc>>,
+        valid_from: NaiveDate,
+        valid_to: Option<NaiveDate>,
     ) {
         self.validity = ValidityRange::new(valid_from, valid_to);
         self.updated_at = Utc::now();
@@ -478,25 +498,18 @@ impl Plant {
 /// 库存地点
 ///
 /// SAP 表 T001L，代表工厂内的库存存储位置。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StorageLocation {
     /// 库存地点代码 (4位)
-    #[validate(length(min = 4, max = 4))]
-    pub code: StorageLocationValue,
+    pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 所属工厂 (引用)
-    #[validate(non_empty)]
-    pub plant_code: PlantValue,
+    pub plant_code: PlantCode,
 
     /// 库存地点名称
-    #[validate(length(min = 1, max = 50))]
     pub name: String,
 
     /// 地址
@@ -522,17 +535,35 @@ impl StorageLocation {
     /// 创建新的库存地点
     pub fn new(
         tenant_id: impl Into<String>,
-        plant_code: impl Into<PlantValue>,
-        code: impl Into<StorageLocationValue>,
+        plant_code: impl AsRef<str>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let plant_code = PlantCode::new(plant_code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::InvalidPlantFormat {
+                code: plant_code.as_ref().to_string(),
+            }
+        })?;
+
+        let code = normalize_code_4(code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::InvalidStorageLocationFormat {
+                code: code.as_ref().to_string(),
+            }
+        })?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 50)?;
+
         let storage = Self {
-            code: code.into(),
-            tenant_id: tenant_id.into(),
-            plant_code: plant_code.into(),
-            name: name.into(),
+            code,
+            tenant_id,
+            plant_code,
+            name,
             address: None,
             created_at: now,
             updated_at: now,
@@ -540,7 +571,6 @@ impl StorageLocation {
             deleted: false,
         };
 
-        storage.validate()?;
         Ok(storage)
     }
 
@@ -558,25 +588,18 @@ impl StorageLocation {
 /// 采购组织
 ///
 /// SAP 表 T024E，负责采购业务。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PurchasingOrganization {
     /// 采购组织代码 (4位)
-    #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 所属公司代码
-    #[validate(non_empty)]
-    pub company_code: CompanyCodeValue,
+    pub company_code: CompanyCodeCode,
 
     /// 采购组织名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 是否跨公司采购
@@ -602,17 +625,35 @@ impl PurchasingOrganization {
     /// 创建新的采购组织
     pub fn new(
         tenant_id: impl Into<String>,
-        company_code: impl Into<CompanyCodeValue>,
-        code: impl Into<String>,
+        company_code: impl AsRef<str>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let company_code = CompanyCodeCode::new(company_code.as_ref())
+            .map_err(|_| OrganizationalUnitsError::InvalidCompanyCodeFormat {
+                code: company_code.as_ref().to_string(),
+            })?;
+
+        let code = normalize_code_4(code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::FieldValidationFailed {
+                field: "code".to_string(),
+                message: "采购组织代码必须为 4 位字母数字".to_string(),
+            }
+        })?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 100)?;
+
         let org = Self {
-            code: code.into(),
-            tenant_id: tenant_id.into(),
-            company_code: company_code.into(),
-            name: name.into(),
+            code,
+            tenant_id,
+            company_code,
+            name,
             cross_company: false,
             created_at: now,
             updated_at: now,
@@ -620,7 +661,6 @@ impl PurchasingOrganization {
             deleted: false,
         };
 
-        org.validate()?;
         Ok(org)
     }
 
@@ -638,25 +678,18 @@ impl PurchasingOrganization {
 /// 销售组织
 ///
 /// SAP 表 TVKO，负责销售业务。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SalesOrganization {
     /// 销售组织代码 (4位)
-    #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 所属公司代码
-    #[validate(non_empty)]
-    pub company_code: CompanyCodeValue,
+    pub company_code: CompanyCodeCode,
 
     /// 销售组织名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 销售渠道
@@ -682,17 +715,35 @@ impl SalesOrganization {
     /// 创建新的销售组织
     pub fn new(
         tenant_id: impl Into<String>,
-        company_code: impl Into<CompanyCodeValue>,
-        code: impl Into<String>,
+        company_code: impl AsRef<str>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let company_code = CompanyCodeCode::new(company_code.as_ref())
+            .map_err(|_| OrganizationalUnitsError::InvalidCompanyCodeFormat {
+                code: company_code.as_ref().to_string(),
+            })?;
+
+        let code = normalize_code_4(code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::FieldValidationFailed {
+                field: "code".to_string(),
+                message: "销售组织代码必须为 4 位字母数字".to_string(),
+            }
+        })?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 100)?;
+
         let org = Self {
-            code: code.into(),
-            tenant_id: tenant_id.into(),
-            company_code: company_code.into(),
-            name: name.into(),
+            code,
+            tenant_id,
+            company_code,
+            name,
             sales_channel: None,
             created_at: now,
             updated_at: now,
@@ -700,7 +751,6 @@ impl SalesOrganization {
             deleted: false,
         };
 
-        org.validate()?;
         Ok(org)
     }
 
@@ -718,25 +768,19 @@ impl SalesOrganization {
 /// 控制范围
 ///
 /// SAP 表 T000，用于成本控制。
-#[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
-)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ControllingArea {
     /// 控制范围代码 (4位)
-    #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 控制范围名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 控制范围本位币
-    pub currency_code: CurrencyCodeValue,
+    pub currency_code: CurrencyCode,
 
     /// 是否激活
     #[serde(default)]
@@ -761,17 +805,38 @@ impl ControllingArea {
     /// 创建新的控制范围
     pub fn new(
         tenant_id: impl Into<String>,
-        code: impl Into<String>,
+        code: impl AsRef<str>,
         name: impl Into<String>,
-        currency_code: impl Into<CurrencyCodeValue>,
+        currency_code: impl AsRef<str>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let code = normalize_code_4(code.as_ref()).map_err(|_| {
+            OrganizationalUnitsError::FieldValidationFailed {
+                field: "code".to_string(),
+                message: "控制范围代码必须为 4 位字母数字".to_string(),
+            }
+        })?;
+
+        let name = name.into();
+        validate_string_len("name", &name, 1, 100)?;
+
+        let currency_code =
+            CurrencyCode::new(currency_code.as_ref()).map_err(|_| {
+                OrganizationalUnitsError::FieldValidationFailed {
+                    field: "currency_code".to_string(),
+                    message: "无效的币种代码 (ISO 4217)".to_string(),
+                }
+            })?;
+
         let area = Self {
-            code: code.into(),
-            tenant_id: tenant_id.into(),
-            name: name.into(),
-            currency_code: currency_code.into(),
+            code,
+            tenant_id,
+            name,
+            currency_code,
             active: true,
             created_at: now,
             updated_at: now,
@@ -779,7 +844,6 @@ impl ControllingArea {
             deleted: false,
         };
 
-        area.validate()?;
         Ok(area)
     }
 
@@ -879,7 +943,7 @@ pub struct CompanyCodeChangedEvent {
     /// 事件头
     pub header: ChangeEventHeader,
     /// 公司代码
-    pub code: CompanyCodeValue,
+    pub code: CompanyCodeCode,
     /// 变更列表
     pub changes: Vec<FieldDelta>,
     /// 完整快照
@@ -892,7 +956,7 @@ pub struct PlantChangedEvent {
     /// 事件头
     pub header: ChangeEventHeader,
     /// 工厂代码
-    pub code: PlantValue,
+    pub code: PlantCode,
     /// 变更列表
     pub changes: Vec<FieldDelta>,
     /// 有效性变更
@@ -907,9 +971,9 @@ pub struct StorageLocationChangedEvent {
     /// 事件头
     pub header: ChangeEventHeader,
     /// 库存地点代码
-    pub code: StorageLocationValue,
+    pub code: String,
     /// 工厂代码
-    pub plant_code: PlantValue,
+    pub plant_code: PlantCode,
     /// 变更列表
     pub changes: Vec<FieldDelta>,
     /// 完整快照
@@ -929,10 +993,51 @@ pub mod proto {
 // Re-exports
 // =============================================================================
 
-pub use self::organizational_units_error::OrganizationalUnitsError;
+fn require_non_empty(field: &str, value: &str) -> OrganizationalUnitsResult<()> {
+    if value.trim().is_empty() {
+        return Err(OrganizationalUnitsError::FieldValidationFailed {
+            field: field.to_string(),
+            message: "不能为空".to_string(),
+        });
+    }
+    Ok(())
+}
 
-mod organizational_units_error {
-    use super::*;
+fn validate_string_len(
+    field: &str,
+    value: &str,
+    min: usize,
+    max: usize,
+) -> OrganizationalUnitsResult<()> {
+    let trimmed = value.trim();
+    let len = trimmed.chars().count();
+    if len < min || len > max {
+        return Err(OrganizationalUnitsError::FieldValidationFailed {
+            field: field.to_string(),
+            message: format!("长度必须在 {min}..={max}"),
+        });
+    }
+    Ok(())
+}
 
-    // 错误类型已在上面定义
+fn validate_country_code(country: &str) -> OrganizationalUnitsResult<()> {
+    let len = country.len();
+    if !(len == 2 || len == 3) || !country.chars().all(|c| c.is_ascii_alphabetic()) {
+        return Err(OrganizationalUnitsError::FieldValidationFailed {
+            field: "country".to_string(),
+            message: "国家代码必须为 2~3 位字母 (ISO 3166)".to_string(),
+        });
+    }
+    Ok(())
+}
+
+fn normalize_code_4(code: &str) -> Result<String, ()> {
+    let code = code.trim().to_uppercase();
+    if code.len() != 4 {
+        return Err(());
+    }
+    if !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+        return Err(());
+    }
+    Ok(code)
 }

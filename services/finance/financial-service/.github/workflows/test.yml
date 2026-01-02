@@ -1,0 +1,380 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # =============================================================================
+  # Unit Tests (Fast - No External Dependencies)
+  # =============================================================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-unit-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-unit-
+
+      - name: Run unit tests
+        run: cargo test --workspace --lib --bins --tests --exclude killer-financial-service-tests --exclude killer-financial-service-api -- --test-threads=4
+
+      - name: Run clippy
+        run: cargo clippy --workspace --exclude killer-financial-service-tests --exclude killer-financial-service-api -- -D warnings
+
+      - name: Run rustfmt
+        run: cargo fmt --check --all
+
+  # =============================================================================
+  # Domain Tests
+  # =============================================================================
+  domain-tests:
+    name: Domain Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-domain-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-domain-
+
+      - name: Run domain tests
+        run: cargo test --package killer-financial-service-tests --test domain -- --test-threads=4
+
+  # =============================================================================
+  # Application Tests
+  # =============================================================================
+  application-tests:
+    name: Application Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-app-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-app-
+
+      - name: Run application tests
+        run: cargo test --package killer-financial-service-tests --test application -- --test-threads=4
+
+  # =============================================================================
+  # API Contract Tests
+  # =============================================================================
+  api-tests:
+    name: API Contract Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-api-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-api-
+
+      - name: Run API tests
+        run: cargo test --package killer-financial-service-tests --test api -- --test-threads=4
+
+  # =============================================================================
+  # Performance Tests
+  # =============================================================================
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-perf-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-perf-
+
+      - name: Run performance tests
+        run: cargo test --package killer-financial-service-tests --test performance -- --test-threads=2 --nocapture
+
+  # =============================================================================
+  # Security Tests
+  # =============================================================================
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-sec-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-sec-
+
+      - name: Run security tests
+        run: cargo test --package killer-financial-service-tests --test security -- --test-threads=4
+
+  # =============================================================================
+  # Integration Tests (Requires Docker)
+  # =============================================================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: finance_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      kafka:
+        image: confluentinc/cp-kafka:7.5.0
+        env:
+          KAFKA_BROKER_ID: 1
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        ports:
+          - 9092:9092
+        options: >-
+          --health-cmd "echo > /dev/tcp/localhost/9092"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-integration-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-integration-
+
+      - name: Wait for services
+        run: |
+          echo "Waiting for PostgreSQL..."
+          until pg_isready -h localhost -p 5432; do sleep 1; done
+          echo "PostgreSQL ready"
+          echo "Waiting for Redis..."
+          until redis-cli -p 6379 ping | grep -q PONG; do sleep 1; done
+          echo "Redis ready"
+
+      - name: Run integration tests
+        run: cargo test --package killer-financial-service-tests --test infrastructure -- --test-threads=2
+        env:
+          TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/finance_test
+          TEST_REDIS_URL: redis://localhost:6379
+          TEST_KAFKA_BROKERS: localhost:9092
+
+  # =============================================================================
+  # End-to-End Tests (Full Stack)
+  # =============================================================================
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: finance_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build service
+        run: cargo build --package killer-financial-service
+
+      - name: Run E2E tests
+        run: cargo test --package killer-financial-service-tests --test e2e -- --test-threads=1
+        env:
+          TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/finance_e2e
+
+  # =============================================================================
+  # Code Coverage
+  # =============================================================================
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy, llvm-tools-preview
+
+      - name: Install cargo-tarpaulin
+        run: cargo install cargo-tarpaulin --version 0.30.0
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/index/
+            ~/.cargo/registry/
+            target/
+          key: ${{ runner.os }}-cargo-cov-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-cov-
+
+      - name: Run tarpaulin
+        run: |
+          cargo tarpaulin \
+            --workspace \
+            --exclude killer-financial-service-tests \
+            --exclude killer-financial-service-api \
+            --exclude-files '**/tests/**' \
+            --out Xml \
+            --fail-under 80
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./target/tarpaulin/tarpaulin-report.xml
+          fail_ci_if_error: true
+
+  # =============================================================================
+  # All Tests Must Pass for Merge
+  # =============================================================================
+  test-results:
+    name: Test Results Summary
+    needs: [unit-tests, domain-tests, application-tests, api-tests, performance-tests, security-tests, integration-tests, e2e-tests, coverage]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs
+        run: |
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Domain Tests: ${{ needs.domain-tests.result }}"
+          echo "Application Tests: ${{ needs.application-tests.result }}"
+          echo "API Tests: ${{ needs.api-tests.result }}"
+          echo "Performance Tests: ${{ needs.performance-tests.result }}"
+          echo "Security Tests: ${{ needs.security-tests.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "E2E Tests: ${{ needs.e2e-tests.result }}"
+          echo "Coverage: ${{ needs.coverage.result }}"
+
+          # Fail if any required test failed
+          if [[ "${{ needs.unit-tests.result }}" == "failure" ]] || \
+             [[ "${{ needs.coverage.result }}" == "failure" ]]; then
+            echo "Some tests failed!"
+            exit 1
+          fi
+          echo "All tests passed!"

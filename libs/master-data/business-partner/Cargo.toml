@@ -7,6 +7,10 @@ license.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 
+[features]
+# 仅用于条件编译占位（proto 文件生成尚未接入）
+prost = []
+
 [dependencies]
 # 序列化
 serde.workspace = true
@@ -18,6 +22,14 @@ strum.workspace = true
 
 # 验证
 validator.workspace = true
+
+# 时间/ID/错误
+chrono.workspace = true
+uuid.workspace = true
+thiserror.workspace = true
+
+# doctest 中用于构造 Money/Decimal
+rust_decimal_macros.workspace = true
 
 # 项目内部依赖
 killer-types = { path = "../../common/types" }

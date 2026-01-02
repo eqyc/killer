@@ -1,0 +1,519 @@
+// KILLER ERP Financial Service - Journal Entry API
+// Proto definitions for gRPC and REST endpoints
+syntax = "proto3";
+
+package killer.finance.v1;
+
+option go_package = "killer/finance/api;financev1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+// =============================================================================
+// Journal Entry Service
+// =============================================================================
+
+/// 会计凭证服务 - 提供凭证过账、冲销、查询等核心财务功能
+service JournalEntryService {
+  /// 过账会计凭证 - 将草稿凭证过账到会计期间
+  rpc PostJournalEntry(PostJournalEntryRequest) returns (PostJournalEntryResponse);
+
+  /// 冲销会计凭证 - 创建冲销凭证
+  rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (ReverseJournalEntryResponse);
+
+  /// 获取会计凭证详情
+  rpc GetJournalEntry(GetJournalEntryRequest) returns (JournalEntry);
+
+  /// 列出会计凭证（支持分页过滤）
+  rpc ListJournalEntries(ListJournalEntriesRequest) returns (stream JournalEntrySummary);
+
+  /// 获取科目余额
+  rpc GetAccountBalance(GetAccountBalanceRequest) returns (AccountBalance);
+
+  /// 获取试算平衡表
+  rpc GetTrialBalance(GetTrialBalanceRequest) returns (TrialBalance);
+
+  /// 创建凭证（从草稿创建）
+  rpc CreateJournalEntry(CreateJournalEntryRequest) returns (CreateJournalEntryResponse);
+
+  /// 更新凭证（仅草稿状态）
+  rpc UpdateJournalEntry(UpdateJournalEntryRequest) returns (UpdateJournalEntryResponse);
+
+  /// 删除凭证（仅草稿状态，软删除）
+  rpc DeleteJournalEntry(DeleteJournalEntryRequest) returns (google.protobuf.Empty);
+}
+
+// =============================================================================
+// Common Types
+// =============================================================================
+
+/// 凭证行项目
+message JournalEntryLine {
+  /// 行号（1-based）
+  int32 line_number = 1;
+
+  /// 会计科目代码
+  string account_code = 2;
+
+  /// 金额
+  double amount = 3;
+
+  /// 借贷方向：D-借方，C-贷方
+  string debit_credit = 4;
+
+  /// 成本中心（可选）
+  string cost_center = 5;
+
+  /// 利润中心（可选）
+  string profit_center = 6;
+
+  /// 行项目文本
+  string text = 7;
+
+  /// 功能范围（可选）
+  string functional_area = 8;
+
+  /// 业务范围（可选）
+  string business_area = 9;
+
+  /// 订单号（可选）
+  string order_number = 10;
+
+  /// 税码（可选）
+  string tax_code = 11;
+
+  /// 税额（可选）
+  double tax_amount = 12;
+}
+
+/// 凭证抬头
+message JournalEntry {
+  /// 唯一标识
+  string id = 1;
+
+  /// 公司代码
+  string company_code = 2;
+
+  /// 会计年度
+  int32 fiscal_year = 3;
+
+  /// 凭证号
+  string document_number = 4;
+
+  /// 过账日期
+  google.protobuf.Timestamp posting_date = 5;
+
+  /// 凭证日期
+  google.protobuf.Timestamp document_date = 6;
+
+  /// 币种代码
+  string currency_code = 7;
+
+  /// 状态：DRAFT, POSTED, REVERSED, DELETED
+  string status = 8;
+
+  /// 抬头文本
+  string header_text = 9;
+
+  /// 参考凭证号
+  string reference_document = 10;
+
+  /// 借方总额
+  double total_debit = 11;
+
+  /// 贷方总额
+  double total_credit = 12;
+
+  /// 行项目列表
+  repeated JournalEntryLine line_items = 13;
+
+  /// 版本号（乐观锁）
+  int32 version = 14;
+
+  /// 创建时间
+  google.protobuf.Timestamp created_at = 15;
+
+  /// 更新时间
+  google.protobuf.Timestamp updated_at = 16;
+
+  /// 过账时间
+  google.protobuf.Timestamp posted_at = 17;
+
+  /// 扩展属性（JSON）
+  string extensions = 18;
+}
+
+/// 凭证摘要（列表查询用）
+message JournalEntrySummary {
+  /// 唯一标识
+  string id = 1;
+
+  /// 凭证号
+  string document_number = 2;
+
+  /// 会计年度
+  int32 fiscal_year = 3;
+
+  /// 公司代码
+  string company_code = 4;
+
+  /// 过账日期
+  google.protobuf.Timestamp posting_date = 5;
+
+  /// 凭证日期
+  google.protobuf.Timestamp document_date = 6;
+
+  /// 币种代码
+  string currency_code = 7;
+
+  /// 状态
+  string status = 8;
+
+  /// 抬头文本
+  string header_text = 9;
+
+  /// 总金额
+  double total_amount = 10;
+
+  /// 行项目数量
+  int32 line_count = 11;
+
+  /// 创建时间
+  google.protobuf.Timestamp created_at = 12;
+}
+
+// =============================================================================
+// Account Balance & Trial Balance
+// =============================================================================
+
+/// 科目余额
+message AccountBalance {
+  /// 公司代码
+  string company_code = 1;
+
+  /// 会计年度
+  int32 fiscal_year = 2;
+
+  /// 科目代码
+  string account_code = 3;
+
+  /// 科目名称
+  string account_name = 4;
+
+  /// 成本中心
+  string cost_center = 5;
+
+  /// 期初余额
+  double opening_balance = 6;
+
+  /// 本期借方
+  double period_debit = 7;
+
+  /// 本期贷方
+  double period_credit = 8;
+
+  /// 期末余额
+  double closing_balance = 9;
+
+  /// 余额方向：DR-借方，CR-贷方
+  string balance_direction = 10;
+}
+
+/// 试算平衡表
+message TrialBalance {
+  /// 公司代码
+  string company_code = 1;
+
+  /// 会计年度
+  int32 fiscal_year = 2;
+
+  /// 会计期间
+  int32 period = 3;
+
+  /// 科目余额列表
+  repeated AccountBalance balances = 4;
+
+  /// 借方合计
+  double total_debit = 5;
+
+  /// 贷方合计
+  double total_credit = 6;
+
+  /// 差额
+  double difference = 7;
+}
+
+// =============================================================================
+// Create Journal Entry
+// =============================================================================
+
+message CreateJournalEntryRequest {
+  /// 公司代码
+  string company_code = 1;
+
+  /// 会计年度
+  int32 fiscal_year = 2;
+
+  /// 过账日期
+  google.protobuf.Timestamp posting_date = 3;
+
+  /// 凭证日期
+  google.protobuf.Timestamp document_date = 4;
+
+  /// 币种代码
+  string currency_code = 5;
+
+  /// 抬头文本
+  string header_text = 6;
+
+  /// 参考凭证号
+  string reference_document = 7;
+
+  /// 行项目列表（至少2行）
+  repeated JournalEntryLine line_items = 8;
+
+  /// 幂等键（可选，用于防止重复创建）
+  string idempotency_key = 9;
+
+  /// 扩展属性（JSON）
+  string extensions = 10;
+}
+
+message CreateJournalEntryResponse {
+  /// 凭证ID
+  string id = 1;
+
+  /// 凭证号
+  string document_number = 2;
+
+  /// 状态
+  string status = 3;
+
+  /// 创建时间
+  google.protobuf.Timestamp created_at = 4;
+}
+
+// =============================================================================
+// Post Journal Entry
+// =============================================================================
+
+message PostJournalEntryRequest {
+  /// 凭证ID
+  string id = 1;
+
+  /// 过账日期
+  google.protobuf.Timestamp posting_date = 2;
+
+  /// 幂等键（可选）
+  string idempotency_key = 3;
+}
+
+message PostJournalEntryResponse {
+  /// 凭证ID
+  string id = 1;
+
+  /// 凭证号
+  string document_number = 2;
+
+  /// 状态
+  string status = 3;
+
+  /// 过账日期
+  google.protobuf.Timestamp posting_date = 4;
+
+  /// 借方总额
+  double total_debit = 5;
+
+  /// 贷方总额
+  double total_credit = 6;
+
+  /// 过账时间
+  google.protobuf.Timestamp posted_at = 7;
+}
+
+// =============================================================================
+// Reverse Journal Entry
+// =============================================================================
+
+message ReverseJournalEntryRequest {
+  /// 原凭证ID
+  string id = 1;
+
+  /// 冲销日期
+  google.protobuf.Timestamp reversal_date = 2;
+
+  /// 冲销原因代码
+  string reversal_reason = 3;
+
+  /// 冲销凭证参考（可选）
+  string reference_document = 4;
+
+  /// 幂等键（可选）
+  string idempotency_key = 5;
+}
+
+message ReverseJournalEntryResponse {
+  /// 原凭证ID
+  string original_id = 1;
+
+  /// 原凭证号
+  string original_document_number = 2;
+
+  /// 冲销凭证ID
+  string reversal_id = 3;
+
+  /// 冲销凭证号
+  string reversal_document_number = 4;
+
+  /// 冲销日期
+  google.protobuf.Timestamp reversal_date = 5;
+
+  /// 状态
+  string status = 6;
+
+  /// 冲销金额
+  double amount = 7;
+}
+
+// =============================================================================
+// Get Journal Entry
+// =============================================================================
+
+message GetJournalEntryRequest {
+  /// 凭证ID
+  string id = 1;
+
+  /// 或凭证号（公司代码+年度+凭证号格式）
+  string document_number = 2;
+
+  /// 公司代码（配合凭证号使用）
+  string company_code = 3;
+
+  /// 会计年度（配合凭证号使用）
+  int32 fiscal_year = 4;
+}
+
+// =============================================================================
+// List Journal Entries
+// =============================================================================
+
+message ListJournalEntriesRequest {
+  /// 页大小（默认50，最大100）
+  int32 page_size = 1;
+
+  /// 页令牌（下一页的游标）
+  string page_token = 2;
+
+  /// 公司代码过滤
+  string company_code = 3;
+
+  /// 会计年度过滤
+  int32 fiscal_year = 4;
+
+  /// 日期范围起
+  google.protobuf.Timestamp filter_date_from = 5;
+
+  /// 日期范围止
+  google.protobuf.Timestamp filter_date_to = 6;
+
+  /// 科目代码过滤
+  string account_code = 7;
+
+  /// 成本中心过滤
+  string cost_center = 8;
+
+  /// 状态过滤
+  string status = 9;
+
+  /// 排序字段（created_at, posting_date, document_number）
+  string sort_by = 10;
+
+  /// 排序方向（asc, desc）
+  string sort_order = 11;
+}
+
+// =============================================================================
+// Update Journal Entry
+// =============================================================================
+
+message UpdateJournalEntryRequest {
+  /// 凭证ID
+  string id = 1;
+
+  /// 字段掩码
+  google.protobuf.FieldMask field_mask = 2;
+
+  /// 抬头文本
+  string header_text = 3;
+
+  /// 参考凭证号
+  string reference_document = 4;
+
+  /// 行项目列表（替换模式）
+  repeated JournalEntryLine line_items = 5;
+}
+
+message UpdateJournalEntryResponse {
+  /// 凭证ID
+  string id = 1;
+
+  /// 凭证号
+  string document_number = 2;
+
+  /// 状态
+  string status = 3;
+
+  /// 版本号
+  int32 version = 4;
+
+  /// 更新时间
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+// =============================================================================
+// Delete Journal Entry
+// =============================================================================
+
+message DeleteJournalEntryRequest {
+  /// 凭证ID
+  string id = 1;
+
+  /// 删除原因
+  string reason = 2;
+}
+
+// =============================================================================
+// Account Balance Requests
+// =============================================================================
+
+message GetAccountBalanceRequest {
+  /// 公司代码
+  string company_code = 1;
+
+  /// 会计年度
+  int32 fiscal_year = 2;
+
+  /// 会计期间（0=全年）
+  int32 period = 3;
+
+  /// 科目代码
+  string account_code = 4;
+
+  /// 成本中心（可选）
+  string cost_center = 5;
+}
+
+message GetTrialBalanceRequest {
+  /// 公司代码
+  string company_code = 1;
+
+  /// 会计年度
+  int32 fiscal_year = 2;
+
+  /// 会计期间
+  int32 period = 3;
+
+  /// 是否包含未清项
+  bool include_open_items = 4;
+}

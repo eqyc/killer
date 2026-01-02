@@ -1,0 +1,91 @@
+[package]
+name = "killer-financial-service-api"
+version = "0.1.0"
+edition = "2021"
+authors = ["KILLER ERP Team"]
+description = "KILLER ERP Financial Service API Layer - gRPC and REST API"
+
+[dependencies]
+# 父包
+killer-financial-service = { path = "..", default-features = false }
+
+# gRPC / Protocol Buffers
+tonic = { version = "0.10", features = ["tls", "prost"] }
+tonic-build = "0.10"
+tonic-web = "0.6"
+tonic-health = "0.12"
+prost = "0.12"
+prost-types = "0.12"
+
+# HTTP / REST
+axum = { version = "0.7", features = ["json"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "timeout"] }
+utoipa = { version = "3", features = ["axum"] }
+utoipa-swagger-ui = { version = "3", features = ["axum"] }
+
+# 认证
+jsonwebtoken = "9"
+# rust-jwt-tools = "0.3"  # 可选：用于更复杂的 JWT 验证
+
+# Redis（幂等性）
+redis = { version = "0.24", features = ["tokio-comp", "json"], optional = true }
+
+# 配置
+config = "0.14"
+
+# 日志与追踪
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-opentelemetry = "0.22"
+
+# 指标
+prometheus = "0.13"
+
+# 异步
+tokio = { workspace = true }
+async-stream = "0.3"
+futures = "0.3"
+
+# JSON
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# UUID
+uuid = { version = "1.0", features = ["v4", "v7", "serde"] }
+
+# 时间
+chrono = { version = "0.4", features = ["serde"] }
+
+# Kafka（审计）
+rdkafka = { version = "0.36", features = ["tokio", "ssl", "sasl", "zstd"], optional = true }
+
+# 验证
+validator = { version = "0.16", features = ["derive"] }
+
+[features]
+default = ["grpc", "rest", "metrics"]
+grpc = ["tonic", "tonic-web", "prost"]
+rest = ["axum", "tower-http", "utoipa", "utoipa-swagger-ui"]
+metrics = ["prometheus"]
+idempotency = ["redis"]
+audit = ["rdkafka"]
+full = ["grpc", "rest", "metrics", "idempotency", "audit"]
+
+[dev-dependencies]
+tokio-test = { workspace = true }
+assert_matches = "1.5"
+
+[lib]
+name = "killer_financial_service_api"
+path = "src/lib.rs"
+
+[[bin]]
+name = "financial-service-api"
+path = "src/main.rs"
+
+[build-dependencies]
+tonic-build = "0.10"
+
+[profile.release]
+opt-level = 3
+lto = "fat"

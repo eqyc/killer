@@ -1,0 +1,42 @@
+[package]
+name = "killer-financial-service-tests"
+version = "0.1.0"
+edition = "2021"
+authors = ["KILLER ERP Team"]
+description = "Integration tests for KILLER ERP Financial Service"
+
+[dependencies]
+# Main service
+killer-financial-service = { path = ".." }
+
+# Domain primitives
+killer-domain-primitives = { path = "../../libs/common/domain-primitives" }
+
+# CQRS framework
+killer-cqrs = { path = "../../libs/frameworks/cqrs" }
+
+# Testing
+tokio = { workspace = true }
+async-trait = "0.1"
+testcontainers = "10"
+wiremock = "0.5"
+
+# Assertions
+proptest = "1.0"
+quickcheck = "1.0"
+quickcheck_macros = "1.0"
+
+[dev-dependencies]
+# For property-based testing
+rand = { workspace = true }
+env_logger = "0.10"
+
+[features]
+default = []
+integration = []
+e2e = []
+performance = []
+security = []
+
+[lints]
+workspace = true

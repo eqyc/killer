@@ -1,0 +1,77 @@
+# Code Coverage Configuration
+# KILLER ERP Financial Service
+
+# Coverage targets
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 5%
+        flags:
+          - unit-tests
+          - integration-tests
+      api:
+        target: 85%
+        threshold: 5%
+        flags:
+          - api-tests
+      domain:
+        target: 90%
+        threshold: 3%
+        flags:
+          - domain-tests
+      application:
+        target: 85%
+        threshold: 5%
+        flags:
+          - application-tests
+
+# Ignore patterns
+ignore:
+  - "**/tests/**"
+  - "**/migrations/**"
+  - "**/*.sql"
+  - "**/Cargo.toml"
+  - "**/build.rs"
+  - "**/main.rs"
+
+# Fixes for tarpaulin output
+fixes:
+  - "/home/runner/work/killer-erp/ killer-erp/" => "/"
+
+# Comment settings
+comment:
+  layout: "header, diff, changes, uncovered"
+  behavior: default
+  require_changes: false
+  require_base: true
+  require_head: true
+
+# Notification settings
+notifications:
+  slack:
+    default:
+      - killer-erp-team:slack-webhook
+
+# Fail settings
+flags:
+  unit-tests:
+    paths:
+      - src/lib.rs
+      - src/domain/
+      - src/application/commands/
+      - src/application/queries/
+  integration-tests:
+    paths:
+      - src/infrastructure/
+  domain-tests:
+    paths:
+      - tests/domain/
+  application-tests:
+    paths:
+      - tests/application/
+  api-tests:
+    paths:
+      - tests/api/
+      - api/src/

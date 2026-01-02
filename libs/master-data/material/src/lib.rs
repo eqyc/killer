@@ -12,7 +12,7 @@
 //! # 示例
 //!
 //! ```rust
-//! use killer_master_data_material::*;
+//! use killer_material::*;
 //!
 //! let material = Material::new(
 //!     "tenant-001",
@@ -35,15 +35,12 @@
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
 use chrono::{DateTime, Utc};
-use derive_more::{Display, Error, From};
 use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fmt::{self, Debug};
+use rust_decimal::Decimal;
 use thiserror::Error;
 use uuid::Uuid;
-use validator::Validate;
 
 // =============================================================================
 // 错误类型
@@ -75,11 +72,22 @@ pub enum MaterialError {
     ValidationFailed { message: String },
 
     #[error("库存不足: 可用 {available}, 需要 {required}")]
-    InsufficientStock { available: f64, required: f64 },
+    InsufficientStock {
+        /// 可用库存
+        available: Decimal,
+        /// 需要库存
+        required: Decimal,
+    },
 }
 
 /// 物料结果类型
 pub type MaterialResult<T> = Result<T, MaterialError>;
+
+/// 兼容旧签名：构造器返回的验证结果类型
+pub type ValidationResult<T> = MaterialResult<T>;
+
+/// 库存地点代码（4 位字母数字）
+pub type StorageLocationValue = String;
 
 // =============================================================================
 // 扩展字段支持
@@ -207,30 +215,24 @@ impl Default for SpecialProcurementType {
 /// 物料基本数据
 ///
 /// SAP 表 MARA，代表物料的基本信息。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Material {
     /// 物料编号
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 物料描述
-    #[validate(length(min = 1, max = 200))]
     pub description: String,
 
     /// 物料类型
     pub material_type: MaterialType,
 
     /// 基本计量单位
-    #[validate(non_empty)]
     pub base_unit: UnitOfMeasure,
 
     /// 物料组
-    #[validate(length(max = 20))]
     #[serde(default)]
     pub material_group: Option<String>,
 
@@ -251,7 +253,6 @@ pub struct Material {
     pub size_unit: Option<UnitOfMeasure>,
 
     /// 行业标准描述
-    #[validate(length(max = 100))]
     #[serde(default)]
     pub industry_standard_desc: Option<String>,
 
@@ -274,19 +275,33 @@ impl Material {
     /// 创建新的物料
     pub fn new(
         tenant_id: impl Into<String>,
-        material_number: impl Into<MaterialNumber>,
+        material_number: impl AsRef<str>,
         description: impl Into<String>,
         material_type: MaterialType,
-        base_unit: impl Into<UnitOfMeasure>,
+        base_unit: impl AsRef<str>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let material_number = MaterialNumber::new(material_number.as_ref()).map_err(|_| {
+            MaterialError::InvalidMaterialNumber {
+                material_number: material_number.as_ref().to_string(),
+            }
+        })?;
+
+        let description = description.into();
+        validate_string_len("description", &description, 1, 200)?;
+
+        let base_unit = unit_from_code(base_unit.as_ref())?;
+
         let material = Self {
-            material_number: material_number.into(),
-            tenant_id: tenant_id.into(),
-            description: description.into(),
+            material_number,
+            tenant_id,
+            description,
             material_type,
-            base_unit: base_unit.into(),
+            base_unit,
             material_group: None,
             gross_weight: None,
             net_weight: None,
@@ -299,7 +314,6 @@ impl Material {
             deleted: false,
         };
 
-        material.validate()?;
         Ok(material)
     }
 
@@ -311,9 +325,10 @@ impl Material {
 
     /// 更新描述
     pub fn update_description(&mut self, description: impl Into<String>) -> ValidationResult<()> {
-        self.description = description.into();
+        let description = description.into();
+        validate_string_len("description", &description, 1, 200)?;
+        self.description = description;
         self.updated_at = Utc::now();
-        self.validate()?;
         Ok(())
     }
 
@@ -339,19 +354,15 @@ impl Material {
 /// 物料工厂数据
 ///
 /// SAP 表 MARC，代表物料在特定工厂的数据。
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MaterialPlantData {
     /// 物料编号 (引用)
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 工厂代码 (引用)
-    #[validate(non_empty)]
     pub plant_code: Plant,
 
     /// MRP 类型
@@ -389,12 +400,10 @@ pub struct MaterialPlantData {
     pub reorder_point: Option<Quantity>,
 
     /// 生产管理员
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub production_supervisor: Option<String>,
 
     /// ABC 指示符
-    #[validate(length(max = 1))]
     #[serde(default)]
     pub abc_indicator: Option<String>,
 
@@ -417,17 +426,32 @@ impl MaterialPlantData {
     /// 创建新的物料工厂数据
     pub fn new(
         tenant_id: impl Into<String>,
-        material_number: impl Into<MaterialNumber>,
-        plant_code: impl Into<Plant>,
+        material_number: impl AsRef<str>,
+        plant_code: impl AsRef<str>,
         mrp_type: MrpType,
         procurement_type: ProcurementType,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let material_number = MaterialNumber::new(material_number.as_ref()).map_err(|_| {
+            MaterialError::InvalidMaterialNumber {
+                material_number: material_number.as_ref().to_string(),
+            }
+        })?;
+
+        let plant_code = Plant::new(plant_code.as_ref()).map_err(|e| {
+            MaterialError::ValidationFailed {
+                message: format!("无效的工厂代码: {e}"),
+            }
+        })?;
+
         let data = Self {
-            material_number: material_number.into(),
-            tenant_id: tenant_id.into(),
-            plant_code: plant_code.into(),
+            material_number,
+            tenant_id,
+            plant_code,
             mrp_type,
             procurement_type,
             special_procurement: SpecialProcurementType::None,
@@ -445,7 +469,6 @@ impl MaterialPlantData {
             deleted: false,
         };
 
-        data.validate()?;
         Ok(data)
     }
 
@@ -483,23 +506,18 @@ impl MaterialPlantData {
 /// 物料库存地点数据
 ///
 /// SAP 表 MARD，代表物料在特定库存地点的数据。
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MaterialStorageData {
     /// 物料编号 (引用)
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 工厂代码 (引用)
-    #[validate(non_empty)]
     pub plant_code: Plant,
 
     /// 库存地点代码 (引用)
-    #[validate(non_empty)]
     pub storage_location: StorageLocationValue,
 
     /// 非限制使用库存
@@ -540,18 +558,39 @@ impl MaterialStorageData {
     /// 创建新的物料库存地点数据
     pub fn new(
         tenant_id: impl Into<String>,
-        material_number: impl Into<MaterialNumber>,
-        plant_code: impl Into<Plant>,
-        storage_location: impl Into<StorageLocationValue>,
+        material_number: impl AsRef<str>,
+        plant_code: impl AsRef<str>,
+        storage_location: impl AsRef<str>,
         unrestricted_stock: Quantity,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
 
+        let tenant_id = tenant_id.into();
+        require_non_empty("tenant_id", &tenant_id)?;
+
+        let material_number = MaterialNumber::new(material_number.as_ref()).map_err(|_| {
+            MaterialError::InvalidMaterialNumber {
+                material_number: material_number.as_ref().to_string(),
+            }
+        })?;
+
+        let plant_code = Plant::new(plant_code.as_ref()).map_err(|e| {
+            MaterialError::ValidationFailed {
+                message: format!("无效的工厂代码: {e}"),
+            }
+        })?;
+
+        let storage_location = normalize_code_4(storage_location.as_ref()).map_err(|_| {
+            MaterialError::ValidationFailed {
+                message: "无效的库存地点代码（必须为 4 位字母数字）".to_string(),
+            }
+        })?;
+
         let data = Self {
-            material_number: material_number.into(),
-            tenant_id: tenant_id.into(),
-            plant_code: plant_code.into(),
-            storage_location: storage_location.into(),
+            material_number,
+            tenant_id,
+            plant_code,
+            storage_location,
             unrestricted_stock,
             quality_inspection_stock: None,
             blocked_stock: None,
@@ -563,7 +602,6 @@ impl MaterialStorageData {
             deleted: false,
         };
 
-        data.validate()?;
         Ok(data)
     }
 
@@ -617,7 +655,7 @@ impl MaterialStorageData {
     pub fn decrease_stock(&mut self, quantity: Quantity) -> MaterialResult<()> {
         let new_value = self.unrestricted_stock.value() - quantity.value();
 
-        if new_value < 0.0 {
+        if new_value < Decimal::ZERO {
             return Err(MaterialError::InsufficientStock {
                 available: self.unrestricted_stock.value(),
                 required: quantity.value(),
@@ -641,7 +679,7 @@ impl MaterialStorageData {
         self.decrease_stock(quantity.clone())?;
 
         let qi_stock = self.quality_inspection_stock.get_or_insert_with(|| {
-            Quantity::new(0.0, quantity.unit().clone()).unwrap()
+            Quantity::zero(quantity.unit().clone())
         });
 
         *qi_stock = Quantity::new(
@@ -649,7 +687,7 @@ impl MaterialStorageData {
             qi_stock.unit().clone(),
         )
         .map_err(|e| MaterialError::ValidationFailed {
-            message: format!("Failed to move to QI: ", e),
+            message: format!("Failed to move to QI: {}", e),
         })?;
 
         self.updated_at = Utc::now();
@@ -660,12 +698,12 @@ impl MaterialStorageData {
     pub fn release_from_quality_inspection(&mut self, quantity: Quantity) -> MaterialResult<()> {
         let qi_stock = self.quality_inspection_stock.as_mut()
             .ok_or_else(|| MaterialError::InsufficientStock {
-                available: 0.0,
+                available: Decimal::ZERO,
                 required: quantity.value(),
             })?;
 
         let new_qi_value = qi_stock.value() - quantity.value();
-        if new_qi_value < 0.0 {
+        if new_qi_value < Decimal::ZERO {
             return Err(MaterialError::InsufficientStock {
                 available: qi_stock.value(),
                 required: quantity.value(),
@@ -812,13 +850,54 @@ pub mod proto {
 }
 
 // =============================================================================
-// Re-exports
+// 内部校验与解析
 // =============================================================================
 
-pub use self::material_error::MaterialError;
+fn require_non_empty(field: &str, value: &str) -> MaterialResult<()> {
+    if value.trim().is_empty() {
+        return Err(MaterialError::ValidationFailed {
+            message: format!("{field} 不能为空"),
+        });
+    }
+    Ok(())
+}
 
-mod material_error {
-    use super::*;
+fn validate_string_len(field: &str, value: &str, min: usize, max: usize) -> MaterialResult<()> {
+    let trimmed = value.trim();
+    let len = trimmed.chars().count();
+    if len < min || len > max {
+        return Err(MaterialError::ValidationFailed {
+            message: format!("{field} 长度必须在 {min}..={max}"),
+        });
+    }
+    Ok(())
+}
 
-    // 错误类型已在上面定义
+fn normalize_code_4(code: &str) -> Result<String, ()> {
+    let code = code.trim().to_uppercase();
+    if code.len() != 4 {
+        return Err(());
+    }
+    if !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+        return Err(());
+    }
+    Ok(code)
+}
+
+fn unit_from_code(code: &str) -> MaterialResult<UnitOfMeasure> {
+    let code = code.trim().to_uppercase();
+    let unit = match code.as_str() {
+        "EA" => UnitOfMeasure::each(),
+        "PC" => UnitOfMeasure::piece(),
+        "KG" => UnitOfMeasure::kilogram(),
+        "G" => UnitOfMeasure::gram(),
+        "L" => UnitOfMeasure::liter(),
+        "ML" => UnitOfMeasure::milliliter(),
+        _ => {
+            return Err(MaterialError::ValidationFailed {
+                message: format!("未知或不支持的计量单位代码: {code}"),
+            });
+        }
+    };
+    Ok(unit)
 }

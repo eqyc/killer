@@ -85,6 +85,7 @@ mod middleware;
 mod uow;
 mod registry;
 mod testkit;
+mod prelude;
 
 #[cfg(feature = "axum")]
 mod axum;

@@ -12,7 +12,9 @@
 //! # 示例
 //!
 //! ```rust
-//! use killer_master_data_business_partner::*;
+//! use killer_business_partner::*;
+//! use killer_domain_primitives::{CurrencyCode, Money};
+//! use rust_decimal_macros::dec;
 //!
 //! let partner = BusinessPartner::new(
 //!     "tenant-001",
@@ -26,7 +28,7 @@
 //!     "BP-001",
 //!     "1000",  // sales_org
 //!     "NET30",
-//!     Money::new(100000.0, "CNY").unwrap(),
+//!     Money::new(dec!(100000), CurrencyCode::CNY).unwrap(),
 //! ).expect("Failed to create customer role");
 //! ```
 
@@ -34,15 +36,12 @@
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
 use chrono::{DateTime, Utc};
-use derive_more::{Display, Error, From};
 use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fmt::{self, Debug};
+use std::fmt::Debug;
 use thiserror::Error;
 use uuid::Uuid;
-use validator::Validate;
 
 // =============================================================================
 // 错误类型
@@ -72,6 +71,9 @@ pub enum BusinessPartnerError {
 
 /// 业务伙伴结果类型
 pub type BusinessPartnerResult<T> = Result<T, BusinessPartnerError>;
+
+/// 兼容旧签名：构造器返回的验证结果类型
+pub type ValidationResult<T> = BusinessPartnerResult<T>;
 
 // =============================================================================
 // 扩展字段支持
@@ -134,25 +136,21 @@ pub enum PartnerType {
 }
 
 /// 地址信息
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Address {
     /// 街道地址
-    #[validate(length(max = 200))]
     #[serde(default)]
     pub street: Option<String>,
 
     /// 城市
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub city: Option<String>,
 
     /// 邮政编码
-    #[validate(length(max = 20))]
     #[serde(default)]
     pub postal_code: Option<String>,
 
     /// 国家代码 (ISO 3166)
-    #[validate(length(min = 2, max = 3))]
     pub country: String,
 
     /// 地区/州

@@ -11,10 +11,10 @@ path = "src/main.rs"
 
 [dependencies]
 # 内部依赖 - 主数据契约
-killer-master-data-organizational-units = { path = "../../../libs/master-data/organizational-units" }
-killer-master-data-business-partner = { path = "../../../libs/master-data/business-partner" }
-killer-master-data-material = { path = "../../../libs/master-data/material" }
-killer-master-data-cost-center = { path = "../../../libs/master-data/cost-center" }
+killer-organizational-units = { path = "../../../libs/master-data/organizational-units" }
+killer-business-partner = { path = "../../../libs/master-data/business-partner" }
+killer-material = { path = "../../../libs/master-data/material" }
+killer-cost-center = { path = "../../../libs/master-data/cost-center" }
 
 # 内部依赖 - 框架和工具
 killer-domain-primitives = { path = "../../../libs/common/domain-primitives" }
@@ -37,7 +37,7 @@ tower = "0.4"
 tower-http = { version = "0.5", features = ["trace", "cors", "timeout"] }
 
 # 数据库
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "json", "chrono", "uuid"] }
+sqlx = { workspace = true }
 
 # 消息队列
 rdkafka = { version = "0.36", features = ["tokio"] }

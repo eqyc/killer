@@ -1,97 +1,173 @@
 [package]
 name = "killer-financial-service"
-description = "核心财务会计服务 (FI) - 总账、应收、应付、资产、税务"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
-rust-version.workspace = true
-repository.workspace = true
+version = "0.1.0"
+edition = "2021"
+authors = ["KILLER ERP Team"]
+description = "财务服务 - 完整的微服务实现（Domain + Application + Infrastructure + Interface）"
+
+[dependencies]
+# 内部依赖 - 领域原语
+killer-domain-primitives = { path = "../../../libs/common/domain-primitives" }
+
+# CQRS 框架
+killer-cqrs = { path = "../../../libs/frameworks/cqrs" }
+
+# 基础设施
+killer-persistence = { path = "../../../libs/infrastructure/persistence" }
+killer-messaging = { path = "../../../libs/infrastructure/messaging" }
+killer-observability = { path = "../../../libs/infrastructure/observability" }
+
+# 错误处理
+thiserror = "1.0"
+derive_more = "0.99"
+
+# 时间处理
+chrono = { version = "0.4", features = ["serde"] }
+
+# 序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_cbor = "0.11"
+rmp-serde = "1.0"
+
+# Protocol Buffers
+prost = { version = "0.12" }
+prost-types = { version = "0.12" }
+
+# UUID
+uuid = { version = "1.0", features = ["v4", "v7", "serde"] }
+
+# Async
+async-trait = "0.1"
+tokio = { workspace = true }
+
+# 验证
+validator = { version = "0.16", features = ["derive"] }
+
+# 指标
+prometheus = { version = "0.13" }
+metrics = { version = "0.21" }
+
+# Tracing
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-opentelemetry = "0.32"
+
+# 数据库
+sqlx = { workspace = true, optional = true }
+
+# Kafka
+rdkafka = { version = "0.36", features = ["tokio", "ssl", "sasl", "zstd"], optional = true }
+
+# Redis
+redis = { version = "0.24", features = ["tokio-comp", "json"], optional = true }
+
+# ClickHouse
+clickhouse-rs = { version = "1.1.0-alpha.1", optional = true }
+
+# HTTP Client (for ClickHouse HTTP interface)
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"], optional = true }
+
+# gRPC / REST
+tonic = { version = "0.10", features = ["tls", "prost"], optional = true }
+axum = { version = "0.7", optional = true }
+tower = { version = "0.4", features = ["full"], optional = true }
+
+# 配置管理
+config = "0.14"
+toml = "0.8"
+
+# 测试
+testcontainers = { version = "0.26", optional = true }
+testcontainers-modules = { version = "0.14", features = ["postgres", "kafka", "redis", "clickhouse"], optional = true }
+proptest = { version = "1.4", optional = true }
+
+# 其他工具
+md5 = "0.7"
+xxhash-rust = "0.8"
+once_cell = "1.19"
+futures = "0.3"
+
+[features]
+default = ["application"]
+application = []
+# 持久化特征
+persistence = ["sqlx", "redis", "clickhouse-rs", "reqwest"]
+# 消息特征
+messaging = ["rdkafka"]
+# 适配器特征
+adapters = ["tonic", "tower", "persistence"]
+# 投影特征
+projection = ["clickhouse-rs", "messaging"]
+# 基础设施完整特征
+infrastructure = ["persistence", "messaging", "adapters", "projection"]
+# gRPC 特征
+grpc = ["tonic"]
+# REST 特征
+rest = ["axum", "tower"]
+# 完整特征
+full = ["infrastructure", "grpc", "rest"]
+
+# 开发特征
+dev = ["testcontainers", "testcontainers-modules", "proptest"]
+
+[dev-dependencies]
+tokio-test = { workspace = true }
+assert_matches = "1.5"
+rand = { workspace = true }
+env_logger = "0.10"
+wiremock = "0.5"
+
+[build-dependencies]
+tonic-build = "0.10"
+
+[lib]
+name = "killer_financial_service"
+path = "src/lib.rs"
 
 [[bin]]
 name = "financial-service"
 path = "src/main.rs"
 
-[dependencies]
-# ===== 异步运行时 =====
-tokio.workspace = true
-async-trait.workspace = true
-futures.workspace = true
+# Integration tests
+[[test]]
+name = "fixtures"
+path = "tests/fixtures/mod.rs"
 
-# ===== Web 框架 =====
-axum.workspace = true
-axum-extra.workspace = true
-tower.workspace = true
-tower-http.workspace = true
+[[test]]
+name = "domain"
+path = "tests/domain/mod.rs"
 
-# ===== gRPC =====
-tonic.workspace = true
-prost.workspace = true
+[[test]]
+name = "application"
+path = "tests/application/mod.rs"
 
-# ===== 数据库 =====
-sqlx.workspace = true
+[[test]]
+name = "infrastructure"
+path = "tests/infrastructure/mod.rs"
 
-# ===== 缓存 =====
-redis.workspace = true
-moka.workspace = true
+[[test]]
+name = "api"
+path = "tests/api/mod.rs"
 
-# ===== 消息队列 =====
-rdkafka.workspace = true
+[[test]]
+name = "e2e"
+path = "tests/e2e/mod.rs"
 
-# ===== 可观测性 =====
-tracing.workspace = true
-tracing-subscriber.workspace = true
-opentelemetry.workspace = true
-opentelemetry_sdk.workspace = true
-opentelemetry-otlp.workspace = true
-metrics.workspace = true
+[[test]]
+name = "performance"
+path = "tests/performance/mod.rs"
 
-# ===== 序列化 =====
-serde.workspace = true
-serde_json.workspace = true
-
-# ===== 错误处理 =====
-thiserror.workspace = true
-anyhow.workspace = true
-
-# ===== 通用类型 =====
-uuid.workspace = true
-chrono.workspace = true
-rust_decimal.workspace = true
-
-# ===== 配置 =====
-config.workspace = true
-dotenvy.workspace = true
-
-# ===== 验证 =====
-validator.workspace = true
-
-# ===== 项目内部依赖 =====
-killer-types = { path = "../../../libs/common/types" }
-killer-domain-primitives = { path = "../../../libs/common/domain-primitives" }
-killer-utils = { path = "../../../libs/common/utils" }
-killer-cqrs = { path = "../../../libs/frameworks/cqrs" }
-killer-event-sourcing = { path = "../../../libs/frameworks/event-sourcing" }
-killer-messaging = { path = "../../../libs/infrastructure/messaging" }
-killer-observability = { path = "../../../libs/infrastructure/observability" }
-killer-auth = { path = "../../../libs/infrastructure/auth" }
-killer-persistence = { path = "../../../libs/infrastructure/persistence" }
-killer-business-partner = { path = "../../../libs/master-data/business-partner" }
-killer-cost-center = { path = "../../../libs/master-data/cost-center" }
-killer-organizational-units = { path = "../../../libs/master-data/organizational-units" }
-killer-api-contracts = { path = "../../../libs/integration/api-contracts" }
-
-[dev-dependencies]
-tokio-test.workspace = true
-testcontainers.workspace = true
-testcontainers-modules.workspace = true
-fake.workspace = true
-wiremock.workspace = true
-proptest.workspace = true
-criterion.workspace = true
-
-[build-dependencies]
-#tonic-build.workspace = true
-tonic-prost-build = { workspace = true }
+[[test]]
+name = "security"
+path = "tests/security/mod.rs"
 
 [lints]
 workspace = true
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = "fat"

@@ -1,0 +1,249 @@
+# KILLER ERP Financial Service 配置文件
+# 所有配置支持环境变量覆盖
+
+# =============================================================================
+# 应用配置
+# =============================================================================
+app:
+  name: "financial-service"
+  host: "0.0.0.0"
+  port: 8080
+  environment: "development"  # development, staging, production
+
+# =============================================================================
+# PostgreSQL 配置
+# =============================================================================
+database:
+  postgres:
+    # 连接字符串
+    url: "postgres://killer:killer123@localhost:5432/financial?sslmode=require"
+    # 连接池配置
+    max_connections: 20
+    min_connections: 5
+    connection_timeout: 30      # 秒
+    idle_timeout: 600           # 秒
+    max_lifetime: 3600          # 秒
+    # SSL 配置
+    ssl_mode: "require"
+    # 迁移配置
+    auto_migrate: true
+    migration_dir: "./migrations"
+
+# =============================================================================
+# Redis 配置
+# =============================================================================
+redis:
+  # 连接配置
+  url: "redis://localhost:6379"
+  max_connections: 50
+  # 超时配置（毫秒）
+  command_timeout: 5000
+  read_timeout: 3000
+  write_timeout: 3000
+  # 缓存 TTL
+  default_ttl: 3600            # 秒
+  # 分布式锁
+  lock_prefix: "killer:finance:"
+
+# =============================================================================
+# Kafka 配置
+# =============================================================================
+kafka:
+  # Broker 配置
+  brokers:
+    - "localhost:9092"
+  # 客户端配置
+  client_id: "killer-financial-service"
+  consumer_group_id: "killer-finance-service-group"
+  # SASL/SSL 认证
+  sasl:
+    enabled: false
+    mechanism: "SCRAM-SHA-256"
+    username: ""
+    password: ""
+  ssl:
+    enabled: false
+    ca_location: ""
+    certificate_location: ""
+    key_location: ""
+  # 生产者配置
+  producer:
+    acks: "all"               # "all", "1", "0"
+    retries: 5
+    batch_size: 16384         # 字节
+    linger_ms: 5              # 毫秒
+    compression: "lz4"
+    request_timeout_ms: 30000
+    enable_idempotence: true
+  # 消费者配置
+  consumer:
+    enable_auto_commit: false
+    auto_commit_interval_ms: 5000
+    session_timeout_ms: 30000
+    max_poll_records: 100
+    auto_offset_reset: "earliest"
+  # 主题配置
+  topics:
+    finance_events: "killer.finance.events"
+    logistics_events: "killer.logistics.events"
+
+# =============================================================================
+# ClickHouse 配置
+# =============================================================================
+clickhouse:
+  url: "http://localhost:8123"
+  database: "financial"
+  username: "default"
+  password: ""
+  # 连接配置
+  max_connections: 10
+  command_timeout: 30000       # 毫秒
+  # 投影配置
+  projection:
+    batch_size: 100
+    batch_timeout: 10          # 秒
+    max_retries: 3
+    retry_delay_ms: 1000
+
+# =============================================================================
+# MDG Service 配置 (gRPC)
+# =============================================================================
+mdg_service:
+  # gRPC 端点
+  grpc_address: "localhost:50051"
+  # 连接配置
+  connection_timeout: 5000     # 毫秒
+  request_timeout: 10000       # 毫秒
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 3600                  # 秒
+  # 熔断器配置
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    success_threshold: 2
+    timeout: 60000             # 毫秒
+
+# =============================================================================
+# Materials Service 配置 (Kafka Consumer)
+# =============================================================================
+materials_service:
+  # 订阅配置
+  subscription:
+    topic: "killer.logistics.events"
+    group_id: "killer-finance-materials-group"
+    auto_offset_reset: "earliest"
+  # 重试配置
+  retry:
+    max_attempts: 3
+    delay_ms: 1000
+  # 死信队列
+  dead_letter:
+    enabled: true
+    topic: "killer.finance.dlq"
+
+# =============================================================================
+# CQRS 配置
+# =============================================================================
+cqrs:
+  # 命令总线配置
+  command_bus:
+    parallel_capacity: 100
+    timeout: 30000             # 毫秒
+  # 事件总线配置
+  event_bus:
+    publisher:
+      batch_size: 100
+      flush_interval: 1000     # 毫秒
+  # 工作单元配置
+  unit_of_work:
+    timeout: 30000             # 毫秒
+
+# =============================================================================
+# 可观测性配置
+# =============================================================================
+observability:
+  # Tracing
+  tracing:
+    enabled: true
+    level: "info"              # debug, info, warn, error
+    export:
+      type: "otlp"
+      endpoint: "http://localhost:4317"
+      service_name: "killer-financial-service"
+  # Metrics
+  metrics:
+    enabled: true
+    export:
+      type: "prometheus"
+      port: 9090
+      path: "/metrics"
+  # 日志
+  logging:
+    enabled: true
+    format: "json"
+    level: "info"
+    include_tenant_id: true
+
+# =============================================================================
+# 安全配置
+# =============================================================================
+security:
+  # JWT 配置
+  jwt:
+    secret: ""
+    issuer: "killer-erp"
+    audience: "financial-service"
+    expiry: 3600               # 秒
+  # TLS 配置
+  tls:
+    enabled: false
+    cert_path: ""
+    key_path: ""
+    ca_path: ""
+  # 数据脱敏
+  data_masking:
+    enabled: true
+    patterns:
+      - field: "amount"
+        regex: "\\d+\\.\\d{2}"
+        replacement: "[REDACTED]"
+      - field: "tax_amount"
+        regex: "\\d+\\.\\d{2}"
+        replacement: "[REDACTED]"
+
+# =============================================================================
+# 资源限制
+# =============================================================================
+resources:
+  # CPU 限制
+  cpu:
+    request: "500m"
+    limit: "2000m"
+  # 内存限制
+  memory:
+    request: "512Mi"
+    limit: "2Gi"
+  # 存储
+  storage:
+    data: "10Gi"
+    logs: "1Gi"
+
+# =============================================================================
+# 生态集成配置
+# =============================================================================
+integration:
+  # API Gateway
+  api_gateway:
+    enabled: true
+    health_check_path: "/health"
+    readiness_path: "/ready"
+    liveness_path: "/live"
+  # 服务发现
+  service_discovery:
+    type: "kubernetes"         # kubernetes, consul
+  # 配置热重载
+  hot_reload:
+    enabled: true
+    interval: 60000            # 毫秒
