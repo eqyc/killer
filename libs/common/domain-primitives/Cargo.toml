@@ -10,6 +10,7 @@ repository.workspace = true
 [dependencies]
 # 精确十进制运算（金额计算）
 rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
 
 # 序列化
 serde.workspace = true

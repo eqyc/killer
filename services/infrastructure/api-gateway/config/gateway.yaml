@@ -1,0 +1,285 @@
+# KILLER ERP API Gateway 配置
+# =============================
+
+# 服务器配置
+server:
+  http_addr: "0.0.0.0"
+  http_port: 8080
+  # https_addr: "0.0.0.0"
+  # https_port: 8443
+  # tls_cert_path: "/etc/ssl/certs/gateway.crt"
+  # tls_key_path: "/etc/ssl/private/gateway.key"
+  max_request_size: 2097152  # 2MB
+  graceful_shutdown_timeout: 30  # 秒
+
+# 服务发现配置
+discovery:
+  mode: "kubernetes"  # kubernetes | static | consul | dns
+  reload_interval: 30  # 秒
+  cache_ttl: 60  # 秒
+
+  # Kubernetes 配置
+  kubernetes:
+    namespace: "default"
+    label_selector: "app.kubernetes.io/part-of=gateway"
+    refresh_interval: 30  # 秒
+    use_tls: true
+    # kubeconfig_path: "/etc/kubernetes/admin.conf"
+
+  # 静态服务配置 (fallback)
+  static_services:
+    identity-service:
+      name: "identity-service"
+      url: "http://identity-service:8080"
+      protocol: "http"
+      weight: 100
+      health_check_url: "http://identity-service:8080/health"
+      timeout: 5000
+
+    finance-service:
+      name: "finance-service"
+      url: "http://finance-service:8080"
+      protocol: "http"
+      weight: 100
+      health_check_url: "http://finance-service:8080/health"
+      timeout: 10000
+
+# 路由规则配置
+routes:
+  # 身份认证路由
+  - id: "auth-routes"
+    path_prefix: "/api/v1/auth"
+    path_rewrite: "/auth"
+    target_service: "identity-service"
+    target_prefix: "/api/v1"
+    methods: ["POST", "GET"]
+    target_protocol: "http"
+    load_balancer: "round-robin"
+    timeout: 5000
+    enabled: true
+    priority: 100
+    match_conditions: []
+
+  # 财务服务路由
+  - id: "finance-routes"
+    path_prefix: "/api/v1/finance"
+    path_rewrite: "/api/v1/finance"
+    target_service: "finance-service"
+    target_prefix: "/api/v1"
+    methods: ["*"]
+    target_protocol: "http"
+    load_balancer: "weighted-round-robin"
+    timeout: 30000
+    enabled: true
+    priority: 90
+    circuit_breaker:
+      failure_threshold: 5
+      success_threshold: 3
+      half_open_timeout: 30
+      volume_threshold: 10
+
+  # gRPC 服务路由示例
+  - id: "grpc-routes"
+    path_prefix: "/grpc/inventory"
+    path_rewrite: ""
+    target_service: "inventory-service"
+    target_prefix: ""
+    methods: ["*"]
+    target_protocol: "grpc"
+    load_balancer: "round-robin"
+    timeout: 10000
+    enabled: true
+    priority: 85
+
+# 认证配置
+authentication:
+  enabled: true
+  jwt:
+    jwks_url: "https://identity.killer.local/.well-known/jwks.json"
+    issuer: "https://identity.killer.local"
+    audience: "killer-api-gateway"
+    cache_ttl: 3600  # 秒
+    refresh_interval: 300  # 秒
+    allowed_algorithms: ["RS256", "RS384", "RS512"]
+    claims_validation:
+      validate_exp: true
+      validate_iat: true
+      validate_iss: true
+      validate_aud: true
+      clock_skew_tolerance: 60  # 秒
+  api_key:
+    enabled: true
+    redis_url: "redis://localhost:6379"
+    key_prefix: "apikey:"
+    cache_ttl: 300  # 秒
+  bypass_paths:
+    - "/health"
+    - "/ready"
+    - "/live"
+    - "/metrics"
+    - "/docs"
+    - "/openapi.json"
+
+# 租户配置
+tenant:
+  mandatory: true  # 是否强制要求租户上下文
+  claim_field: "tenant_id"  # JWT 声明字段
+  header_name: "X-Tenant-ID"  # 响应头名称
+  default_tenant_id: null
+  whitelist: []
+
+# 权限配置
+authorization:
+  enabled: true
+  claim_field: "scope"
+  scope_delimiter: " "
+  default_permissions: []
+  rbac_rules:
+    - role: "admin"
+      path_pattern: "/api/v1/**"
+      methods: ["*"]
+      actions: ["*"]
+    - role: "finance:*"
+      path_pattern: "/api/v1/finance/**"
+      methods: ["*"]
+      actions: ["read", "write"]
+    - role: "sales:*"
+      path_pattern: "/api/v1/sales/**"
+      methods: ["*"]
+      actions: ["read", "write"]
+    - role: "viewer"
+      path_pattern: "/api/v1/**"
+      methods: ["GET"]
+      actions: ["read"]
+
+# 限流配置
+rate_limiting:
+  enabled: true
+  global:
+    enabled: true
+    capacity: 10000
+    refill_rate: 10000
+    burst_capacity: 15000
+  per_ip:
+    enabled: true
+    capacity: 1000
+    refill_rate: 100
+    burst_capacity: 200
+  per_user:
+    enabled: true
+    capacity: 5000
+    refill_rate: 500
+    burst_capacity: 1000
+  per_api_key:
+    enabled: true
+    capacity: 10000
+    refill_rate: 1000
+    burst_capacity: 2000
+  per_route:
+    "/api/v1/auth/login":
+      enabled: true
+      capacity: 50
+      refill_rate: 10
+      burst_capacity: 20
+
+# 熔断器配置
+circuit_breaker:
+  enabled: true
+  default_failure_threshold: 5
+  default_success_threshold: 3
+  default_half_open_timeout: 30  # 秒
+  default_volume_threshold: 10
+  route_overrides:
+    "slow-service":
+      failure_threshold: 3
+      success_threshold: 2
+      half_open_timeout: 60
+      volume_threshold: 5
+
+# 超时配置
+timeouts:
+  default_connect_timeout: 5  # 秒
+  default_read_timeout: 10  # 秒
+  default_write_timeout: 10  # 秒
+  default_total_timeout: 30  # 秒
+  retry:
+    enabled: true
+    max_retries: 3
+    base_backoff_ms: 100
+    max_backoff_ms: 5000
+    retryable_status_codes: [408, 429, 500, 502, 503, 504]
+    retryable_methods: ["GET", "PUT", "POST", "DELETE"]
+
+# 安全配置
+security:
+  cors:
+    enabled: true
+    allowed_origins:
+      - "https://*.killer.local"
+      - "http://localhost:3000"
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "PATCH"
+      - "OPTIONS"
+      - "HEAD"
+    allowed_headers:
+      - "Authorization"
+      - "Content-Type"
+      - "X-Request-ID"
+      - "X-Tenant-ID"
+      - "X-API-Key"
+    exposed_headers:
+      - "X-Request-ID"
+      - "X-Response-Time"
+    allow_credentials: true
+    max_age: 86400  # 秒 (24小时)
+  hsts:
+    enabled: true
+    preload: false
+    include_subdomains: true
+    max_age: 31536000  # 秒 (1年)
+  headers:
+    x_content_type_options: "nosniff"
+    x_frame_options: "DENY"
+    x_xss_protection: "1; mode=block"
+    referrer_policy: "strict-origin-when-cross-origin"
+    permissions_policy: "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+  ip_whitelist: []
+  ip_blacklist: []
+
+# 可观测性配置
+observability:
+  tracing:
+    enabled: true
+    sampling_rate: 1.0  # 0.0 - 1.0
+    otlp_endpoint: "http://localhost:4317"
+    service_name: "killer-api-gateway"
+    propagate_context: true
+  metrics:
+    enabled: true
+    prometheus_port: 9090
+    path: "/metrics"
+    buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+  audit:
+    enabled: true
+    sensitive_fields:
+      - "password"
+      - "token"
+      - "secret"
+      - "authorization"
+      - "credit_card"
+    excluded_paths:
+      - "/health"
+      - "/metrics"
+      - "/docs"
+    record_changed_fields_only: false
+
+# 缓存配置
+cache:
+  jwks_ttl: 3600  # 秒
+  discovery_ttl: 60  # 秒
+  permissions_ttl: 300  # 秒
+  api_key_ttl: 300  # 秒

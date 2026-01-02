@@ -7,9 +7,13 @@ license.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 
+[features]
+default = []
+axum = ["dep:axum"]
+
 [dependencies]
 # 异步运行时
-tokio.workspace = true
+tokio = { workspace = true, features = ["sync", "time", "rt"] }
 async-trait.workspace = true
 futures.workspace = true
 
@@ -27,11 +31,28 @@ derive_more.workspace = true
 # 可观测性
 tracing.workspace = true
 
+# 唯一标识
+uuid = { workspace = true, features = ["v4", "v7", "serde"] }
+
+# 时间处理
+chrono = { workspace = true, features = ["serde"] }
+
+# 验证
+validator = { workspace = true, features = ["derive"] }
+
+# 自动注册
+linkme = "0.3"
+
+# Axum 集成（可选）
+axum = { workspace = true, optional = true }
+
 # 项目内部依赖
 killer-types = { path = "../../common/types" }
 
 [dev-dependencies]
 tokio-test.workspace = true
+tokio = { workspace = true, features = ["full", "test-util"] }
+axum = { workspace = true }
 
 [lints]
 workspace = true

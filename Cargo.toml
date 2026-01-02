@@ -279,6 +279,7 @@ chrono = { version = "0.4", features = ["serde"] }
 
 # Rust-decimal: 精确十进制运算，用于金融计算
 rust_decimal = { version = "1.37", features = ["serde", "serde-with-str"] }
+rust_decimal_macros = { version = "1.37" }
 
 # Bytes: 高效字节缓冲区
 bytes = { version = "1.9" }
