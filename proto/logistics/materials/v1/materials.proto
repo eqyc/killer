@@ -1,0 +1,211 @@
+// 文件路径: logistics/materials/v1/materials.proto
+// =============================================================================
+// KILLER ERP - 物料凭证服务 (MM)
+// =============================================================================
+//
+// 基于ERP系统核心表MATDOC设计
+// 提供物料移动、库存变动凭证管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.logistics.materials.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.logistics.materials.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// MaterialsService - 物料凭证服务
+// =============================================================================
+service MaterialsService {
+  // 创建物料凭证
+  rpc CreateMaterialDocument(CreateMaterialDocumentRequest) returns (CreateMaterialDocumentResponse);
+  // 获取物料凭证
+  rpc GetMaterialDocument(GetMaterialDocumentRequest) returns (GetMaterialDocumentResponse);
+  // 查询物料凭证列表
+  rpc ListMaterialDocuments(ListMaterialDocumentsRequest) returns (ListMaterialDocumentsResponse);
+  // 冲销物料凭证
+  rpc ReverseMaterialDocument(ReverseMaterialDocumentRequest) returns (ReverseMaterialDocumentResponse);
+}
+
+// =============================================================================
+// SHKZG - 借贷标识枚举
+// =============================================================================
+// 对应MATDOC-SHKZG字段
+enum SHKZG {
+  // 未指定
+  SHKZG_UNSPECIFIED = 0;
+  // S = 收货（入库）
+  SHKZG_S = 1;
+  // H = 发货（出库）
+  SHKZG_H = 2;
+}
+
+// =============================================================================
+// MaterialDocument - 物料凭证（聚合根）
+// =============================================================================
+// 对应ERP系统核心表MATDOC
+message MaterialDocument {
+  // 物料凭证号，对应MBLNR
+  string MBLNR = 1;
+  // 物料凭证年度，对应MJAHR
+  int32 MJAHR = 2;
+  // 过账日期，对应BUDAT
+  google.protobuf.Timestamp BUDAT = 3;
+  // 凭证日期，对应BLDAT
+  google.protobuf.Timestamp BLDAT = 4;
+  // 工厂，对应WERKS
+  string WERKS = 5;
+  // 参考凭证号，对应XBLNR
+  string XBLNR = 6;
+  // 凭证抬头文本，对应BKTXT
+  string BKTXT = 7;
+  // 供应商编号，对应LIFNR
+  string LIFNR = 8;
+  // 客户编号，对应KUNNR
+  string KUNNR = 9;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 10;
+  // 冲销凭证号
+  string STBLG = 11;
+  // 来源系统标识
+  string SRC_SYSTEM = 12;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 13;
+  // 行项目列表
+  repeated MaterialDocumentItem items = 14;
+}
+
+// =============================================================================
+// MaterialDocumentItem - 物料凭证行项目
+// =============================================================================
+// 对应MATDOC行级字段
+message MaterialDocumentItem {
+  // 行号，对应ZEILE
+  int32 ZEILE = 1;
+  // 移动类型，对应BWART
+  string BWART = 2;
+  // 物料号，对应MATNR
+  string MATNR = 3;
+  // 工厂，对应WERKS
+  string WERKS = 4;
+  // 库存地点，对应LGORT
+  string LGORT = 5;
+  // 数量，对应MENGE
+  killer.common.v1.Quantity MENGE = 6;
+  // 基本计量单位，对应MEINS
+  string MEINS = 7;
+  // 借贷标识，对应SHKZG
+  SHKZG SHKZG = 8;
+  // 批次号，对应CHARG
+  string CHARG = 9;
+  // 库存类型（自有库存/寄售等），对应SOBKZ
+  string SOBKZ = 10;
+  // 成本中心，对应KOSTL
+  string KOSTL = 11;
+  // 内部订单，对应AUFNR
+  string AUFNR = 12;
+  // 采购订单号，对应EBELN
+  string EBELN = 13;
+  // 采购订单行号，对应EBELP
+  int32 EBELP = 14;
+  // 销售订单号，对应KDAUF
+  string KDAUF = 15;
+  // 行项目文本，对应SGTXT
+  string SGTXT = 16;
+  // 本位币金额，对应DMBTR
+  killer.common.v1.Money DMBTR = 17;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建物料凭证请求
+message CreateMaterialDocumentRequest {
+  // 过账日期
+  google.protobuf.Timestamp BUDAT = 1;
+  // 凭证日期
+  google.protobuf.Timestamp BLDAT = 2;
+  // 工厂
+  string WERKS = 3;
+  // 参考凭证号
+  string XBLNR = 4;
+  // 凭证抬头文本
+  string BKTXT = 5;
+  // 来源系统
+  string SRC_SYSTEM = 6;
+  // 行项目列表
+  repeated MaterialDocumentItem items = 7;
+}
+
+// 创建物料凭证响应
+message CreateMaterialDocumentResponse {
+  // 创建的物料凭证
+  MaterialDocument material_document = 1;
+}
+
+// 获取物料凭证请求
+message GetMaterialDocumentRequest {
+  // 物料凭证号
+  string MBLNR = 1;
+  // 物料凭证年度
+  int32 MJAHR = 2;
+}
+
+// 获取物料凭证响应
+message GetMaterialDocumentResponse {
+  // 物料凭证
+  MaterialDocument material_document = 1;
+}
+
+// 查询物料凭证列表请求
+message ListMaterialDocumentsRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号
+  string MATNR = 2;
+  // 移动类型
+  string BWART = 3;
+  // 过账日期起
+  google.protobuf.Timestamp BUDAT_FROM = 4;
+  // 过账日期止
+  google.protobuf.Timestamp BUDAT_TO = 5;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 6;
+}
+
+// 查询物料凭证列表响应
+message ListMaterialDocumentsResponse {
+  // 物料凭证列表
+  repeated MaterialDocument material_documents = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 冲销物料凭证请求
+message ReverseMaterialDocumentRequest {
+  // 原物料凭证号
+  string MBLNR = 1;
+  // 原物料凭证年度
+  int32 MJAHR = 2;
+  // 冲销日期
+  google.protobuf.Timestamp reverse_date = 3;
+  // 冲销原因
+  string reverse_reason = 4;
+}
+
+// 冲销物料凭证响应
+message ReverseMaterialDocumentResponse {
+  // 冲销凭证号
+  string STBLG = 1;
+  // 冲销凭证年度
+  int32 STJAH = 2;
+  // 冲销时间
+  google.protobuf.Timestamp reversed_at = 3;
+}

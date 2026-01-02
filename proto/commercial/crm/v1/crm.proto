@@ -1,0 +1,202 @@
+// 文件路径: commercial/crm/v1/crm.proto
+// =============================================================================
+// KILLER ERP - 客户关系管理服务 (CRM)
+// =============================================================================
+//
+// 基于ERP系统核心表CRMD_ORDERADM_H/CRMD_ORDERADM_I设计
+// 提供商机管理、客户互动、服务请求等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.commercial.crm.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.commercial.crm.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// CRMService - 客户关系管理服务
+// =============================================================================
+service CRMService {
+  // 创建CRM订单
+  rpc CreateCRMOrder(CreateCRMOrderRequest) returns (CreateCRMOrderResponse);
+  // 获取CRM订单
+  rpc GetCRMOrder(GetCRMOrderRequest) returns (GetCRMOrderResponse);
+  // 查询CRM订单列表
+  rpc ListCRMOrders(ListCRMOrdersRequest) returns (ListCRMOrdersResponse);
+  // 更新CRM订单状态
+  rpc UpdateCRMOrderStatus(UpdateCRMOrderStatusRequest) returns (UpdateCRMOrderStatusResponse);
+}
+
+// =============================================================================
+// CRMOrder - CRM订单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表CRMD_ORDERADM_H
+message CRMOrder {
+  // 对象标识，对应OBJECT_ID
+  string OBJECT_ID = 1;
+  // 业务流程类型，对应PROCESS_TYPE
+  string PROCESS_TYPE = 2;
+  // 描述，对应DESCRIPTION
+  string DESCRIPTION = 3;
+  // 过账日期，对应POSTING_DATE
+  google.protobuf.Timestamp POSTING_DATE = 4;
+  // 创建日期
+  google.protobuf.Timestamp CREATED_AT = 5;
+  // 业务伙伴编号，对应PARTNER_NO
+  string PARTNER_NO = 6;
+  // 业务伙伴名称
+  string PARTNER_NAME = 7;
+  // 联系人
+  string CONTACT_PERSON = 8;
+  // 状态，对应STATUS
+  string STATUS = 9;
+  // 优先级
+  string PRIORITY = 10;
+  // 责任人
+  string RESPONSIBLE = 11;
+  // 销售组织
+  string SALES_ORG = 12;
+  // 分销渠道
+  string DISTR_CHAN = 13;
+  // 货币代码
+  string CURRENCY = 14;
+  // 预期金额
+  killer.common.v1.Money EXPECTED_VALUE = 15;
+  // 实际金额
+  killer.common.v1.Money ACTUAL_VALUE = 16;
+  // 成功概率（百分比）
+  int32 PROBABILITY = 17;
+  // 预计成交日期
+  google.protobuf.Timestamp EXPECTED_CLOSE_DATE = 18;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 19;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 20;
+  // 行项目列表
+  repeated CRMOrderItem items = 21;
+}
+
+// =============================================================================
+// CRMOrderItem - CRM订单行项目
+// =============================================================================
+// 对应ERP系统核心表CRMD_ORDERADM_I
+message CRMOrderItem {
+  // 项目标识，对应NUMBER_INT
+  string NUMBER_INT = 1;
+  // 产品标识，对应PRODUCT_ID
+  string PRODUCT_ID = 2;
+  // 产品描述
+  string PRODUCT_DESC = 3;
+  // 数量
+  killer.common.v1.Quantity QUANTITY = 4;
+  // 单位
+  string UOM = 5;
+  // 净价
+  killer.common.v1.Money NET_VALUE = 6;
+  // 货币代码
+  string CURRENCY = 7;
+  // 状态
+  string STATUS = 8;
+  // 备注
+  string NOTES = 9;
+  // 删除标识
+  string LOEKZ = 10;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建CRM订单请求
+message CreateCRMOrderRequest {
+  // 业务流程类型
+  string PROCESS_TYPE = 1;
+  // 描述
+  string DESCRIPTION = 2;
+  // 业务伙伴编号
+  string PARTNER_NO = 3;
+  // 联系人
+  string CONTACT_PERSON = 4;
+  // 优先级
+  string PRIORITY = 5;
+  // 责任人
+  string RESPONSIBLE = 6;
+  // 销售组织
+  string SALES_ORG = 7;
+  // 分销渠道
+  string DISTR_CHAN = 8;
+  // 货币代码
+  string CURRENCY = 9;
+  // 预期金额
+  killer.common.v1.Money EXPECTED_VALUE = 10;
+  // 预计成交日期
+  google.protobuf.Timestamp EXPECTED_CLOSE_DATE = 11;
+  // 行项目列表
+  repeated CRMOrderItem items = 12;
+}
+
+// 创建CRM订单响应
+message CreateCRMOrderResponse {
+  // 创建的CRM订单
+  CRMOrder crm_order = 1;
+}
+
+// 获取CRM订单请求
+message GetCRMOrderRequest {
+  // 对象标识
+  string OBJECT_ID = 1;
+}
+
+// 获取CRM订单响应
+message GetCRMOrderResponse {
+  // CRM订单
+  CRMOrder crm_order = 1;
+}
+
+// 查询CRM订单列表请求
+message ListCRMOrdersRequest {
+  // 业务流程类型
+  string PROCESS_TYPE = 1;
+  // 业务伙伴编号
+  string PARTNER_NO = 2;
+  // 状态
+  string STATUS = 3;
+  // 责任人
+  string RESPONSIBLE = 4;
+  // 创建日期起
+  google.protobuf.Timestamp CREATED_FROM = 5;
+  // 创建日期止
+  google.protobuf.Timestamp CREATED_TO = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询CRM订单列表响应
+message ListCRMOrdersResponse {
+  // CRM订单列表
+  repeated CRMOrder crm_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 更新CRM订单状态请求
+message UpdateCRMOrderStatusRequest {
+  // 对象标识
+  string OBJECT_ID = 1;
+  // 新状态
+  string STATUS = 2;
+  // 备注
+  string NOTES = 3;
+}
+
+// 更新CRM订单状态响应
+message UpdateCRMOrderStatusResponse {
+  // 更新后的CRM订单
+  CRMOrder crm_order = 1;
+}

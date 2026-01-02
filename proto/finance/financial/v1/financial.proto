@@ -1,0 +1,234 @@
+// 文件路径: finance/financial/v1/financial.proto
+// =============================================================================
+// KILLER ERP - 财务会计服务 (FI)
+// =============================================================================
+//
+// 基于ERP系统核心表ACDOCA（通用日记账）设计
+// 提供总账、应收、应付、资产会计等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.finance.financial.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.finance.financial.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// =============================================================================
+// FinancialService - 财务会计服务
+// =============================================================================
+service FinancialService {
+  // 创建会计凭证
+  rpc CreateJournalEntry(CreateJournalEntryRequest) returns (CreateJournalEntryResponse);
+  // 获取会计凭证
+  rpc GetJournalEntry(GetJournalEntryRequest) returns (GetJournalEntryResponse);
+  // 查询会计凭证列表
+  rpc ListJournalEntries(ListJournalEntriesRequest) returns (ListJournalEntriesResponse);
+  // 过账会计凭证
+  rpc PostJournalEntry(PostJournalEntryRequest) returns (PostJournalEntryResponse);
+  // 冲销会计凭证
+  rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (ReverseJournalEntryResponse);
+}
+
+// =============================================================================
+// SHKZG - 借贷标识枚举
+// =============================================================================
+// 对应ACDOCA-SHKZG字段
+enum SHKZG {
+  // 未指定
+  SHKZG_UNSPECIFIED = 0;
+  // S = 借方
+  SHKZG_S = 1;
+  // H = 贷方
+  SHKZG_H = 2;
+}
+
+// =============================================================================
+// JournalEntry - 会计凭证（聚合根）
+// =============================================================================
+// 对应ERP系统核心表ACDOCA
+message JournalEntry {
+  // 会计凭证号，对应BELNR
+  string BELNR = 1;
+  // 会计年度，对应GJAHR
+  int32 GJAHR = 2;
+  // 公司代码，对应BUKRS
+  string BUKRS = 3;
+  // 凭证类型，对应BLART
+  string BLART = 4;
+  // 凭证日期，对应BLDAT
+  google.protobuf.Timestamp BLDAT = 5;
+  // 过账日期，对应BUDAT
+  google.protobuf.Timestamp BUDAT = 6;
+  // 会计期间，对应MONAT
+  int32 MONAT = 7;
+  // 货币代码，对应WAERS
+  string WAERS = 8;
+  // 参考凭证号，对应XBLNR
+  string XBLNR = 9;
+  // 凭证抬头文本，对应BKTXT
+  string BKTXT = 10;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 11;
+  // 冲正标识
+  bool REVERSED = 12;
+  // 来源系统标识
+  string SRC_SYSTEM = 13;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 14;
+  // 行项目列表
+  repeated JournalEntryItem items = 15;
+}
+
+// =============================================================================
+// JournalEntryItem - 会计凭证行项目
+// =============================================================================
+// 对应ERP系统核心表ACDOCA行级字段
+message JournalEntryItem {
+  // 行项目号，对应BUZEI
+  int32 BUZEI = 1;
+  // 总账科目，对应HKONT
+  string HKONT = 2;
+  // 借贷标识，对应SHKZG
+  SHKZG SHKZG = 3;
+  // 凭证货币金额，对应WRBTR
+  killer.common.v1.Money WRBTR = 4;
+  // 本位币金额，对应DMBTR
+  killer.common.v1.Money DMBTR = 5;
+  // 成本中心，对应KOSTL
+  string KOSTL = 6;
+  // 利润中心，对应PRCTR
+  string PRCTR = 7;
+  // 业务范围，对应GSBER
+  string GSBER = 8;
+  // 功能范围，对应FKBER
+  string FKBER = 9;
+  // 客户编号，对应KUNNR
+  string KUNNR = 10;
+  // 供应商编号，对应LIFNR
+  string LIFNR = 11;
+  // 税码，对应MWSKZ
+  string MWSKZ = 12;
+  // 行项目文本，对应SGTXT
+  string SGTXT = 13;
+  // 分配字段，对应ZUONR
+  string ZUONR = 14;
+  // 内部订单，对应AUFNR
+  string AUFNR = 15;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建凭证请求
+message CreateJournalEntryRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 凭证类型
+  string BLART = 2;
+  // 凭证日期
+  google.protobuf.Timestamp BLDAT = 3;
+  // 过账日期
+  google.protobuf.Timestamp BUDAT = 4;
+  // 货币代码
+  string WAERS = 5;
+  // 参考凭证号
+  string XBLNR = 6;
+  // 凭证抬头文本
+  string BKTXT = 7;
+  // 来源系统
+  string SRC_SYSTEM = 8;
+  // 行项目列表
+  repeated JournalEntryItem items = 9;
+}
+
+// 创建凭证响应
+message CreateJournalEntryResponse {
+  // 创建的凭证
+  JournalEntry journal_entry = 1;
+}
+
+// 获取凭证请求
+message GetJournalEntryRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 会计凭证号
+  string BELNR = 2;
+  // 会计年度
+  int32 GJAHR = 3;
+}
+
+// 获取凭证响应
+message GetJournalEntryResponse {
+  // 凭证信息
+  JournalEntry journal_entry = 1;
+}
+
+// 查询凭证列表请求
+message ListJournalEntriesRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 会计年度
+  int32 GJAHR = 2;
+  // 会计期间
+  int32 MONAT = 3;
+  // 凭证类型
+  string BLART = 4;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 5;
+}
+
+// 查询凭证列表响应
+message ListJournalEntriesResponse {
+  // 凭证列表
+  repeated JournalEntry journal_entries = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 过账凭证请求
+message PostJournalEntryRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 会计凭证号
+  string BELNR = 2;
+  // 会计年度
+  int32 GJAHR = 3;
+}
+
+// 过账凭证响应
+message PostJournalEntryResponse {
+  // 过账后的凭证号
+  string BELNR = 1;
+  // 过账时间
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 冲销凭证请求
+message ReverseJournalEntryRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 原会计凭证号
+  string BELNR = 2;
+  // 原会计年度
+  int32 GJAHR = 3;
+  // 冲销日期
+  google.protobuf.Timestamp reverse_date = 4;
+  // 冲销原因
+  string reverse_reason = 5;
+}
+
+// 冲销凭证响应
+message ReverseJournalEntryResponse {
+  // 冲销凭证号
+  string STBLG = 1;
+  // 冲销时间
+  google.protobuf.Timestamp reversed_at = 2;
+}

@@ -1,0 +1,221 @@
+// 文件路径: logistics/shipping/v1/shipping.proto
+// =============================================================================
+// KILLER ERP - 发运管理服务 (SD-SHP)
+// =============================================================================
+//
+// 基于ERP系统核心表LIKP/LIPS设计
+// 提供交货单管理、发货处理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.logistics.shipping.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.logistics.shipping.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// ShippingService - 发运管理服务
+// =============================================================================
+service ShippingService {
+  // 创建交货单
+  rpc CreateDelivery(CreateDeliveryRequest) returns (CreateDeliveryResponse);
+  // 获取交货单
+  rpc GetDelivery(GetDeliveryRequest) returns (GetDeliveryResponse);
+  // 查询交货单列表
+  rpc ListDeliveries(ListDeliveriesRequest) returns (ListDeliveriesResponse);
+  // 过账发货
+  rpc PostGoodsIssue(PostGoodsIssueRequest) returns (PostGoodsIssueResponse);
+}
+
+// =============================================================================
+// LFART - 交货类型枚举
+// =============================================================================
+// 对应LIKP-LFART字段
+enum LFART {
+  // 未指定
+  LFART_UNSPECIFIED = 0;
+  // LF = 标准交货
+  LFART_LF = 1;
+  // NL = 补货交货
+  LFART_NL = 2;
+  // LR = 退货交货
+  LFART_LR = 3;
+  // EL = 快速交货
+  LFART_EL = 4;
+}
+
+// =============================================================================
+// Delivery - 交货单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表LIKP
+message Delivery {
+  // 交货单号，对应VBELN
+  string VBELN = 1;
+  // 装运点，对应VSTEL
+  string VSTEL = 2;
+  // 交货类型，对应LFART
+  LFART LFART = 3;
+  // 客户，对应KUNNR
+  string KUNNR = 4;
+  // 销售组织，对应VKORG
+  string VKORG = 5;
+  // 分销渠道，对应VTWEG
+  string VTWEG = 6;
+  // 计划发货日期，对应WADAT
+  google.protobuf.Timestamp WADAT = 7;
+  // 实际发货日期，对应WADAT_IST
+  google.protobuf.Timestamp WADAT_IST = 8;
+  // 预计到达日期，对应LFDAT
+  google.protobuf.Timestamp LFDAT = 9;
+  // 运输路线，对应ROUTE
+  string ROUTE = 10;
+  // 承运商，对应TDLNR
+  string TDLNR = 11;
+  // 总毛重，对应BTGEW
+  killer.common.v1.Quantity BTGEW = 12;
+  // 重量单位，对应GEWEI
+  string GEWEI = 13;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 14;
+  // 发货状态，对应WBSTK
+  string WBSTK = 15;
+  // 来源系统标识
+  string SRC_SYSTEM = 16;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 17;
+  // 行项目列表
+  repeated DeliveryItem items = 18;
+}
+
+// =============================================================================
+// DeliveryItem - 交货单行项目
+// =============================================================================
+// 对应ERP系统核心表LIPS
+message DeliveryItem {
+  // 行项目号，对应POSNR
+  int32 POSNR = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 工厂，对应WERKS
+  string WERKS = 3;
+  // 库存地点，对应LGORT
+  string LGORT = 4;
+  // 交货数量，对应LFIMG
+  killer.common.v1.Quantity LFIMG = 5;
+  // 销售单位，对应VRKME
+  string VRKME = 6;
+  // 基本计量单位，对应MEINS
+  string MEINS = 7;
+  // 批次号，对应CHARG
+  string CHARG = 8;
+  // 参考销售订单号，对应VGBEL
+  string VGBEL = 9;
+  // 参考销售订单行号，对应VGPOS
+  int32 VGPOS = 10;
+  // 毛重，对应BRGEW
+  killer.common.v1.Quantity BRGEW = 11;
+  // 净重，对应NTGEW
+  killer.common.v1.Quantity NTGEW = 12;
+  // 体积，对应VOLUM
+  killer.common.v1.Quantity VOLUM = 13;
+  // 发货状态，对应WBSTA
+  string WBSTA = 14;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 15;
+  // 行项目文本
+  string ARKTX = 16;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建交货单请求
+message CreateDeliveryRequest {
+  // 装运点
+  string VSTEL = 1;
+  // 交货类型
+  LFART LFART = 2;
+  // 客户
+  string KUNNR = 3;
+  // 销售组织
+  string VKORG = 4;
+  // 分销渠道
+  string VTWEG = 5;
+  // 计划发货日期
+  google.protobuf.Timestamp WADAT = 6;
+  // 运输路线
+  string ROUTE = 7;
+  // 来源系统
+  string SRC_SYSTEM = 8;
+  // 行项目列表
+  repeated DeliveryItem items = 9;
+}
+
+// 创建交货单响应
+message CreateDeliveryResponse {
+  // 创建的交货单
+  Delivery delivery = 1;
+}
+
+// 获取交货单请求
+message GetDeliveryRequest {
+  // 交货单号
+  string VBELN = 1;
+}
+
+// 获取交货单响应
+message GetDeliveryResponse {
+  // 交货单信息
+  Delivery delivery = 1;
+}
+
+// 查询交货单列表请求
+message ListDeliveriesRequest {
+  // 装运点
+  string VSTEL = 1;
+  // 交货类型
+  LFART LFART = 2;
+  // 客户
+  string KUNNR = 3;
+  // 计划发货日期起
+  google.protobuf.Timestamp WADAT_FROM = 4;
+  // 计划发货日期止
+  google.protobuf.Timestamp WADAT_TO = 5;
+  // 发货状态
+  string WBSTK = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询交货单列表响应
+message ListDeliveriesResponse {
+  // 交货单列表
+  repeated Delivery deliveries = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 过账发货请求
+message PostGoodsIssueRequest {
+  // 交货单号
+  string VBELN = 1;
+  // 过账日期
+  google.protobuf.Timestamp BUDAT = 2;
+}
+
+// 过账发货响应
+message PostGoodsIssueResponse {
+  // 交货单号
+  string VBELN = 1;
+  // 物料凭证号
+  string MBLNR = 2;
+  // 过账时间
+  google.protobuf.Timestamp posted_at = 3;
+}

@@ -31,14 +31,14 @@ C4Context
         System(gateway, "API Gateway", "统一入口、认证、限流、路由")
 
         System_Boundary(core, "核心业务服务层") {
-            System(finance, "财务域", "FI/CO/TR")
-            System(procurement, "采购运营域", "SCM/MM")
-            System(operations, "运营域", "PP/QM/PM")
-            System(logistics, "物流域", "IM/EWM/TM")
-            System(commercial, "商业域", "SD/CRM/CS")
-            System(project, "项目研发域", "PS/PLM")
-            System(hr, "人力资本域", "PA/PY")
-            System(infra, "基础设施域", "IAM/MDG")
+            System(finance, "财务域", "财务会计/管理会计/资金")
+            System(procurement, "采购运营域", "供应链/采购")
+            System(operations, "运营域", "生产/质量/维护")
+            System(logistics, "物流域", "物料/仓储/运输")
+            System(commercial, "商业域", "销售/客户/服务")
+            System(project, "项目研发域", "项目/产品生命周期")
+            System(hr, "人力资本域", "人事/薪酬")
+            System(infra, "基础设施域", "认证/主数据")
         }
 
         System(messaging, "消息总线", "Kafka 事件流")

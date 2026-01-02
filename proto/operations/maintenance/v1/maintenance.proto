@@ -1,0 +1,255 @@
+// 文件路径: operations/maintenance/v1/maintenance.proto
+// =============================================================================
+// KILLER ERP - 工厂维护服务 (PM)
+// =============================================================================
+//
+// 基于ERP系统核心表AFIH/QMEL设计
+// 提供维护订单、设备维护、维修通知等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.operations.maintenance.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.operations.maintenance.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// MaintenanceService - 工厂维护服务
+// =============================================================================
+service MaintenanceService {
+  // 创建维护订单
+  rpc CreateMaintenanceOrder(CreateMaintenanceOrderRequest) returns (CreateMaintenanceOrderResponse);
+  // 获取维护订单
+  rpc GetMaintenanceOrder(GetMaintenanceOrderRequest) returns (GetMaintenanceOrderResponse);
+  // 查询维护订单列表
+  rpc ListMaintenanceOrders(ListMaintenanceOrdersRequest) returns (ListMaintenanceOrdersResponse);
+  // 创建维护通知
+  rpc CreateMaintenanceNotification(CreateMaintenanceNotificationRequest) returns (CreateMaintenanceNotificationResponse);
+}
+
+// =============================================================================
+// PRIOK - 优先级枚举
+// =============================================================================
+// 对应AFIH-PRIOK/QMEL-PRIOK字段
+enum PRIOK {
+  // 未指定
+  PRIOK_UNSPECIFIED = 0;
+  // 1 = 紧急
+  PRIOK_1 = 1;
+  // 2 = 高
+  PRIOK_2 = 2;
+  // 3 = 中
+  PRIOK_3 = 3;
+  // 4 = 低
+  PRIOK_4 = 4;
+}
+
+// =============================================================================
+// MaintenanceOrder - 维护订单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表AFIH（维护订单头）
+message MaintenanceOrder {
+  // 维护订单号，对应AUFNR
+  string AUFNR = 1;
+  // 订单类型，对应AUART
+  string AUART = 2;
+  // 设备号，对应EQUNR
+  string EQUNR = 3;
+  // 功能位置，对应TPLNR
+  string TPLNR = 4;
+  // 维护计划类型，对应ILTYP
+  string ILTYP = 5;
+  // 优先级，对应PRIOK
+  PRIOK PRIOK = 6;
+  // 计划员组，对应INGPR
+  string INGPR = 7;
+  // 工作中心，对应GEWRK
+  string GEWRK = 8;
+  // 计划开始日期，对应GSTRP
+  google.protobuf.Timestamp GSTRP = 9;
+  // 计划完成日期，对应GLTRP
+  google.protobuf.Timestamp GLTRP = 10;
+  // 实际开始日期，对应GSTRS
+  google.protobuf.Timestamp GSTRS = 11;
+  // 实际完成日期，对应GLTRS
+  google.protobuf.Timestamp GLTRS = 12;
+  // 工厂，对应WERKS
+  string WERKS = 13;
+  // 成本中心，对应KOSTL
+  string KOSTL = 14;
+  // 通知号，对应QMNUM
+  string QMNUM = 15;
+  // 系统状态，对应SUSTA
+  string SUSTA = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 18;
+  // 订单行项目（工序）
+  repeated MaintenanceOrderItem items = 19;
+}
+
+// =============================================================================
+// MaintenanceOrderItem - 维护订单行项目（工序）
+// =============================================================================
+message MaintenanceOrderItem {
+  // 工序号，对应VORNR
+  string VORNR = 1;
+  // 工作中心，对应ARBPL
+  string ARBPL = 2;
+  // 控制码，对应STEUS
+  string STEUS = 3;
+  // 描述，对应LTXA1
+  string LTXA1 = 4;
+  // 计划工时，对应ARBEI
+  killer.common.v1.Quantity ARBEI = 5;
+  // 实际工时，对应ISMNW
+  killer.common.v1.Quantity ISMNW = 6;
+  // 计划开始日期，对应SSEDD
+  google.protobuf.Timestamp SSEDD = 7;
+  // 计划完成日期，对应SSEDA
+  google.protobuf.Timestamp SSEDA = 8;
+  // 状态
+  string STATUS = 9;
+  // 删除标识
+  string LOEKZ = 10;
+}
+
+// =============================================================================
+// MaintenanceNotification - 维护通知
+// =============================================================================
+// 对应ERP系统核心表QMEL
+message MaintenanceNotification {
+  // 通知号，对应QMNUM
+  string QMNUM = 1;
+  // 通知类型，对应QMART
+  string QMART = 2;
+  // 设备号，对应EQUNR
+  string EQUNR = 3;
+  // 功能位置，对应TPLNR
+  string TPLNR = 4;
+  // 优先级，对应PRIOK
+  PRIOK PRIOK = 5;
+  // 描述，对应QMTXT
+  string QMTXT = 6;
+  // 工厂，对应WERKS
+  string WERKS = 7;
+  // 报告日期，对应ERDAT
+  google.protobuf.Timestamp ERDAT = 8;
+  // 故障开始日期，对应AUSZT
+  google.protobuf.Timestamp AUSZT = 9;
+  // 计划员组，对应INGPR
+  string INGPR = 10;
+  // 关联订单号，对应AUFNR
+  string AUFNR = 11;
+  // 系统状态，对应SUSTA
+  string SUSTA = 12;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 13;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 14;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建维护订单请求
+message CreateMaintenanceOrderRequest {
+  // 订单类型
+  string AUART = 1;
+  // 设备号
+  string EQUNR = 2;
+  // 功能位置
+  string TPLNR = 3;
+  // 维护计划类型
+  string ILTYP = 4;
+  // 优先级
+  PRIOK PRIOK = 5;
+  // 计划员组
+  string INGPR = 6;
+  // 工厂
+  string WERKS = 7;
+  // 计划开始日期
+  google.protobuf.Timestamp GSTRP = 8;
+  // 计划完成日期
+  google.protobuf.Timestamp GLTRP = 9;
+  // 行项目（工序）
+  repeated MaintenanceOrderItem items = 10;
+}
+
+// 创建维护订单响应
+message CreateMaintenanceOrderResponse {
+  // 创建的维护订单
+  MaintenanceOrder maintenance_order = 1;
+}
+
+// 获取维护订单请求
+message GetMaintenanceOrderRequest {
+  // 维护订单号
+  string AUFNR = 1;
+}
+
+// 获取维护订单响应
+message GetMaintenanceOrderResponse {
+  // 维护订单
+  MaintenanceOrder maintenance_order = 1;
+}
+
+// 查询维护订单列表请求
+message ListMaintenanceOrdersRequest {
+  // 工厂
+  string WERKS = 1;
+  // 设备号
+  string EQUNR = 2;
+  // 优先级
+  PRIOK PRIOK = 3;
+  // 订单状态
+  string SUSTA = 4;
+  // 计划开始日期起
+  google.protobuf.Timestamp GSTRP_FROM = 5;
+  // 计划开始日期止
+  google.protobuf.Timestamp GSTRP_TO = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询维护订单列表响应
+message ListMaintenanceOrdersResponse {
+  // 维护订单列表
+  repeated MaintenanceOrder maintenance_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 创建维护通知请求
+message CreateMaintenanceNotificationRequest {
+  // 通知类型
+  string QMART = 1;
+  // 设备号
+  string EQUNR = 2;
+  // 功能位置
+  string TPLNR = 3;
+  // 优先级
+  PRIOK PRIOK = 4;
+  // 描述
+  string QMTXT = 5;
+  // 工厂
+  string WERKS = 6;
+  // 故障开始日期
+  google.protobuf.Timestamp AUSZT = 7;
+  // 计划员组
+  string INGPR = 8;
+}
+
+// 创建维护通知响应
+message CreateMaintenanceNotificationResponse {
+  // 创建的维护通知
+  MaintenanceNotification maintenance_notification = 1;
+}

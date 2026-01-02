@@ -1,0 +1,229 @@
+// 文件路径: commercial/sales/v1/sales.proto
+// =============================================================================
+// KILLER ERP - 销售管理服务 (SD)
+// =============================================================================
+//
+// 基于ERP系统核心表VBAK/VBAP设计
+// 提供销售订单管理、报价处理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.commercial.sales.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.commercial.sales.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// SalesService - 销售管理服务
+// =============================================================================
+service SalesService {
+  // 创建销售订单
+  rpc CreateSalesOrder(CreateSalesOrderRequest) returns (CreateSalesOrderResponse);
+  // 获取销售订单
+  rpc GetSalesOrder(GetSalesOrderRequest) returns (GetSalesOrderResponse);
+  // 查询销售订单列表
+  rpc ListSalesOrders(ListSalesOrdersRequest) returns (ListSalesOrdersResponse);
+  // 确认销售订单
+  rpc ConfirmSalesOrder(ConfirmSalesOrderRequest) returns (ConfirmSalesOrderResponse);
+}
+
+// =============================================================================
+// AUART - 销售凭证类型枚举
+// =============================================================================
+// 对应VBAK-AUART字段
+enum AUART {
+  // 未指定
+  AUART_UNSPECIFIED = 0;
+  // OR = 标准订单
+  AUART_OR = 1;
+  // QT = 报价单
+  AUART_QT = 2;
+  // RE = 退货订单
+  AUART_RE = 3;
+  // CR = 贷项凭证请求
+  AUART_CR = 4;
+  // DR = 借项凭证请求
+  AUART_DR = 5;
+}
+
+// =============================================================================
+// SalesOrder - 销售订单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表VBAK
+message SalesOrder {
+  // 销售凭证号，对应VBELN
+  string VBELN = 1;
+  // 销售凭证类型，对应AUART
+  AUART AUART = 2;
+  // 销售组织，对应VKORG
+  string VKORG = 3;
+  // 分销渠道，对应VTWEG
+  string VTWEG = 4;
+  // 产品组，对应SPART
+  string SPART = 5;
+  // 售达方客户，对应KUNNR
+  string KUNNR = 6;
+  // 订单日期，对应AUDAT
+  google.protobuf.Timestamp AUDAT = 7;
+  // 请求交货日期，对应VDATU
+  google.protobuf.Timestamp VDATU = 8;
+  // 货币代码，对应WAERK
+  string WAERK = 9;
+  // 净值，对应NETWR
+  killer.common.v1.Money NETWR = 10;
+  // 付款条款，对应ZTERM
+  string ZTERM = 11;
+  // 国际贸易条款，对应INCO1
+  string INCO1 = 12;
+  // 销售员工，对应ERNAM
+  string ERNAM = 13;
+  // 凭证状态，对应GBSTK（整体状态）
+  string GBSTK = 14;
+  // 交货状态，对应LFSTK
+  string LFSTK = 15;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 16;
+  // 来源系统标识
+  string SRC_SYSTEM = 17;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 18;
+  // 行项目列表
+  repeated SalesOrderItem items = 19;
+}
+
+// =============================================================================
+// SalesOrderItem - 销售订单行项目
+// =============================================================================
+// 对应ERP系统核心表VBAP
+message SalesOrderItem {
+  // 销售凭证项目号，对应POSNR
+  int32 POSNR = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 物料描述，对应ARKTX
+  string ARKTX = 3;
+  // 订单数量，对应KWMENG
+  killer.common.v1.Quantity KWMENG = 4;
+  // 销售单位，对应VRKME
+  string VRKME = 5;
+  // 基本计量单位，对应MEINS
+  string MEINS = 6;
+  // 工厂，对应WERKS
+  string WERKS = 7;
+  // 库存地点，对应LGORT
+  string LGORT = 8;
+  // 净价，对应NETPR
+  killer.common.v1.Money NETPR = 9;
+  // 净值，对应NETWR
+  killer.common.v1.Money NETWR = 10;
+  // 税码，对应MWSKZ
+  string MWSKZ = 11;
+  // 请求交货日期，对应EDATU
+  google.protobuf.Timestamp EDATU = 12;
+  // 已交货数量，对应KZMNGA（待确认）
+  killer.common.v1.Quantity LFMNG = 13;
+  // 已开票数量，对应FKIMG（待确认）
+  killer.common.v1.Quantity FKIMG = 14;
+  // 参考凭证号（报价单等），对应VGBEL
+  string VGBEL = 15;
+  // 参考凭证行号，对应VGPOS
+  int32 VGPOS = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 拒绝原因，对应ABGRU
+  string ABGRU = 18;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建销售订单请求
+message CreateSalesOrderRequest {
+  // 销售凭证类型
+  AUART AUART = 1;
+  // 销售组织
+  string VKORG = 2;
+  // 分销渠道
+  string VTWEG = 3;
+  // 产品组
+  string SPART = 4;
+  // 售达方客户
+  string KUNNR = 5;
+  // 请求交货日期
+  google.protobuf.Timestamp VDATU = 6;
+  // 货币代码
+  string WAERK = 7;
+  // 付款条款
+  string ZTERM = 8;
+  // 来源系统
+  string SRC_SYSTEM = 9;
+  // 行项目列表
+  repeated SalesOrderItem items = 10;
+}
+
+// 创建销售订单响应
+message CreateSalesOrderResponse {
+  // 创建的销售订单
+  SalesOrder sales_order = 1;
+}
+
+// 获取销售订单请求
+message GetSalesOrderRequest {
+  // 销售凭证号
+  string VBELN = 1;
+}
+
+// 获取销售订单响应
+message GetSalesOrderResponse {
+  // 销售订单
+  SalesOrder sales_order = 1;
+}
+
+// 查询销售订单列表请求
+message ListSalesOrdersRequest {
+  // 销售组织
+  string VKORG = 1;
+  // 客户
+  string KUNNR = 2;
+  // 销售凭证类型
+  AUART AUART = 3;
+  // 订单日期起
+  google.protobuf.Timestamp AUDAT_FROM = 4;
+  // 订单日期止
+  google.protobuf.Timestamp AUDAT_TO = 5;
+  // 凭证状态
+  string GBSTK = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询销售订单列表响应
+message ListSalesOrdersResponse {
+  // 销售订单列表
+  repeated SalesOrder sales_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 确认销售订单请求
+message ConfirmSalesOrderRequest {
+  // 销售凭证号
+  string VBELN = 1;
+  // 确认日期
+  google.protobuf.Timestamp confirmation_date = 2;
+}
+
+// 确认销售订单响应
+message ConfirmSalesOrderResponse {
+  // 销售凭证号
+  string VBELN = 1;
+  // 确认时间
+  google.protobuf.Timestamp confirmed_at = 2;
+}

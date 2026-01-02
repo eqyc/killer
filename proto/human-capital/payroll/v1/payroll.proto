@@ -1,0 +1,229 @@
+// 文件路径: human-capital/payroll/v1/payroll.proto
+// =============================================================================
+// KILLER ERP - 薪酬管理服务 (HCM-PY)
+// =============================================================================
+//
+// 基于ERP系统核心表PA0008/PCL2设计
+// 提供工资计算、薪资核算、发放处理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.human_capital.payroll.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.human_capital.payroll.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// PayrollService - 薪酬管理服务
+// =============================================================================
+service PayrollService {
+  // 创建薪资记录
+  rpc CreatePayrollRecord(CreatePayrollRecordRequest) returns (CreatePayrollRecordResponse);
+  // 获取薪资记录
+  rpc GetPayrollRecord(GetPayrollRecordRequest) returns (GetPayrollRecordResponse);
+  // 查询薪资记录列表
+  rpc ListPayrollRecords(ListPayrollRecordsRequest) returns (ListPayrollRecordsResponse);
+  // 执行薪资计算
+  rpc RunPayroll(RunPayrollRequest) returns (RunPayrollResponse);
+}
+
+// =============================================================================
+// PayrollRecord - 薪资记录（聚合根）
+// =============================================================================
+// 对应ERP系统核心表PA0008（基本工资）
+message PayrollRecord {
+  // 人员编号，对应PERNR
+  string PERNR = 1;
+  // 信息类型，对应INFTY
+  string INFTY = 2;
+  // 子类型，对应SUBTY
+  string SUBTY = 3;
+  // 生效日期，对应BEGDA
+  google.protobuf.Timestamp BEGDA = 4;
+  // 失效日期，对应ENDDA
+  google.protobuf.Timestamp ENDDA = 5;
+  // 序号，对应SEQNR
+  int32 SEQNR = 6;
+  // 工资范围，对应TRFAR
+  string TRFAR = 7;
+  // 工资等级，对应TRFGR
+  string TRFGR = 8;
+  // 工资级别，对应TRFST
+  string TRFST = 9;
+  // 年薪，对应ANSAL
+  killer.common.v1.Money ANSAL = 10;
+  // 货币代码，对应WAESSION
+  string WAERS = 11;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 12;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 13;
+  // 工资类型明细
+  repeated PayrollItem items = 14;
+}
+
+// =============================================================================
+// PayrollItem - 薪资明细行项目
+// =============================================================================
+// 对应ERP工资类型明细
+message PayrollItem {
+  // 行号
+  int32 SEQNR = 1;
+  // 工资类型，对应LGART
+  string LGART = 2;
+  // 工资类型描述
+  string LGTXT = 3;
+  // 金额，对应BETRG
+  killer.common.v1.Money BETRG = 4;
+  // 数量/工时，对应ANZHL
+  killer.common.v1.Quantity ANZHL = 5;
+  // 单位
+  string EINHT = 6;
+  // 计算基数
+  killer.common.v1.Money BASE = 7;
+  // 百分比
+  string RATE = 8;
+  // 开始日期
+  google.protobuf.Timestamp BEGDA = 9;
+  // 结束日期
+  google.protobuf.Timestamp ENDDA = 10;
+  // 备注
+  string NOTES = 11;
+}
+
+// =============================================================================
+// PayrollResult - 薪资计算结果
+// =============================================================================
+// 对应PCL2薪资结果簇
+message PayrollResult {
+  // 人员编号
+  string PERNR = 1;
+  // 薪资期间
+  string PERIOD = 2;
+  // 会计年度
+  int32 FISCAL_YEAR = 3;
+  // 薪资月份
+  int32 PAYROLL_MONTH = 4;
+  // 应发工资
+  killer.common.v1.Money GROSS_PAY = 5;
+  // 扣款合计
+  killer.common.v1.Money DEDUCTIONS = 6;
+  // 社保个人部分
+  killer.common.v1.Money SOCIAL_INSURANCE = 7;
+  // 个人所得税
+  killer.common.v1.Money INCOME_TAX = 8;
+  // 实发工资
+  killer.common.v1.Money NET_PAY = 9;
+  // 货币代码
+  string WAERS = 10;
+  // 发放状态
+  string STATUS = 11;
+  // 计算时间
+  google.protobuf.Timestamp CALCULATED_AT = 12;
+  // 明细列表
+  repeated PayrollItem details = 13;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建薪资记录请求
+message CreatePayrollRecordRequest {
+  // 人员编号
+  string PERNR = 1;
+  // 生效日期
+  google.protobuf.Timestamp BEGDA = 2;
+  // 失效日期
+  google.protobuf.Timestamp ENDDA = 3;
+  // 工资范围
+  string TRFAR = 4;
+  // 工资等级
+  string TRFGR = 5;
+  // 工资级别
+  string TRFST = 6;
+  // 年薪
+  killer.common.v1.Money ANSAL = 7;
+  // 货币代码
+  string WAERS = 8;
+  // 工资类型明细
+  repeated PayrollItem items = 9;
+}
+
+// 创建薪资记录响应
+message CreatePayrollRecordResponse {
+  // 创建的薪资记录
+  PayrollRecord payroll_record = 1;
+}
+
+// 获取薪资记录请求
+message GetPayrollRecordRequest {
+  // 人员编号
+  string PERNR = 1;
+  // 生效日期
+  google.protobuf.Timestamp effective_date = 2;
+}
+
+// 获取薪资记录响应
+message GetPayrollRecordResponse {
+  // 薪资记录
+  PayrollRecord payroll_record = 1;
+}
+
+// 查询薪资记录列表请求
+message ListPayrollRecordsRequest {
+  // 人员编号
+  string PERNR = 1;
+  // 生效日期起
+  google.protobuf.Timestamp BEGDA_FROM = 2;
+  // 生效日期止
+  google.protobuf.Timestamp BEGDA_TO = 3;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 4;
+}
+
+// 查询薪资记录列表响应
+message ListPayrollRecordsResponse {
+  // 薪资记录列表
+  repeated PayrollRecord payroll_records = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 执行薪资计算请求
+message RunPayrollRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 人事范围
+  string WERKS = 2;
+  // 薪资期间
+  string PERIOD = 3;
+  // 会计年度
+  int32 FISCAL_YEAR = 4;
+  // 薪资月份
+  int32 PAYROLL_MONTH = 5;
+  // 指定人员编号列表（可选，为空则全部计算）
+  repeated string PERNR_LIST = 6;
+}
+
+// 执行薪资计算响应
+message RunPayrollResponse {
+  // 运行标识
+  string RUN_ID = 1;
+  // 处理人数
+  int32 PROCESSED_COUNT = 2;
+  // 成功人数
+  int32 SUCCESS_COUNT = 3;
+  // 失败人数
+  int32 FAILED_COUNT = 4;
+  // 薪资结果列表
+  repeated PayrollResult results = 5;
+  // 计算完成时间
+  google.protobuf.Timestamp completed_at = 6;
+}

@@ -1,0 +1,232 @@
+// 文件路径: logistics/warehouse/v1/warehouse.proto
+// =============================================================================
+// KILLER ERP - 仓库管理服务 (EWM)
+// =============================================================================
+//
+// 基于ERP系统核心表LQUA/LAGP/LTAP设计
+// 提供仓位管理、库存量、仓库任务等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.logistics.warehouse.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.logistics.warehouse.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// WarehouseService - 仓库管理服务
+// =============================================================================
+service WarehouseService {
+  // 创建仓库任务
+  rpc CreateWarehouseTask(CreateWarehouseTaskRequest) returns (CreateWarehouseTaskResponse);
+  // 获取仓库任务
+  rpc GetWarehouseTask(GetWarehouseTaskRequest) returns (GetWarehouseTaskResponse);
+  // 查询仓库任务列表
+  rpc ListWarehouseTasks(ListWarehouseTasksRequest) returns (ListWarehouseTasksResponse);
+  // 获取仓位库存
+  rpc GetStorageBinStock(GetStorageBinStockRequest) returns (GetStorageBinStockResponse);
+}
+
+// =============================================================================
+// StorageBinStock - 仓位库存量（聚合根）
+// =============================================================================
+// 对应ERP系统核心表LQUA（仓库库存量）
+message StorageBinStock {
+  // 仓库号，对应LGNUM
+  string LGNUM = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 工厂，对应WERKS
+  string WERKS = 3;
+  // 仓位，对应LGPLA
+  string LGPLA = 4;
+  // 仓储类型，对应LGTYP
+  string LGTYP = 5;
+  // 总库存量，对应GESME
+  killer.common.v1.Quantity GESME = 6;
+  // 可用库存量，对应VERME
+  killer.common.v1.Quantity VERME = 7;
+  // 基本计量单位，对应MEINS
+  string MEINS = 8;
+  // 批次号，对应CHARG
+  string CHARG = 9;
+  // 库存类型，对应SOBKZ
+  string SOBKZ = 10;
+  // 库存特殊库存标识，对应SKZUE
+  string SKZUE = 11;
+  // 最后盘点日期，对应IDATU
+  google.protobuf.Timestamp IDATU = 12;
+  // 处理单元标识，对应LENUM
+  string LENUM = 13;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 14;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 15;
+}
+
+// =============================================================================
+// WarehouseTask - 仓库任务
+// =============================================================================
+// 对应ERP系统核心表LTAP（转储单项目）
+message WarehouseTask {
+  // 仓库号，对应LGNUM
+  string LGNUM = 1;
+  // 转储单号，对应TANUM
+  string TANUM = 2;
+  // 转储项目号，对应TAPOS
+  int32 TAPOS = 3;
+  // 物料号，对应MATNR
+  string MATNR = 4;
+  // 工厂，对应WERKS
+  string WERKS = 5;
+  // 源仓储类型，对应VLTYP
+  string VLTYP = 6;
+  // 源仓位，对应VLPLA
+  string VLPLA = 7;
+  // 目标仓储类型，对应NLTYP
+  string NLTYP = 8;
+  // 目标仓位，对应NLPLA
+  string NLPLA = 9;
+  // 数量，对应VSOLA
+  killer.common.v1.Quantity VSOLA = 10;
+  // 已确认数量，对应NISTA
+  killer.common.v1.Quantity NISTA = 11;
+  // 基本计量单位，对应MEINS
+  string MEINS = 12;
+  // 批次号，对应CHARG
+  string CHARG = 13;
+  // 处理单元，对应LENUM
+  string LENUM = 14;
+  // 任务状态，对应PTEFB
+  string PTEFB = 15;
+  // 参考凭证号，对应VBELN
+  string VBELN = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 18;
+  // 任务行项目
+  repeated WarehouseTaskItem items = 19;
+}
+
+// =============================================================================
+// WarehouseTaskItem - 仓库任务行项目
+// =============================================================================
+message WarehouseTaskItem {
+  // 行号
+  int32 TAPOS = 1;
+  // 物料号
+  string MATNR = 2;
+  // 源仓位
+  string VLPLA = 3;
+  // 目标仓位
+  string NLPLA = 4;
+  // 计划数量
+  killer.common.v1.Quantity VSOLA = 5;
+  // 确认数量
+  killer.common.v1.Quantity NISTA = 6;
+  // 批次号
+  string CHARG = 7;
+  // 处理单元
+  string LENUM = 8;
+  // 状态
+  string PTEFB = 9;
+  // 备注
+  string NOTES = 10;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建仓库任务请求
+message CreateWarehouseTaskRequest {
+  // 仓库号
+  string LGNUM = 1;
+  // 物料号
+  string MATNR = 2;
+  // 工厂
+  string WERKS = 3;
+  // 源仓储类型
+  string VLTYP = 4;
+  // 源仓位
+  string VLPLA = 5;
+  // 目标仓储类型
+  string NLTYP = 6;
+  // 目标仓位
+  string NLPLA = 7;
+  // 数量
+  killer.common.v1.Quantity VSOLA = 8;
+  // 批次号
+  string CHARG = 9;
+  // 参考凭证号
+  string VBELN = 10;
+  // 任务行项目
+  repeated WarehouseTaskItem items = 11;
+}
+
+// 创建仓库任务响应
+message CreateWarehouseTaskResponse {
+  // 创建的仓库任务
+  WarehouseTask warehouse_task = 1;
+}
+
+// 获取仓库任务请求
+message GetWarehouseTaskRequest {
+  // 仓库号
+  string LGNUM = 1;
+  // 转储单号
+  string TANUM = 2;
+}
+
+// 获取仓库任务响应
+message GetWarehouseTaskResponse {
+  // 仓库任务
+  WarehouseTask warehouse_task = 1;
+}
+
+// 查询仓库任务列表请求
+message ListWarehouseTasksRequest {
+  // 仓库号
+  string LGNUM = 1;
+  // 物料号
+  string MATNR = 2;
+  // 工厂
+  string WERKS = 3;
+  // 任务状态
+  string PTEFB = 4;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 5;
+}
+
+// 查询仓库任务列表响应
+message ListWarehouseTasksResponse {
+  // 仓库任务列表
+  repeated WarehouseTask warehouse_tasks = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 获取仓位库存请求
+message GetStorageBinStockRequest {
+  // 仓库号
+  string LGNUM = 1;
+  // 仓位
+  string LGPLA = 2;
+  // 物料号
+  string MATNR = 3;
+  // 批次号
+  string CHARG = 4;
+}
+
+// 获取仓位库存响应
+message GetStorageBinStockResponse {
+  // 仓位库存信息
+  StorageBinStock storage_bin_stock = 1;
+}

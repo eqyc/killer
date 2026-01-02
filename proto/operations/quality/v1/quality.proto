@@ -1,0 +1,211 @@
+// 文件路径: operations/quality/v1/quality.proto
+// =============================================================================
+// KILLER ERP - 质量管理服务 (QM)
+// =============================================================================
+//
+// 基于ERP系统核心表QALS设计
+// 提供质检批管理、检验结果记录等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.operations.quality.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.operations.quality.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// QualityService - 质量管理服务
+// =============================================================================
+service QualityService {
+  // 创建质检批
+  rpc CreateInspectionLot(CreateInspectionLotRequest) returns (CreateInspectionLotResponse);
+  // 获取质检批
+  rpc GetInspectionLot(GetInspectionLotRequest) returns (GetInspectionLotResponse);
+  // 查询质检批列表
+  rpc ListInspectionLots(ListInspectionLotsRequest) returns (ListInspectionLotsResponse);
+  // 记录检验结果
+  rpc RecordInspectionResult(RecordInspectionResultRequest) returns (RecordInspectionResultResponse);
+}
+
+// =============================================================================
+// InspectionLot - 质检批（聚合根）
+// =============================================================================
+// 对应ERP系统核心表QALS
+message InspectionLot {
+  // 质检批号，对应PRUEFLOS
+  string PRUEFLOS = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 工厂，对应WERKS
+  string WERKS = 3;
+  // 检验类型，对应ART
+  string ART = 4;
+  // 检验来源，对应HERKUNFT
+  string HERKUNFT = 5;
+  // 批次号，对应CHARG
+  string CHARG = 6;
+  // 检验批数量，对应LOSMENGE
+  killer.common.v1.Quantity LOSMENGE = 7;
+  // 基本计量单位，对应MENGENEINH
+  string MENGENEINH = 8;
+  // 供应商，对应LIFNR
+  string LIFNR = 9;
+  // 客户，对应KUNNR
+  string KUNNR = 10;
+  // 生产订单号，对应AUFNR
+  string AUFNR = 11;
+  // 采购订单号，对应EBELN
+  string EBELN = 12;
+  // 采购订单行号，对应EBELP
+  int32 EBELP = 13;
+  // 系统状态，对应STAT35
+  string STAT35 = 14;
+  // 使用决策，对应VCODE
+  string VCODE = 15;
+  // 接受数量，对应MGVGBZ
+  killer.common.v1.Quantity MGVGBZ = 16;
+  // 拒收数量，对应MGVGBX
+  killer.common.v1.Quantity MGVGBX = 17;
+  // 检验开始日期，对应PASTRTERM
+  google.protobuf.Timestamp PASTRTERM = 18;
+  // 检验结束日期，对应PAENDTERM
+  google.protobuf.Timestamp PAENDTERM = 19;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 20;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 21;
+  // 检验项目列表
+  repeated InspectionLotItem items = 22;
+}
+
+// =============================================================================
+// InspectionLotItem - 质检批行项目（检验特性）
+// =============================================================================
+message InspectionLotItem {
+  // 项目号
+  int32 POSNR = 1;
+  // 检验特性代码，对应VERWMERKM
+  string VERWMERKM = 2;
+  // 检验特性描述
+  string MERKTXT = 3;
+  // 抽样数量
+  killer.common.v1.Quantity STICHPROBE = 4;
+  // 合格数量
+  killer.common.v1.Quantity PASS_QTY = 5;
+  // 不合格数量
+  killer.common.v1.Quantity FAIL_QTY = 6;
+  // 检验方法，对应PMETHODE
+  string PMETHODE = 7;
+  // 目标值
+  string TARGET_VALUE = 8;
+  // 上限值
+  string UPPER_LIMIT = 9;
+  // 下限值
+  string LOWER_LIMIT = 10;
+  // 实际值
+  string ACTUAL_VALUE = 11;
+  // 结果判定（合格/不合格）
+  string RESULT = 12;
+  // 备注
+  string NOTES = 13;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建质检批请求
+message CreateInspectionLotRequest {
+  // 物料号
+  string MATNR = 1;
+  // 工厂
+  string WERKS = 2;
+  // 检验类型
+  string ART = 3;
+  // 检验来源
+  string HERKUNFT = 4;
+  // 批次号
+  string CHARG = 5;
+  // 检验批数量
+  killer.common.v1.Quantity LOSMENGE = 6;
+  // 供应商
+  string LIFNR = 7;
+  // 采购订单号
+  string EBELN = 8;
+  // 采购订单行号
+  int32 EBELP = 9;
+  // 检验项目列表
+  repeated InspectionLotItem items = 10;
+}
+
+// 创建质检批响应
+message CreateInspectionLotResponse {
+  // 创建的质检批
+  InspectionLot inspection_lot = 1;
+}
+
+// 获取质检批请求
+message GetInspectionLotRequest {
+  // 质检批号
+  string PRUEFLOS = 1;
+}
+
+// 获取质检批响应
+message GetInspectionLotResponse {
+  // 质检批
+  InspectionLot inspection_lot = 1;
+}
+
+// 查询质检批列表请求
+message ListInspectionLotsRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号
+  string MATNR = 2;
+  // 检验类型
+  string ART = 3;
+  // 系统状态
+  string STAT35 = 4;
+  // 检验开始日期起
+  google.protobuf.Timestamp PASTRTERM_FROM = 5;
+  // 检验开始日期止
+  google.protobuf.Timestamp PASTRTERM_TO = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询质检批列表响应
+message ListInspectionLotsResponse {
+  // 质检批列表
+  repeated InspectionLot inspection_lots = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 记录检验结果请求
+message RecordInspectionResultRequest {
+  // 质检批号
+  string PRUEFLOS = 1;
+  // 使用决策代码
+  string VCODE = 2;
+  // 接受数量
+  killer.common.v1.Quantity MGVGBZ = 3;
+  // 拒收数量
+  killer.common.v1.Quantity MGVGBX = 4;
+  // 检验项目结果
+  repeated InspectionLotItem results = 5;
+}
+
+// 记录检验结果响应
+message RecordInspectionResultResponse {
+  // 质检批号
+  string PRUEFLOS = 1;
+  // 更新后的质检批
+  InspectionLot inspection_lot = 2;
+}

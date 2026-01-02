@@ -1,0 +1,214 @@
+// 文件路径: human-capital/hr/v1/hr.proto
+// =============================================================================
+// KILLER ERP - 人力资源管理服务 (HCM-PA)
+// =============================================================================
+//
+// 基于ERP系统核心表PA0001/PA0002设计
+// 提供员工主数据管理、组织分配等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.human_capital.hr.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.human_capital.hr.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// HRService - 人力资源管理服务
+// =============================================================================
+service HRService {
+  // 创建员工
+  rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse);
+  // 获取员工
+  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse);
+  // 查询员工列表
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse);
+  // 更新组织分配
+  rpc UpdateOrgAssignment(UpdateOrgAssignmentRequest) returns (UpdateOrgAssignmentResponse);
+}
+
+// =============================================================================
+// Employee - 员工（聚合根）
+// =============================================================================
+// 对应ERP系统核心表PA0001（组织分配）/PA0002（个人数据）
+message Employee {
+  // 人员编号，对应PERNR
+  string PERNR = 1;
+  // 公司代码，对应BUKRS
+  string BUKRS = 2;
+  // 人事范围，对应WERKS
+  string WERKS = 3;
+  // 人事子范围，对应BTRTL
+  string BTRTL = 4;
+  // 成本中心，对应KOSTL
+  string KOSTL = 5;
+  // 组织单位，对应ORGEH
+  string ORGEH = 6;
+  // 职位，对应PLANS
+  string PLANS = 7;
+  // 员工姓名，对应ENAME（由PA0002复合）
+  string ENAME = 8;
+  // 姓，对应NACHN
+  string NACHN = 9;
+  // 名，对应VORNA
+  string VORNA = 10;
+  // 出生日期，对应GBDAT
+  google.protobuf.Timestamp GBDAT = 11;
+  // 性别，对应GESCH
+  string GESCH = 12;
+  // 国籍，对应NATIO
+  string NATIO = 13;
+  // 入职日期，对应BEGDA（PA0001首条记录）
+  google.protobuf.Timestamp BEGDA = 14;
+  // 离职日期，对应ENDDA
+  google.protobuf.Timestamp ENDDA = 15;
+  // 员工组，对应PERSG
+  string PERSG = 16;
+  // 员工子组，对应PERSK
+  string PERSK = 17;
+  // 工资范围，对应TRFAR
+  string TRFAR = 18;
+  // 工资等级，对应TRFGR
+  string TRFGR = 19;
+  // 工资级别，对应TRFST
+  string TRFST = 20;
+  // 婚姻状况，对应FAMST
+  string FAMST = 21;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 22;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 23;
+  // 信息类型记录列表
+  repeated EmployeeInfoRecord records = 24;
+}
+
+// =============================================================================
+// EmployeeInfoRecord - 员工信息类型记录
+// =============================================================================
+// 对应Infotype记录结构
+message EmployeeInfoRecord {
+  // 信息类型，对应INFTY
+  string INFTY = 1;
+  // 子类型，对应SUBTY
+  string SUBTY = 2;
+  // 生效日期，对应BEGDA
+  google.protobuf.Timestamp BEGDA = 3;
+  // 失效日期，对应ENDDA
+  google.protobuf.Timestamp ENDDA = 4;
+  // 序号，对应SEQNR
+  int32 SEQNR = 5;
+  // 记录数据（JSON格式存储具体字段）
+  string DATA = 6;
+  // 锁定标识，对应SPRPS
+  string SPRPS = 7;
+  // 变更原因，对应AESSION
+  string REASON = 8;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建员工请求
+message CreateEmployeeRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 人事范围
+  string WERKS = 2;
+  // 人事子范围
+  string BTRTL = 3;
+  // 成本中心
+  string KOSTL = 4;
+  // 员工组
+  string PERSG = 5;
+  // 员工子组
+  string PERSK = 6;
+  // 姓
+  string NACHN = 7;
+  // 名
+  string VORNA = 8;
+  // 出生日期
+  google.protobuf.Timestamp GBDAT = 9;
+  // 性别
+  string GESCH = 10;
+  // 入职日期
+  google.protobuf.Timestamp BEGDA = 11;
+}
+
+// 创建员工响应
+message CreateEmployeeResponse {
+  // 创建的员工
+  Employee employee = 1;
+}
+
+// 获取员工请求
+message GetEmployeeRequest {
+  // 人员编号
+  string PERNR = 1;
+  // 生效日期（可选，默认当前日期）
+  google.protobuf.Timestamp effective_date = 2;
+}
+
+// 获取员工响应
+message GetEmployeeResponse {
+  // 员工信息
+  Employee employee = 1;
+}
+
+// 查询员工列表请求
+message ListEmployeesRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 人事范围
+  string WERKS = 2;
+  // 成本中心
+  string KOSTL = 3;
+  // 组织单位
+  string ORGEH = 4;
+  // 员工组
+  string PERSG = 5;
+  // 在职状态（在职/离职）
+  string STATUS = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询员工列表响应
+message ListEmployeesResponse {
+  // 员工列表
+  repeated Employee employees = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 更新组织分配请求
+message UpdateOrgAssignmentRequest {
+  // 人员编号
+  string PERNR = 1;
+  // 生效日期
+  google.protobuf.Timestamp BEGDA = 2;
+  // 新公司代码
+  string BUKRS = 3;
+  // 新人事范围
+  string WERKS = 4;
+  // 新成本中心
+  string KOSTL = 5;
+  // 新组织单位
+  string ORGEH = 6;
+  // 新职位
+  string PLANS = 7;
+  // 变更原因
+  string REASON = 8;
+}
+
+// 更新组织分配响应
+message UpdateOrgAssignmentResponse {
+  // 更新后的员工信息
+  Employee employee = 1;
+}

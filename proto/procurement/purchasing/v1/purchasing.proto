@@ -1,0 +1,229 @@
+// 文件路径: procurement/purchasing/v1/purchasing.proto
+// =============================================================================
+// KILLER ERP - 采购管理服务 (MM-PUR)
+// =============================================================================
+//
+// 基于ERP系统核心表EKKO/EKPO设计
+// 提供采购订单管理、采购申请处理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.procurement.purchasing.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.procurement.purchasing.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// PurchasingService - 采购管理服务
+// =============================================================================
+service PurchasingService {
+  // 创建采购订单
+  rpc CreatePurchaseOrder(CreatePurchaseOrderRequest) returns (CreatePurchaseOrderResponse);
+  // 获取采购订单
+  rpc GetPurchaseOrder(GetPurchaseOrderRequest) returns (GetPurchaseOrderResponse);
+  // 查询采购订单列表
+  rpc ListPurchaseOrders(ListPurchaseOrdersRequest) returns (ListPurchaseOrdersResponse);
+  // 确认采购订单
+  rpc ConfirmPurchaseOrder(ConfirmPurchaseOrderRequest) returns (ConfirmPurchaseOrderResponse);
+}
+
+// =============================================================================
+// BSTYP - 采购凭证类型枚举
+// =============================================================================
+// 对应EKKO-BSTYP字段
+enum BSTYP {
+  // 未指定
+  BSTYP_UNSPECIFIED = 0;
+  // F = 标准采购订单
+  BSTYP_F = 1;
+  // K = 合同
+  BSTYP_K = 2;
+  // L = 计划协议
+  BSTYP_L = 3;
+  // A = 询价
+  BSTYP_A = 4;
+}
+
+// =============================================================================
+// PurchaseOrder - 采购订单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表EKKO
+message PurchaseOrder {
+  // 采购凭证号，对应EBELN
+  string EBELN = 1;
+  // 公司代码，对应BUKRS
+  string BUKRS = 2;
+  // 采购凭证类型，对应BSTYP
+  BSTYP BSTYP = 3;
+  // 采购凭证类别，对应BSART
+  string BSART = 4;
+  // 采购组织，对应EKORG
+  string EKORG = 5;
+  // 采购组，对应EKGRP
+  string EKGRP = 6;
+  // 供应商，对应LIFNR
+  string LIFNR = 7;
+  // 货币代码，对应WAERS
+  string WAERS = 8;
+  // 凭证日期，对应BEDAT
+  google.protobuf.Timestamp BEDAT = 9;
+  // 付款条款，对应ZTERM
+  string ZTERM = 10;
+  // 采购合同号，对应KDATB
+  string KONNR = 11;
+  // 总净值，对应RLWRT
+  killer.common.v1.Money RLWRT = 12;
+  // 状态，对应STATU
+  string STATU = 13;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 14;
+  // 来源系统标识
+  string SRC_SYSTEM = 15;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 16;
+  // 行项目列表
+  repeated PurchaseOrderItem items = 17;
+}
+
+// =============================================================================
+// PurchaseOrderItem - 采购订单行项目
+// =============================================================================
+// 对应ERP系统核心表EKPO
+message PurchaseOrderItem {
+  // 采购凭证项目号，对应EBELP
+  int32 EBELP = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 物料描述，对应TXZ01
+  string TXZ01 = 3;
+  // 工厂，对应WERKS
+  string WERKS = 4;
+  // 库存地点，对应LGORT
+  string LGORT = 5;
+  // 采购订单数量，对应MENGE
+  killer.common.v1.Quantity MENGE = 6;
+  // 订单单位，对应MEINS
+  string MEINS = 7;
+  // 净价，对应NETPR
+  killer.common.v1.Money NETPR = 8;
+  // 价格单位，对应PEINH
+  int32 PEINH = 9;
+  // 净值，对应NETWR
+  killer.common.v1.Money NETWR = 10;
+  // 税码，对应MWSKZ
+  string MWSKZ = 11;
+  // 交货日期，对应EINDT
+  google.protobuf.Timestamp EINDT = 12;
+  // 科目分配类别，对应KNTTP
+  string KNTTP = 13;
+  // 成本中心，对应KOSTL
+  string KOSTL = 14;
+  // 已收货数量，对应WEMNG
+  killer.common.v1.Quantity WEMNG = 15;
+  // 已开票数量，对应REMNG
+  killer.common.v1.Quantity REMNG = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 采购申请号，对应BANFN
+  string BANFN = 18;
+  // 采购申请项目号，对应BNFPO
+  int32 BNFPO = 19;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建采购订单请求
+message CreatePurchaseOrderRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 采购凭证类型
+  BSTYP BSTYP = 2;
+  // 采购凭证类别
+  string BSART = 3;
+  // 采购组织
+  string EKORG = 4;
+  // 采购组
+  string EKGRP = 5;
+  // 供应商
+  string LIFNR = 6;
+  // 货币代码
+  string WAERS = 7;
+  // 凭证日期
+  google.protobuf.Timestamp BEDAT = 8;
+  // 付款条款
+  string ZTERM = 9;
+  // 来源系统
+  string SRC_SYSTEM = 10;
+  // 行项目列表
+  repeated PurchaseOrderItem items = 11;
+}
+
+// 创建采购订单响应
+message CreatePurchaseOrderResponse {
+  // 创建的采购订单
+  PurchaseOrder purchase_order = 1;
+}
+
+// 获取采购订单请求
+message GetPurchaseOrderRequest {
+  // 采购凭证号
+  string EBELN = 1;
+}
+
+// 获取采购订单响应
+message GetPurchaseOrderResponse {
+  // 采购订单
+  PurchaseOrder purchase_order = 1;
+}
+
+// 查询采购订单列表请求
+message ListPurchaseOrdersRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 采购组织
+  string EKORG = 2;
+  // 供应商
+  string LIFNR = 3;
+  // 采购凭证类别
+  string BSART = 4;
+  // 凭证日期起
+  google.protobuf.Timestamp BEDAT_FROM = 5;
+  // 凭证日期止
+  google.protobuf.Timestamp BEDAT_TO = 6;
+  // 状态
+  string STATU = 7;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 8;
+}
+
+// 查询采购订单列表响应
+message ListPurchaseOrdersResponse {
+  // 采购订单列表
+  repeated PurchaseOrder purchase_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 确认采购订单请求
+message ConfirmPurchaseOrderRequest {
+  // 采购凭证号
+  string EBELN = 1;
+  // 确认日期
+  google.protobuf.Timestamp confirmation_date = 2;
+}
+
+// 确认采购订单响应
+message ConfirmPurchaseOrderResponse {
+  // 采购凭证号
+  string EBELN = 1;
+  // 确认时间
+  google.protobuf.Timestamp confirmed_at = 2;
+}

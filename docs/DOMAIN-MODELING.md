@@ -111,15 +111,15 @@ graph TB
 示例：订单删除时行项目必须一起删除 → OrderItem 属于 Order 聚合
 ```
 
-### 2.2 SAP 表映射到聚合根
+### 2.2 核心数据表映射到聚合根
 
-| SAP 表 | 聚合根 | 聚合内实体 | 映射说明 |
+| 数据表 | 聚合根 | 聚合内实体 | 映射说明 |
 |--------|--------|-----------|----------|
-| ACDOCA | JournalEntry | LineItem | 凭证主表 + 行项目 |
-| EKKO/EKPO | PurchaseOrder | OrderItem, Schedule | 采购订单头 + 行项目 + 交货计划 |
-| VBAK/VBAP | SalesOrder | OrderItem, Partner | 销售订单头 + 行项目 + 合作伙伴 |
-| MSEG/MKPF | MaterialDocument | MovementItem | 物料凭证头 + 移动行 |
-| BSEG/BKPF | AccountingDocument | PostingLine | 会计凭证头 + 过账行 |
+| 通用日记账 | JournalEntry | LineItem | 凭证主表 + 行项目 |
+| 采购订单头/行 | PurchaseOrder | OrderItem, Schedule | 采购订单头 + 行项目 + 交货计划 |
+| 销售订单头/行 | SalesOrder | OrderItem, Partner | 销售订单头 + 行项目 + 合作伙伴 |
+| 物料凭证头/行 | MaterialDocument | MovementItem | 物料凭证头 + 移动行 |
+| 会计凭证头/行 | AccountingDocument | PostingLine | 会计凭证头 + 过账行 |
 
 ### 2.3 示例：JournalEntry 聚合根
 
@@ -970,9 +970,9 @@ class SalesOrder {
 
 ## 10. 案例研究：财务凭证建模
 
-### 10.1 SAP ACDOCA 表分析
+### 10.1 ERP通用日记账 表分析
 
-SAP ACDOCA（通用日记账）是 S/4HANA 的核心财务数据表，存储所有财务过账的明细数据。
+ERP通用日记账（通用日记账）是 ERP系统 的核心财务数据表，存储所有财务过账的明细数据。
 
 | ACDOCA 字段 | 领域模型映射 | 说明 |
 |-------------|-------------|------|

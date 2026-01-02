@@ -1,0 +1,222 @@
+// 文件路径: project-rd/project/v1/project.proto
+// =============================================================================
+// KILLER ERP - 项目管理服务 (PS)
+// =============================================================================
+//
+// 基于ERP系统核心表PROJ/PRPS设计
+// 提供项目定义、WBS元素管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.project_rd.project.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.project_rd.project.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// ProjectService - 项目管理服务
+// =============================================================================
+service ProjectService {
+  // 创建项目
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
+  // 获取项目
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
+  // 查询项目列表
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
+  // 创建WBS元素
+  rpc CreateWBSElement(CreateWBSElementRequest) returns (CreateWBSElementResponse);
+}
+
+// =============================================================================
+// Project - 项目定义（聚合根）
+// =============================================================================
+// 对应ERP系统核心表PROJ
+message Project {
+  // 项目定义内部编号，对应PSPNR（PROJ表主键）
+  string PSPNR = 1;
+  // 项目定义编号，对应PSPID
+  string PSPID = 2;
+  // 项目描述，对应POST1
+  string POST1 = 3;
+  // 项目类型，对应PRART
+  string PRART = 4;
+  // 公司代码，对应VBUKR
+  string VBUKR = 5;
+  // 利润中心，对应PRCTR
+  string PRCTR = 6;
+  // 责任成本中心，对应PKOSTL
+  string PKOSTL = 7;
+  // 负责人，对应VERNR
+  string VERNR = 8;
+  // 工厂，对应WERKS
+  string WERKS = 9;
+  // 计划开始日期，对应PLFAZ
+  google.protobuf.Timestamp PLFAZ = 10;
+  // 计划完成日期，对应PLSEZ
+  google.protobuf.Timestamp PLSEZ = 11;
+  // 实际开始日期，对应ERFAZ
+  google.protobuf.Timestamp ERFAZ = 12;
+  // 实际完成日期，对应ERSEZ
+  google.protobuf.Timestamp ERSEZ = 13;
+  // 预测开始日期，对应PRFAZ
+  google.protobuf.Timestamp PRFAZ = 14;
+  // 预测完成日期，对应PRSEZ
+  google.protobuf.Timestamp PRSEZ = 15;
+  // 系统状态，对应SYSST
+  string SYSST = 16;
+  // 用户状态，对应USRST
+  string USRST = 17;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 18;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 19;
+  // WBS元素列表
+  repeated WBSElement items = 20;
+}
+
+// =============================================================================
+// WBSElement - WBS元素（项目行项目）
+// =============================================================================
+// 对应ERP系统核心表PRPS
+message WBSElement {
+  // WBS元素内部编号，对应PSPNR（PRPS表主键）
+  string PSPNR = 1;
+  // WBS元素编号，对应POSID
+  string POSID = 2;
+  // 项目定义编号（上级），对应PSPHI
+  string PSPHI = 3;
+  // 对象编号，对应OBJNR
+  string OBJNR = 4;
+  // WBS描述，对应POST1
+  string POST1 = 5;
+  // 层级，对应STUFE
+  int32 STUFE = 6;
+  // 上级WBS，对应PROJU
+  string PROJU = 7;
+  // 公司代码，对应PBUKR
+  string PBUKR = 8;
+  // 利润中心，对应PRCTR
+  string PRCTR = 9;
+  // 责任成本中心，对应PKOSTL
+  string PKOSTL = 10;
+  // 负责人，对应VERNR
+  string VERNR = 11;
+  // 计划开始日期，对应PLFAZ
+  google.protobuf.Timestamp PLFAZ = 12;
+  // 计划完成日期，对应PLSEZ
+  google.protobuf.Timestamp PLSEZ = 13;
+  // 计划工时
+  killer.common.v1.Quantity PLAN_HOURS = 14;
+  // 实际工时
+  killer.common.v1.Quantity ACTUAL_HOURS = 15;
+  // 计划成本
+  killer.common.v1.Money PLAN_COST = 16;
+  // 实际成本
+  killer.common.v1.Money ACTUAL_COST = 17;
+  // 系统状态
+  string SYSST = 18;
+  // 用户状态
+  string USRST = 19;
+  // 删除标识
+  string LOEKZ = 20;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建项目请求
+message CreateProjectRequest {
+  // 项目定义编号
+  string PSPID = 1;
+  // 项目描述
+  string POST1 = 2;
+  // 项目类型
+  string PRART = 3;
+  // 公司代码
+  string VBUKR = 4;
+  // 利润中心
+  string PRCTR = 5;
+  // 负责人
+  string VERNR = 6;
+  // 计划开始日期
+  google.protobuf.Timestamp PLFAZ = 7;
+  // 计划完成日期
+  google.protobuf.Timestamp PLSEZ = 8;
+}
+
+// 创建项目响应
+message CreateProjectResponse {
+  // 创建的项目
+  Project project = 1;
+}
+
+// 获取项目请求
+message GetProjectRequest {
+  // 项目定义编号
+  string PSPID = 1;
+}
+
+// 获取项目响应
+message GetProjectResponse {
+  // 项目
+  Project project = 1;
+}
+
+// 查询项目列表请求
+message ListProjectsRequest {
+  // 公司代码
+  string VBUKR = 1;
+  // 项目类型
+  string PRART = 2;
+  // 负责人
+  string VERNR = 3;
+  // 系统状态
+  string SYSST = 4;
+  // 计划开始日期起
+  google.protobuf.Timestamp PLFAZ_FROM = 5;
+  // 计划开始日期止
+  google.protobuf.Timestamp PLFAZ_TO = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询项目列表响应
+message ListProjectsResponse {
+  // 项目列表
+  repeated Project projects = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 创建WBS元素请求
+message CreateWBSElementRequest {
+  // 项目定义编号
+  string PSPHI = 1;
+  // WBS元素编号
+  string POSID = 2;
+  // WBS描述
+  string POST1 = 3;
+  // 上级WBS（可选）
+  string PROJU = 4;
+  // 利润中心
+  string PRCTR = 5;
+  // 负责人
+  string VERNR = 6;
+  // 计划开始日期
+  google.protobuf.Timestamp PLFAZ = 7;
+  // 计划完成日期
+  google.protobuf.Timestamp PLSEZ = 8;
+}
+
+// 创建WBS元素响应
+message CreateWBSElementResponse {
+  // 创建的WBS元素
+  WBSElement wbs_element = 1;
+}

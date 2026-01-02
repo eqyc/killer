@@ -1,0 +1,182 @@
+// 文件路径: common/v1/master_data.proto
+// =============================================================================
+// KILLER ERP - 主数据管理服务 (MDG)
+// =============================================================================
+//
+// 基于ERP系统核心表MDG_BS_*设计
+// 提供主数据治理、数据质量管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.common.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.common.v1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+
+// =============================================================================
+// MasterDataService - 主数据管理服务
+// =============================================================================
+service MasterDataService {
+  // 创建主数据记录
+  rpc CreateMasterRecord(CreateMasterRecordRequest) returns (CreateMasterRecordResponse);
+  // 获取主数据记录
+  rpc GetMasterRecord(GetMasterRecordRequest) returns (GetMasterRecordResponse);
+  // 查询主数据记录列表
+  rpc ListMasterRecords(ListMasterRecordsRequest) returns (ListMasterRecordsResponse);
+  // 更新主数据状态
+  rpc UpdateMasterRecordStatus(UpdateMasterRecordStatusRequest) returns (UpdateMasterRecordStatusResponse);
+}
+
+// =============================================================================
+// MasterRecord - 主数据记录（聚合根）
+// =============================================================================
+// 对应MDG通用主数据模型
+message MasterRecord {
+  // 记录标识
+  string RECORD_ID = 1;
+  // 主数据类型（物料/客户/供应商/科目等）
+  string TYPE = 2;
+  // 主数据对象编号（如物料号、客户号等）
+  string OBJECT_ID = 3;
+  // 描述
+  string DESCRIPTION = 4;
+  // 属性集合（键值对）
+  map<string, string> ATTRIBUTES = 5;
+  // 变更请求号，对应CREQUEST_ID
+  string CREQUEST_ID = 6;
+  // 状态（草稿/待审批/已激活/已废弃）
+  string STATUS = 7;
+  // 数据来源
+  string SOURCE_SYSTEM = 8;
+  // 版本号
+  int32 VERSION = 9;
+  // 有效起始日期
+  google.protobuf.Timestamp VALID_FROM = 10;
+  // 有效截止日期
+  google.protobuf.Timestamp VALID_TO = 11;
+  // 公司代码
+  string BUKRS = 12;
+  // 工厂
+  string WERKS = 13;
+  // 组织层级数据
+  map<string, string> ORG_DATA = 14;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 15;
+  // 审计信息
+  AuditInfo audit_info = 16;
+  // 扩展字段列表
+  repeated MasterRecordField fields = 17;
+}
+
+// =============================================================================
+// MasterRecordField - 主数据字段
+// =============================================================================
+message MasterRecordField {
+  // 字段名称
+  string FIELD_NAME = 1;
+  // 字段值
+  string FIELD_VALUE = 2;
+  // 字段类型（字符串/数字/日期等）
+  string FIELD_TYPE = 3;
+  // 字段描述
+  string FIELD_DESC = 4;
+  // 是否必填
+  bool REQUIRED = 5;
+  // 验证规则
+  string VALIDATION_RULE = 6;
+  // 组织级别
+  string ORG_LEVEL = 7;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建主数据记录请求
+message CreateMasterRecordRequest {
+  // 主数据类型
+  string TYPE = 1;
+  // 主数据对象编号
+  string OBJECT_ID = 2;
+  // 描述
+  string DESCRIPTION = 3;
+  // 属性集合
+  map<string, string> ATTRIBUTES = 4;
+  // 数据来源
+  string SOURCE_SYSTEM = 5;
+  // 公司代码
+  string BUKRS = 6;
+  // 工厂
+  string WERKS = 7;
+  // 扩展字段列表
+  repeated MasterRecordField fields = 8;
+}
+
+// 创建主数据记录响应
+message CreateMasterRecordResponse {
+  // 创建的主数据记录
+  MasterRecord master_record = 1;
+}
+
+// 获取主数据记录请求
+message GetMasterRecordRequest {
+  // 记录标识
+  string RECORD_ID = 1;
+  // 或通过类型+对象编号查询
+  string TYPE = 2;
+  string OBJECT_ID = 3;
+  // 有效日期
+  google.protobuf.Timestamp effective_date = 4;
+}
+
+// 获取主数据记录响应
+message GetMasterRecordResponse {
+  // 主数据记录
+  MasterRecord master_record = 1;
+}
+
+// 查询主数据记录列表请求
+message ListMasterRecordsRequest {
+  // 主数据类型
+  string TYPE = 1;
+  // 状态
+  string STATUS = 2;
+  // 公司代码
+  string BUKRS = 3;
+  // 工厂
+  string WERKS = 4;
+  // 数据来源
+  string SOURCE_SYSTEM = 5;
+  // 分页请求
+  PageRequest page_request = 6;
+}
+
+// 查询主数据记录列表响应
+message ListMasterRecordsResponse {
+  // 主数据记录列表
+  repeated MasterRecord master_records = 1;
+  // 分页信息
+  PageInfo page_info = 2;
+}
+
+// 更新主数据状态请求
+message UpdateMasterRecordStatusRequest {
+  // 记录标识
+  string RECORD_ID = 1;
+  // 新状态
+  string STATUS = 2;
+  // 备注
+  string NOTES = 3;
+}
+
+// 更新主数据状态响应
+message UpdateMasterRecordStatusResponse {
+  // 更新后的主数据记录
+  MasterRecord master_record = 1;
+}

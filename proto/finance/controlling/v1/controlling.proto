@@ -1,0 +1,212 @@
+// 文件路径: finance/controlling/v1/controlling.proto
+// =============================================================================
+// KILLER ERP - 管理会计服务 (CO)
+// =============================================================================
+//
+// 基于ERP系统核心表COEP/COSP/COSS设计
+// 提供成本核算、内部订单、成本中心会计等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.finance.controlling.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.finance.controlling.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// ControllingService - 管理会计服务
+// =============================================================================
+service ControllingService {
+  // 创建成本凭证
+  rpc CreateCostDocument(CreateCostDocumentRequest) returns (CreateCostDocumentResponse);
+  // 获取成本凭证
+  rpc GetCostDocument(GetCostDocumentRequest) returns (GetCostDocumentResponse);
+  // 查询成本凭证列表
+  rpc ListCostDocuments(ListCostDocumentsRequest) returns (ListCostDocumentsResponse);
+  // 获取成本中心报表
+  rpc GetCostCenterReport(GetCostCenterReportRequest) returns (GetCostCenterReportResponse);
+}
+
+// =============================================================================
+// CostDocument - 成本凭证（聚合根）
+// =============================================================================
+// 对应ERP系统核心表COEP（成本核算凭证）
+message CostDocument {
+  // 控制范围，对应KOKRS
+  string KOKRS = 1;
+  // 对象号，对应OBJNR
+  string OBJNR = 2;
+  // 会计年度，对应GJAHR
+  int32 GJAHR = 3;
+  // 期间，对应PERIO
+  int32 PERIO = 4;
+  // 记录代码，对应WRTTP，区分计划/实际
+  string WRTTP = 5;
+  // 业务类型，对应VRGNG
+  string VRGNG = 6;
+  // 版本，对应VERSN
+  string VERSN = 7;
+  // 成本要素，对应KSTAR
+  string KSTAR = 8;
+  // 成本中心，对应KOSTL
+  string KOSTL = 9;
+  // 公司代码，对应BUKRS
+  string BUKRS = 10;
+  // 货币代码，对应WAERS
+  string WAERS = 11;
+  // 金额（第1期），对应WKG001
+  killer.common.v1.Money WKG001 = 12;
+  // 金额（第2期），对应WKG002
+  killer.common.v1.Money WKG002 = 13;
+  // 金额（第3期），对应WKG003
+  killer.common.v1.Money WKG003 = 14;
+  // 计量单位，对应MEINB
+  string MEINB = 15;
+  // 数量（第1期），对应MEG001
+  killer.common.v1.Quantity MEG001 = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 18;
+  // 行项目列表
+  repeated CostDocumentItem items = 19;
+}
+
+// =============================================================================
+// CostDocumentItem - 成本凭证行项目
+// =============================================================================
+// 对应COEP行级字段
+message CostDocumentItem {
+  // 行号
+  int32 ZEESSION = 1;
+  // 成本要素，对应KSTAR
+  string KSTAR = 2;
+  // 发送方成本中心，对应SKOSTL
+  string SKOSTL = 3;
+  // 接收方成本中心，对应KOSTL
+  string KOSTL = 4;
+  // 内部订单，对应AUFNR
+  string AUFNR = 5;
+  // 金额，对应WKGBTR
+  killer.common.v1.Money WKGBTR = 6;
+  // 数量，对应MBGBTR
+  killer.common.v1.Quantity MBGBTR = 7;
+  // 计量单位，对应MEINH
+  string MEINH = 8;
+  // 活动类型，对应LSTAR
+  string LSTAR = 9;
+  // 利润中心，对应PRCTR
+  string PRCTR = 10;
+  // 功能范围，对应FKBER
+  string FKBER = 11;
+  // 参考凭证号，对应REFBN
+  string REFBN = 12;
+  // 行项目文本
+  string SGTXT = 13;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建成本凭证请求
+message CreateCostDocumentRequest {
+  // 控制范围
+  string KOKRS = 1;
+  // 会计年度
+  int32 GJAHR = 2;
+  // 期间
+  int32 PERIO = 3;
+  // 记录代码（计划/实际）
+  string WRTTP = 4;
+  // 业务类型
+  string VRGNG = 5;
+  // 成本中心
+  string KOSTL = 6;
+  // 货币代码
+  string WAERS = 7;
+  // 行项目列表
+  repeated CostDocumentItem items = 8;
+}
+
+// 创建成本凭证响应
+message CreateCostDocumentResponse {
+  // 创建的成本凭证
+  CostDocument cost_document = 1;
+}
+
+// 获取成本凭证请求
+message GetCostDocumentRequest {
+  // 控制范围
+  string KOKRS = 1;
+  // 对象号
+  string OBJNR = 2;
+  // 会计年度
+  int32 GJAHR = 3;
+}
+
+// 获取成本凭证响应
+message GetCostDocumentResponse {
+  // 成本凭证
+  CostDocument cost_document = 1;
+}
+
+// 查询成本凭证列表请求
+message ListCostDocumentsRequest {
+  // 控制范围
+  string KOKRS = 1;
+  // 成本中心
+  string KOSTL = 2;
+  // 会计年度
+  int32 GJAHR = 3;
+  // 期间范围起
+  int32 PERIO_FROM = 4;
+  // 期间范围止
+  int32 PERIO_TO = 5;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 6;
+}
+
+// 查询成本凭证列表响应
+message ListCostDocumentsResponse {
+  // 成本凭证列表
+  repeated CostDocument cost_documents = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 获取成本中心报表请求
+message GetCostCenterReportRequest {
+  // 控制范围
+  string KOKRS = 1;
+  // 成本中心
+  string KOSTL = 2;
+  // 会计年度
+  int32 GJAHR = 3;
+  // 期间
+  int32 PERIO = 4;
+  // 版本
+  string VERSN = 5;
+}
+
+// 获取成本中心报表响应
+message GetCostCenterReportResponse {
+  // 成本中心
+  string KOSTL = 1;
+  // 会计年度
+  int32 GJAHR = 2;
+  // 计划金额
+  killer.common.v1.Money plan_amount = 3;
+  // 实际金额
+  killer.common.v1.Money actual_amount = 4;
+  // 差异金额
+  killer.common.v1.Money variance_amount = 5;
+  // 明细行项目
+  repeated CostDocumentItem details = 6;
+}

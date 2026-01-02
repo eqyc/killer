@@ -1,0 +1,201 @@
+// 文件路径: procurement/scm/v1/scm.proto
+// =============================================================================
+// KILLER ERP - 供应链计划服务 (SCM)
+// =============================================================================
+//
+// 参考ERP系统 /SCMB*或SNP相关表设计
+// 提供需求计划、供应计划、物料需求计划等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.procurement.scm.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.procurement.scm.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// SupplyChainService - 供应链计划服务
+// =============================================================================
+service SupplyChainService {
+  // 创建供应链计划
+  rpc CreateSupplyPlan(CreateSupplyPlanRequest) returns (CreateSupplyPlanResponse);
+  // 获取供应链计划
+  rpc GetSupplyPlan(GetSupplyPlanRequest) returns (GetSupplyPlanResponse);
+  // 查询供应链计划列表
+  rpc ListSupplyPlans(ListSupplyPlansRequest) returns (ListSupplyPlansResponse);
+  // 执行MRP运行
+  rpc RunMRP(RunMRPRequest) returns (RunMRPResponse);
+}
+
+// =============================================================================
+// SupplyPlan - 供应链计划（聚合根）
+// =============================================================================
+// 参考SNP计划表设计
+message SupplyPlan {
+  // 计划标识
+  string PLAN_ID = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 工厂，对应WERKS
+  string WERKS = 3;
+  // 计划日期，对应PLAN_DATE
+  google.protobuf.Timestamp PLAN_DATE = 4;
+  // 需求数量
+  killer.common.v1.Quantity DEMAND_QTY = 5;
+  // 供应数量
+  killer.common.v1.Quantity SUPPLY_QTY = 6;
+  // 预计库存
+  killer.common.v1.Quantity PROJECTED_STOCK = 7;
+  // 安全库存
+  killer.common.v1.Quantity SAFETY_STOCK = 8;
+  // 再订货点
+  killer.common.v1.Quantity REORDER_POINT = 9;
+  // 计划版本
+  string VERSION = 10;
+  // 计划类型（需求计划/供应计划）
+  string PLAN_TYPE = 11;
+  // 状态
+  string STATUS = 12;
+  // MRP控制者，对应DISPO
+  string DISPO = 13;
+  // MRP类型，对应DISMM
+  string DISMM = 14;
+  // 批量大小，对应DISLS
+  string DISLS = 15;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 16;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 17;
+  // 计划行项目
+  repeated SupplyPlanItem items = 18;
+}
+
+// =============================================================================
+// SupplyPlanItem - 供应链计划行项目
+// =============================================================================
+message SupplyPlanItem {
+  // 行号
+  int32 POSNR = 1;
+  // 计划日期
+  google.protobuf.Timestamp PLAN_DATE = 2;
+  // 需求类型（独立需求/相关需求）
+  string DEMAND_TYPE = 3;
+  // 需求来源（销售订单/预测等）
+  string DEMAND_SOURCE = 4;
+  // 需求来源凭证号
+  string SOURCE_DOC = 5;
+  // 需求数量
+  killer.common.v1.Quantity DEMAND_QTY = 6;
+  // 供应类型（采购订单/生产订单等）
+  string SUPPLY_TYPE = 7;
+  // 供应来源凭证号
+  string SUPPLY_DOC = 8;
+  // 供应数量
+  killer.common.v1.Quantity SUPPLY_QTY = 9;
+  // 可用库存
+  killer.common.v1.Quantity AVAIL_QTY = 10;
+  // 缺料标识
+  bool SHORTAGE = 11;
+  // 备注
+  string NOTES = 12;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建供应链计划请求
+message CreateSupplyPlanRequest {
+  // 物料号
+  string MATNR = 1;
+  // 工厂
+  string WERKS = 2;
+  // 计划日期
+  google.protobuf.Timestamp PLAN_DATE = 3;
+  // 计划版本
+  string VERSION = 4;
+  // 计划类型
+  string PLAN_TYPE = 5;
+  // 计划行项目
+  repeated SupplyPlanItem items = 6;
+}
+
+// 创建供应链计划响应
+message CreateSupplyPlanResponse {
+  // 创建的供应链计划
+  SupplyPlan supply_plan = 1;
+}
+
+// 获取供应链计划请求
+message GetSupplyPlanRequest {
+  // 计划标识
+  string PLAN_ID = 1;
+}
+
+// 获取供应链计划响应
+message GetSupplyPlanResponse {
+  // 供应链计划
+  SupplyPlan supply_plan = 1;
+}
+
+// 查询供应链计划列表请求
+message ListSupplyPlansRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号
+  string MATNR = 2;
+  // 计划类型
+  string PLAN_TYPE = 3;
+  // 计划日期起
+  google.protobuf.Timestamp PLAN_DATE_FROM = 4;
+  // 计划日期止
+  google.protobuf.Timestamp PLAN_DATE_TO = 5;
+  // 状态
+  string STATUS = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询供应链计划列表响应
+message ListSupplyPlansResponse {
+  // 供应链计划列表
+  repeated SupplyPlan supply_plans = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 执行MRP运行请求
+message RunMRPRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号（可选，不填则全工厂运行）
+  string MATNR = 2;
+  // MRP控制者
+  string DISPO = 3;
+  // 计划日期
+  google.protobuf.Timestamp PLAN_DATE = 4;
+  // 是否创建采购申请
+  bool CREATE_PURCHASE_REQ = 5;
+  // 是否创建计划订单
+  bool CREATE_PLANNED_ORDER = 6;
+}
+
+// 执行MRP运行响应
+message RunMRPResponse {
+  // 运行标识
+  string RUN_ID = 1;
+  // 处理物料数
+  int32 PROCESSED_COUNT = 2;
+  // 生成采购申请数
+  int32 PURCHASE_REQ_COUNT = 3;
+  // 生成计划订单数
+  int32 PLANNED_ORDER_COUNT = 4;
+  // 运行完成时间
+  google.protobuf.Timestamp completed_at = 5;
+}

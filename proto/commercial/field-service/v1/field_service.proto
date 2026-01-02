@@ -1,0 +1,225 @@
+// 文件路径: commercial/field-service/v1/field_service.proto
+// =============================================================================
+// KILLER ERP - 现场服务管理 (FSM)
+// =============================================================================
+//
+// 参考ERP系统 DP90/服务订单表设计
+// 提供现场服务订单、设备维修、工单派发等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.commercial.field_service.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.commercial.field_service.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// FieldService - 现场服务管理
+// =============================================================================
+service FieldService {
+  // 创建服务订单
+  rpc CreateServiceOrder(CreateServiceOrderRequest) returns (CreateServiceOrderResponse);
+  // 获取服务订单
+  rpc GetServiceOrder(GetServiceOrderRequest) returns (GetServiceOrderResponse);
+  // 查询服务订单列表
+  rpc ListServiceOrders(ListServiceOrdersRequest) returns (ListServiceOrdersResponse);
+  // 分配技术人员
+  rpc AssignTechnician(AssignTechnicianRequest) returns (AssignTechnicianResponse);
+}
+
+// =============================================================================
+// PRIORITY - 优先级枚举
+// =============================================================================
+enum PRIORITY {
+  // 未指定
+  PRIORITY_UNSPECIFIED = 0;
+  // 紧急
+  PRIORITY_URGENT = 1;
+  // 高
+  PRIORITY_HIGH = 2;
+  // 中
+  PRIORITY_MEDIUM = 3;
+  // 低
+  PRIORITY_LOW = 4;
+}
+
+// =============================================================================
+// ServiceOrder - 服务订单（聚合根）
+// =============================================================================
+// 参考ERP服务订单设计
+message ServiceOrder {
+  // 服务订单标识
+  string SERVICE_ORDER_ID = 1;
+  // 服务订单类型
+  string ORDER_TYPE = 2;
+  // 设备标识，对应EQUNR
+  string EQUIPMENT_ID = 3;
+  // 功能位置，对应TPLNR
+  string FUNC_LOCATION = 4;
+  // 描述
+  string DESCRIPTION = 5;
+  // 优先级
+  PRIORITY PRIORITY = 6;
+  // 客户编号，对应KUNNR
+  string KUNNR = 7;
+  // 客户名称
+  string CUSTOMER_NAME = 8;
+  // 联系电话
+  string CONTACT_PHONE = 9;
+  // 服务地点
+  killer.common.v1.Address SERVICE_ADDRESS = 10;
+  // 计划服务日期
+  google.protobuf.Timestamp SCHEDULED_DATE = 11;
+  // 预计开始时间
+  google.protobuf.Timestamp SCHEDULED_START = 12;
+  // 预计结束时间
+  google.protobuf.Timestamp SCHEDULED_END = 13;
+  // 实际开始时间
+  google.protobuf.Timestamp ACTUAL_START = 14;
+  // 实际结束时间
+  google.protobuf.Timestamp ACTUAL_END = 15;
+  // 技术人员编号
+  string TECHNICIAN_ID = 16;
+  // 技术人员姓名
+  string TECHNICIAN_NAME = 17;
+  // 预估费用
+  killer.common.v1.Money ESTIMATED_COST = 18;
+  // 实际费用
+  killer.common.v1.Money ACTUAL_COST = 19;
+  // 状态
+  string STATUS = 20;
+  // 删除标识
+  string LOEKZ = 21;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 22;
+  // 服务项目列表
+  repeated ServiceOrderItem items = 23;
+}
+
+// =============================================================================
+// ServiceOrderItem - 服务订单行项目
+// =============================================================================
+message ServiceOrderItem {
+  // 项目号
+  int32 POSNR = 1;
+  // 项目类型（人工/备件/其他）
+  string ITEM_TYPE = 2;
+  // 物料/服务编号
+  string MATERIAL_ID = 3;
+  // 描述
+  string DESCRIPTION = 4;
+  // 数量
+  killer.common.v1.Quantity QUANTITY = 5;
+  // 单位
+  string UOM = 6;
+  // 单价
+  killer.common.v1.Money UNIT_PRICE = 7;
+  // 总价
+  killer.common.v1.Money TOTAL_PRICE = 8;
+  // 货币代码
+  string CURRENCY = 9;
+  // 工时（小时）
+  killer.common.v1.Quantity DURATION = 10;
+  // 状态
+  string STATUS = 11;
+  // 备注
+  string NOTES = 12;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建服务订单请求
+message CreateServiceOrderRequest {
+  // 服务订单类型
+  string ORDER_TYPE = 1;
+  // 设备标识
+  string EQUIPMENT_ID = 2;
+  // 功能位置
+  string FUNC_LOCATION = 3;
+  // 描述
+  string DESCRIPTION = 4;
+  // 优先级
+  PRIORITY PRIORITY = 5;
+  // 客户编号
+  string KUNNR = 6;
+  // 联系电话
+  string CONTACT_PHONE = 7;
+  // 服务地点
+  killer.common.v1.Address SERVICE_ADDRESS = 8;
+  // 计划服务日期
+  google.protobuf.Timestamp SCHEDULED_DATE = 9;
+  // 服务项目列表
+  repeated ServiceOrderItem items = 10;
+}
+
+// 创建服务订单响应
+message CreateServiceOrderResponse {
+  // 创建的服务订单
+  ServiceOrder service_order = 1;
+}
+
+// 获取服务订单请求
+message GetServiceOrderRequest {
+  // 服务订单标识
+  string SERVICE_ORDER_ID = 1;
+}
+
+// 获取服务订单响应
+message GetServiceOrderResponse {
+  // 服务订单
+  ServiceOrder service_order = 1;
+}
+
+// 查询服务订单列表请求
+message ListServiceOrdersRequest {
+  // 客户编号
+  string KUNNR = 1;
+  // 设备标识
+  string EQUIPMENT_ID = 2;
+  // 优先级
+  PRIORITY PRIORITY = 3;
+  // 状态
+  string STATUS = 4;
+  // 技术人员编号
+  string TECHNICIAN_ID = 5;
+  // 计划服务日期起
+  google.protobuf.Timestamp SCHEDULED_FROM = 6;
+  // 计划服务日期止
+  google.protobuf.Timestamp SCHEDULED_TO = 7;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 8;
+}
+
+// 查询服务订单列表响应
+message ListServiceOrdersResponse {
+  // 服务订单列表
+  repeated ServiceOrder service_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 分配技术人员请求
+message AssignTechnicianRequest {
+  // 服务订单标识
+  string SERVICE_ORDER_ID = 1;
+  // 技术人员编号
+  string TECHNICIAN_ID = 2;
+  // 计划开始时间
+  google.protobuf.Timestamp SCHEDULED_START = 3;
+  // 计划结束时间
+  google.protobuf.Timestamp SCHEDULED_END = 4;
+}
+
+// 分配技术人员响应
+message AssignTechnicianResponse {
+  // 更新后的服务订单
+  ServiceOrder service_order = 1;
+}

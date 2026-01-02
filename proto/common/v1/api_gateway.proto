@@ -1,0 +1,101 @@
+// 文件路径: common/v1/api_gateway.proto
+// =============================================================================
+// KILLER ERP - API网关服务
+// =============================================================================
+//
+// 提供统一的API网关功能，包括请求路由、认证代理等
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.common.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.common.v1";
+
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// APIGatewayService - API网关服务
+// =============================================================================
+service APIGatewayService {
+  // 代理请求
+  rpc ProxyRequest(ProxyRequestMessage) returns (ProxyResponseMessage);
+  // 健康检查
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// =============================================================================
+// ProxyRequestMessage - 代理请求消息
+// =============================================================================
+message ProxyRequestMessage {
+  // HTTP方法（GET/POST/PUT/DELETE等）
+  string METHOD = 1;
+  // 请求路径
+  string PATH = 2;
+  // 请求头
+  map<string, string> HEADERS = 3;
+  // 查询参数
+  map<string, string> QUERY_PARAMS = 4;
+  // 请求体（JSON字符串或二进制）
+  bytes BODY = 5;
+  // 请求ID
+  string REQUEST_ID = 6;
+  // 客户端IP
+  string CLIENT_IP = 7;
+  // 用户令牌
+  string TOKEN = 8;
+  // 请求时间戳
+  google.protobuf.Timestamp REQUEST_TIME = 9;
+  // 目标服务名称
+  string TARGET_SERVICE = 10;
+  // 超时时间（毫秒）
+  int32 TIMEOUT_MS = 11;
+}
+
+// =============================================================================
+// ProxyResponseMessage - 代理响应消息
+// =============================================================================
+message ProxyResponseMessage {
+  // HTTP状态码
+  int32 STATUS_CODE = 1;
+  // 响应头
+  map<string, string> HEADERS = 2;
+  // 响应体
+  bytes BODY = 3;
+  // 请求ID（用于追踪）
+  string REQUEST_ID = 4;
+  // 响应时间戳
+  google.protobuf.Timestamp RESPONSE_TIME = 5;
+  // 处理耗时（毫秒）
+  int64 DURATION_MS = 6;
+  // 错误消息（如有）
+  string ERROR_MESSAGE = 7;
+}
+
+// =============================================================================
+// HealthCheckRequest - 健康检查请求
+// =============================================================================
+message HealthCheckRequest {
+  // 服务名称（可选，为空则检查网关自身）
+  string SERVICE_NAME = 1;
+}
+
+// =============================================================================
+// HealthCheckResponse - 健康检查响应
+// =============================================================================
+message HealthCheckResponse {
+  // 服务名称
+  string SERVICE_NAME = 1;
+  // 健康状态
+  string STATUS = 2;
+  // 版本号
+  string VERSION = 3;
+  // 启动时间
+  google.protobuf.Timestamp START_TIME = 4;
+  // 检查时间
+  google.protobuf.Timestamp CHECK_TIME = 5;
+  // 详细信息
+  map<string, string> DETAILS = 6;
+}

@@ -1,0 +1,202 @@
+// 文件路径: finance/treasury/v1/treasury.proto
+// =============================================================================
+// KILLER ERP - 资金管理服务 (TR)
+// =============================================================================
+//
+// 基于ERP系统核心表FQM_FLOW/TRLPOS设计
+// 提供现金管理、流动性预测、银行账户管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.finance.treasury.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.finance.treasury.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// TreasuryService - 资金管理服务
+// =============================================================================
+service TreasuryService {
+  // 创建现金流项目
+  rpc CreateCashFlow(CreateCashFlowRequest) returns (CreateCashFlowResponse);
+  // 获取现金流项目
+  rpc GetCashFlow(GetCashFlowRequest) returns (GetCashFlowResponse);
+  // 查询现金流列表
+  rpc ListCashFlows(ListCashFlowsRequest) returns (ListCashFlowsResponse);
+  // 获取流动性报表
+  rpc GetLiquidityReport(GetLiquidityReportRequest) returns (GetLiquidityReportResponse);
+}
+
+// =============================================================================
+// CashFlow - 现金流项目（聚合根）
+// =============================================================================
+// 对应ERP系统核心表FQM_FLOW
+message CashFlow {
+  // 现金流唯一标识
+  string FLOW_ID = 1;
+  // 公司代码，对应BUKRS
+  string BUKRS = 2;
+  // 银行账户，对应BANK_ACCOUNT
+  string BANK_ACCOUNT = 3;
+  // 现金流类型，对应CASH_FLOW_TYPE (I=流入, O=流出)
+  string CASH_FLOW_TYPE = 4;
+  // 流动性科目，对应LIQUIDITY_ITEM
+  string LIQUIDITY_ITEM = 5;
+  // 计划日期，对应PLAN_DATE
+  google.protobuf.Timestamp PLAN_DATE = 6;
+  // 过账日期，对应BUDAT
+  google.protobuf.Timestamp BUDAT = 7;
+  // 金额，对应AMOUNT
+  killer.common.v1.Money AMOUNT = 8;
+  // 货币代码，对应WAERS
+  string WAERS = 9;
+  // 业务伙伴，对应PARTNER
+  string PARTNER = 10;
+  // 参考凭证号，对应REF_DOC
+  string REF_DOC = 11;
+  // 现金流来源，对应SOURCE
+  string SOURCE = 12;
+  // 状态（计划/确认/实际）
+  string STATUS = 13;
+  // 备注
+  string NOTES = 14;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 15;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 16;
+  // 明细行项目
+  repeated CashFlowItem items = 17;
+}
+
+// =============================================================================
+// CashFlowItem - 现金流行项目
+// =============================================================================
+// 对应TRLPOS表行级字段
+message CashFlowItem {
+  // 行号，对应POSNR
+  int32 POSNR = 1;
+  // 流动性科目，对应LIQUIDITY_ITEM
+  string LIQUIDITY_ITEM = 2;
+  // 金额，对应AMOUNT
+  killer.common.v1.Money AMOUNT = 3;
+  // 货币代码，对应WAERS
+  string WAERS = 4;
+  // 起息日，对应VALUE_DATE
+  google.protobuf.Timestamp VALUE_DATE = 5;
+  // 描述
+  string DESCRIPTION = 6;
+  // 银行账户
+  string BANK_ACCOUNT = 7;
+  // 参考凭证号
+  string REF_DOC = 8;
+  // 参考凭证行号
+  int32 REF_POSNR = 9;
+  // 内部订单
+  string AUFNR = 10;
+  // 成本中心
+  string KOSTL = 11;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建现金流请求
+message CreateCashFlowRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 银行账户
+  string BANK_ACCOUNT = 2;
+  // 现金流类型
+  string CASH_FLOW_TYPE = 3;
+  // 流动性科目
+  string LIQUIDITY_ITEM = 4;
+  // 计划日期
+  google.protobuf.Timestamp PLAN_DATE = 5;
+  // 金额
+  killer.common.v1.Money AMOUNT = 6;
+  // 货币代码
+  string WAERS = 7;
+  // 业务伙伴
+  string PARTNER = 8;
+  // 明细行项目
+  repeated CashFlowItem items = 9;
+}
+
+// 创建现金流响应
+message CreateCashFlowResponse {
+  // 创建的现金流
+  CashFlow cash_flow = 1;
+}
+
+// 获取现金流请求
+message GetCashFlowRequest {
+  // 现金流唯一标识
+  string FLOW_ID = 1;
+  // 公司代码
+  string BUKRS = 2;
+}
+
+// 获取现金流响应
+message GetCashFlowResponse {
+  // 现金流信息
+  CashFlow cash_flow = 1;
+}
+
+// 查询现金流列表请求
+message ListCashFlowsRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 银行账户
+  string BANK_ACCOUNT = 2;
+  // 现金流类型
+  string CASH_FLOW_TYPE = 3;
+  // 计划日期起
+  google.protobuf.Timestamp PLAN_DATE_FROM = 4;
+  // 计划日期止
+  google.protobuf.Timestamp PLAN_DATE_TO = 5;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 6;
+}
+
+// 查询现金流列表响应
+message ListCashFlowsResponse {
+  // 现金流列表
+  repeated CashFlow cash_flows = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 获取流动性报表请求
+message GetLiquidityReportRequest {
+  // 公司代码
+  string BUKRS = 1;
+  // 报表日期起
+  google.protobuf.Timestamp DATE_FROM = 2;
+  // 报表日期止
+  google.protobuf.Timestamp DATE_TO = 3;
+  // 货币代码
+  string WAERS = 4;
+}
+
+// 获取流动性报表响应
+message GetLiquidityReportResponse {
+  // 公司代码
+  string BUKRS = 1;
+  // 期初余额
+  killer.common.v1.Money opening_balance = 2;
+  // 流入总额
+  killer.common.v1.Money total_inflow = 3;
+  // 流出总额
+  killer.common.v1.Money total_outflow = 4;
+  // 期末余额
+  killer.common.v1.Money closing_balance = 5;
+  // 明细数据
+  repeated CashFlow details = 6;
+}

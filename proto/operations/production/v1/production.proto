@@ -1,0 +1,206 @@
+// 文件路径: operations/production/v1/production.proto
+// =============================================================================
+// KILLER ERP - 生产管理服务 (PP)
+// =============================================================================
+//
+// 基于ERP系统核心表AFKO/AFPO设计
+// 提供生产订单管理、工单处理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.operations.production.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.operations.production.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// ProductionService - 生产管理服务
+// =============================================================================
+service ProductionService {
+  // 创建生产订单
+  rpc CreateProductionOrder(CreateProductionOrderRequest) returns (CreateProductionOrderResponse);
+  // 获取生产订单
+  rpc GetProductionOrder(GetProductionOrderRequest) returns (GetProductionOrderResponse);
+  // 查询生产订单列表
+  rpc ListProductionOrders(ListProductionOrdersRequest) returns (ListProductionOrdersResponse);
+  // 确认生产订单
+  rpc ConfirmProductionOrder(ConfirmProductionOrderRequest) returns (ConfirmProductionOrderResponse);
+}
+
+// =============================================================================
+// ProductionOrder - 生产订单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表AFKO（订单头数据）
+message ProductionOrder {
+  // 生产订单号，对应AUFNR
+  string AUFNR = 1;
+  // 订单类型，对应AUART
+  string AUART = 2;
+  // 产品物料号，对应MATNR
+  string MATNR = 3;
+  // 工厂，对应WERKS
+  string WERKS = 4;
+  // 生产版本，对应VERID
+  string VERID = 5;
+  // 计划数量，对应GAMNG
+  killer.common.v1.Quantity GAMNG = 6;
+  // 基本计量单位，对应GMEIN
+  string GMEIN = 7;
+  // 计划开始日期，对应GSTRP
+  google.protobuf.Timestamp GSTRP = 8;
+  // 计划完成日期，对应GLTRP
+  google.protobuf.Timestamp GLTRP = 9;
+  // 实际开始日期，对应GSTRS
+  google.protobuf.Timestamp GSTRS = 10;
+  // 实际完成日期，对应GLTRS
+  google.protobuf.Timestamp GLTRS = 11;
+  // 预留号，对应RSNUM
+  string RSNUM = 12;
+  // 工艺路线号，对应PLNNR
+  string PLNNR = 13;
+  // 订单状态，对应SUSTA
+  string SUSTA = 14;
+  // 已确认数量，对应IGMNG
+  killer.common.v1.Quantity IGMNG = 15;
+  // 已报废数量，对应IAMNG
+  killer.common.v1.Quantity IAMNG = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 18;
+  // 订单项目列表
+  repeated ProductionOrderItem items = 19;
+}
+
+// =============================================================================
+// ProductionOrderItem - 生产订单行项目
+// =============================================================================
+// 对应ERP系统核心表AFPO（订单项目数据）
+message ProductionOrderItem {
+  // 订单项目号，对应POSNR
+  int32 POSNR = 1;
+  // 物料号，对应MATNR
+  string MATNR = 2;
+  // 需求数量，对应PSMNG
+  killer.common.v1.Quantity PSMNG = 3;
+  // 基本计量单位，对应MEINS
+  string MEINS = 4;
+  // 工厂，对应WERKS
+  string WERKS = 5;
+  // 库存地点，对应LGORT
+  string LGORT = 6;
+  // 需求日期，对应LTRMP
+  google.protobuf.Timestamp LTRMP = 7;
+  // 已收货数量，对应WEMNG
+  killer.common.v1.Quantity WEMNG = 8;
+  // 销售订单号，对应KDAUF
+  string KDAUF = 9;
+  // 销售订单项目号，对应KDPOS
+  int32 KDPOS = 10;
+  // 批次号，对应CHARG
+  string CHARG = 11;
+  // 项目类型，对应POSAR
+  string POSAR = 12;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 13;
+  // 行项目文本
+  string POTXT = 14;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建生产订单请求
+message CreateProductionOrderRequest {
+  // 订单类型
+  string AUART = 1;
+  // 产品物料号
+  string MATNR = 2;
+  // 工厂
+  string WERKS = 3;
+  // 生产版本
+  string VERID = 4;
+  // 计划数量
+  killer.common.v1.Quantity GAMNG = 5;
+  // 计划开始日期
+  google.protobuf.Timestamp GSTRP = 6;
+  // 计划完成日期
+  google.protobuf.Timestamp GLTRP = 7;
+  // 订单项目列表
+  repeated ProductionOrderItem items = 8;
+}
+
+// 创建生产订单响应
+message CreateProductionOrderResponse {
+  // 创建的生产订单
+  ProductionOrder production_order = 1;
+}
+
+// 获取生产订单请求
+message GetProductionOrderRequest {
+  // 生产订单号
+  string AUFNR = 1;
+}
+
+// 获取生产订单响应
+message GetProductionOrderResponse {
+  // 生产订单
+  ProductionOrder production_order = 1;
+}
+
+// 查询生产订单列表请求
+message ListProductionOrdersRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号
+  string MATNR = 2;
+  // 订单类型
+  string AUART = 3;
+  // 订单状态
+  string SUSTA = 4;
+  // 计划开始日期起
+  google.protobuf.Timestamp GSTRP_FROM = 5;
+  // 计划开始日期止
+  google.protobuf.Timestamp GSTRP_TO = 6;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 7;
+}
+
+// 查询生产订单列表响应
+message ListProductionOrdersResponse {
+  // 生产订单列表
+  repeated ProductionOrder production_orders = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 确认生产订单请求
+message ConfirmProductionOrderRequest {
+  // 生产订单号
+  string AUFNR = 1;
+  // 确认数量
+  killer.common.v1.Quantity confirmed_quantity = 2;
+  // 报废数量
+  killer.common.v1.Quantity scrap_quantity = 3;
+  // 确认日期
+  google.protobuf.Timestamp confirmation_date = 4;
+  // 工序号
+  string VORNR = 5;
+}
+
+// 确认生产订单响应
+message ConfirmProductionOrderResponse {
+  // 生产订单号
+  string AUFNR = 1;
+  // 确认凭证号
+  string RUESSION = 2;
+  // 确认时间
+  google.protobuf.Timestamp confirmed_at = 3;
+}

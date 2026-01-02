@@ -1,0 +1,178 @@
+// 文件路径: common/v1/identity.proto
+// =============================================================================
+// KILLER ERP - 身份认证服务
+// =============================================================================
+//
+// 基于ERP系统核心表USR01/USR02/UST*设计
+// 提供用户认证、授权管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.common.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.common.v1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+
+// =============================================================================
+// IdentityService - 身份认证服务
+// =============================================================================
+service IdentityService {
+  // 用户认证
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
+  // 验证令牌
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  // 获取用户信息
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  // 查询用户列表
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+// =============================================================================
+// User - 用户（聚合根）
+// =============================================================================
+// 对应ERP系统核心表USR01/USR02
+message User {
+  // 用户名，对应BNAME
+  string BNAME = 1;
+  // 用户类型，对应USTYP (A=对话用户, B=系统用户, C=通讯用户等)
+  string USTYP = 2;
+  // 有效起始日期，对应GLTGV
+  google.protobuf.Timestamp GLTGV = 3;
+  // 有效截止日期，对应GLTGB
+  google.protobuf.Timestamp GLTGB = 4;
+  // 用户组，对应CLASS
+  string CLASS = 5;
+  // 人员编号（关联HR），对应PERSNUMBER
+  string PERSNUMBER = 6;
+  // 姓名
+  string FULLNAME = 7;
+  // 电子邮箱
+  string EMAIL = 8;
+  // 电话
+  string PHONE = 9;
+  // 部门
+  string DEPARTMENT = 10;
+  // 最后登录时间，对应TRDAT/LTIME
+  google.protobuf.Timestamp LAST_LOGIN = 11;
+  // 登录失败次数
+  int32 FAIL_COUNT = 12;
+  // 锁定状态，对应UFLAG
+  string UFLAG = 13;
+  // 密码更改日期，对应PWDCHGDATE
+  google.protobuf.Timestamp PWDCHGDATE = 14;
+  // 默认语言
+  string LANGUAGE = 15;
+  // 默认时区
+  string TIMEZONE = 16;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 17;
+  // 审计信息
+  AuditInfo audit_info = 18;
+  // 用户角色列表
+  repeated UserRole roles = 19;
+}
+
+// =============================================================================
+// UserRole - 用户角色
+// =============================================================================
+// 对应AGR_USERS表
+message UserRole {
+  // 角色名称，对应AGR_NAME
+  string AGR_NAME = 1;
+  // 角色描述
+  string DESCRIPTION = 2;
+  // 有效起始日期，对应FROM_DAT
+  google.protobuf.Timestamp FROM_DAT = 3;
+  // 有效截止日期，对应TO_DAT
+  google.protobuf.Timestamp TO_DAT = 4;
+  // 组织级别值
+  repeated string ORG_VALUES = 5;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 用户认证请求
+message AuthenticateRequest {
+  // 用户名
+  string BNAME = 1;
+  // 密码
+  string PASSWORD = 2;
+  // 客户端类型
+  string CLIENT_TYPE = 3;
+  // 客户端IP
+  string CLIENT_IP = 4;
+}
+
+// 用户认证响应
+message AuthenticateResponse {
+  // 是否成功
+  bool SUCCESS = 1;
+  // 访问令牌
+  string ACCESS_TOKEN = 2;
+  // 刷新令牌
+  string REFRESH_TOKEN = 3;
+  // 令牌过期时间
+  google.protobuf.Timestamp EXPIRES_AT = 4;
+  // 用户信息
+  User user = 5;
+  // 错误消息（如失败）
+  string ERROR_MESSAGE = 6;
+}
+
+// 验证令牌请求
+message ValidateTokenRequest {
+  // 访问令牌
+  string ACCESS_TOKEN = 1;
+}
+
+// 验证令牌响应
+message ValidateTokenResponse {
+  // 是否有效
+  bool VALID = 1;
+  // 用户名
+  string BNAME = 2;
+  // 过期时间
+  google.protobuf.Timestamp EXPIRES_AT = 3;
+  // 用户角色列表
+  repeated string ROLES = 4;
+}
+
+// 获取用户请求
+message GetUserRequest {
+  // 用户名
+  string BNAME = 1;
+}
+
+// 获取用户响应
+message GetUserResponse {
+  // 用户信息
+  User user = 1;
+}
+
+// 查询用户列表请求
+message ListUsersRequest {
+  // 用户类型
+  string USTYP = 1;
+  // 用户组
+  string CLASS = 2;
+  // 状态（活跃/锁定）
+  string STATUS = 3;
+  // 分页请求
+  PageRequest page_request = 4;
+}
+
+// 查询用户列表响应
+message ListUsersResponse {
+  // 用户列表
+  repeated User users = 1;
+  // 分页信息
+  PageInfo page_info = 2;
+}

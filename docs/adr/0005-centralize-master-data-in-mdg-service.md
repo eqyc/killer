@@ -105,7 +105,7 @@ KILLER ERP 系统包含多个业务域服务：财务、销售、采购、生产
 ## 相关链接
 
 - [ADR-0002: 采用 gRPC 进行服务间通信](0002-adopt-grpc-for-service-communication.md)
-- [SAP MDG 概念](https://www.sap.com/products/master-data-governance.html)
+- [ERP主数据治理 概念](https://www.example.com/mdg.html)
 - [微服务中的数据管理](https://microservices.io/patterns/data/database-per-service.html)
 
 ---

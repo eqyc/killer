@@ -1,0 +1,229 @@
+// 文件路径: project-rd/plm/v1/plm.proto
+// =============================================================================
+// KILLER ERP - 产品生命周期管理服务 (PLM)
+// =============================================================================
+//
+// 基于ERP系统核心表STKO/STPO设计
+// 提供BOM管理、工程变更管理等功能
+//
+// =============================================================================
+
+syntax = "proto3";
+
+package killer.project_rd.plm.v1;
+
+option java_multiple_files = true;
+option java_package = "com.killer.project_rd.plm.v1";
+
+import "common/v1/types.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// PLMService - 产品生命周期管理服务
+// =============================================================================
+service PLMService {
+  // 创建BOM
+  rpc CreateBOM(CreateBOMRequest) returns (CreateBOMResponse);
+  // 获取BOM
+  rpc GetBOM(GetBOMRequest) returns (GetBOMResponse);
+  // 查询BOM列表
+  rpc ListBOMs(ListBOMsRequest) returns (ListBOMsResponse);
+  // 创建工程变更单
+  rpc CreateChangeOrder(CreateChangeOrderRequest) returns (CreateChangeOrderResponse);
+}
+
+// =============================================================================
+// BillOfMaterial - 物料清单（聚合根）
+// =============================================================================
+// 对应ERP系统核心表STKO（BOM头）
+message BillOfMaterial {
+  // BOM编号，对应STLNR
+  string STLNR = 1;
+  // BOM类别，对应STLTY
+  string STLTY = 2;
+  // BOM用途，对应STLAN
+  string STLAN = 3;
+  // 替代BOM，对应STLAL
+  string STLAL = 4;
+  // 物料号，对应MATNR
+  string MATNR = 5;
+  // 工厂，对应WERKS
+  string WERKS = 6;
+  // 基本数量，对应BMENG
+  killer.common.v1.Quantity BMENG = 7;
+  // 基本计量单位，对应BMEIN
+  string BMEIN = 8;
+  // 有效起始日期，对应DATEFR
+  google.protobuf.Timestamp DATEFR = 9;
+  // 有效截止日期，对应DATETO
+  google.protobuf.Timestamp DATETO = 10;
+  // BOM状态，对应STLST
+  string STLST = 11;
+  // BOM文本，对应STKTX
+  string STKTX = 12;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 13;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 14;
+  // BOM项目列表
+  repeated BOMItem items = 15;
+}
+
+// =============================================================================
+// BOMItem - BOM行项目
+// =============================================================================
+// 对应ERP系统核心表STPO
+message BOMItem {
+  // 项目编号，对应STPOZ
+  int32 STPOZ = 1;
+  // 组件物料号，对应IDNRK
+  string IDNRK = 2;
+  // 组件描述
+  string OJTXP = 3;
+  // 项目类别，对应POSTP
+  string POSTP = 4;
+  // 组件数量，对应MENGE
+  killer.common.v1.Quantity MENGE = 5;
+  // 组件单位，对应MEINS
+  string MEINS = 6;
+  // 有效起始日期，对应DATEFR
+  google.protobuf.Timestamp DATEFR = 7;
+  // 有效截止日期，对应DATETO
+  google.protobuf.Timestamp DATETO = 8;
+  // 排序字符串，对应SORTF
+  string SORTF = 9;
+  // 工序号（工艺路线关联），对应POSNR
+  string POSNR_OP = 10;
+  // 废品率（百分比），对应AUESSION
+  string SCRAP_RATE = 11;
+  // 固定数量标识，对应FMENG
+  bool FMENG = 12;
+  // 成本相关标识，对应ERSKZ
+  string ERSKZ = 13;
+  // 删除标识，对应LOEKZ
+  string LOEKZ = 14;
+  // 备注
+  string NOTES = 15;
+}
+
+// =============================================================================
+// ChangeOrder - 工程变更单
+// =============================================================================
+message ChangeOrder {
+  // 变更单号
+  string CHANGE_NO = 1;
+  // 变更类型
+  string CHANGE_TYPE = 2;
+  // 描述
+  string DESCRIPTION = 3;
+  // 生效日期
+  google.protobuf.Timestamp EFFECTIVE_DATE = 4;
+  // 物料号
+  string MATNR = 5;
+  // 工厂
+  string WERKS = 6;
+  // 负责人
+  string RESPONSIBLE = 7;
+  // 状态
+  string STATUS = 8;
+  // 原因代码
+  string REASON_CODE = 9;
+  // 删除标识
+  string LOEKZ = 10;
+  // 审计信息
+  killer.common.v1.AuditInfo audit_info = 11;
+}
+
+// =============================================================================
+// 请求/响应消息定义
+// =============================================================================
+
+// 创建BOM请求
+message CreateBOMRequest {
+  // BOM类别
+  string STLTY = 1;
+  // BOM用途
+  string STLAN = 2;
+  // 物料号
+  string MATNR = 3;
+  // 工厂
+  string WERKS = 4;
+  // 基本数量
+  killer.common.v1.Quantity BMENG = 5;
+  // 有效起始日期
+  google.protobuf.Timestamp DATEFR = 6;
+  // BOM文本
+  string STKTX = 7;
+  // BOM项目列表
+  repeated BOMItem items = 8;
+}
+
+// 创建BOM响应
+message CreateBOMResponse {
+  // 创建的BOM
+  BillOfMaterial bom = 1;
+}
+
+// 获取BOM请求
+message GetBOMRequest {
+  // BOM编号
+  string STLNR = 1;
+  // 或通过物料号+工厂查询
+  string MATNR = 2;
+  string WERKS = 3;
+  // 有效日期
+  google.protobuf.Timestamp effective_date = 4;
+}
+
+// 获取BOM响应
+message GetBOMResponse {
+  // BOM
+  BillOfMaterial bom = 1;
+}
+
+// 查询BOM列表请求
+message ListBOMsRequest {
+  // 工厂
+  string WERKS = 1;
+  // 物料号
+  string MATNR = 2;
+  // BOM类别
+  string STLTY = 3;
+  // BOM状态
+  string STLST = 4;
+  // 分页请求
+  killer.common.v1.PageRequest page_request = 5;
+}
+
+// 查询BOM列表响应
+message ListBOMsResponse {
+  // BOM列表
+  repeated BillOfMaterial boms = 1;
+  // 分页信息
+  killer.common.v1.PageInfo page_info = 2;
+}
+
+// 创建工程变更单请求
+message CreateChangeOrderRequest {
+  // 变更类型
+  string CHANGE_TYPE = 1;
+  // 描述
+  string DESCRIPTION = 2;
+  // 生效日期
+  google.protobuf.Timestamp EFFECTIVE_DATE = 3;
+  // 物料号
+  string MATNR = 4;
+  // 工厂
+  string WERKS = 5;
+  // 负责人
+  string RESPONSIBLE = 6;
+  // 原因代码
+  string REASON_CODE = 7;
+}
+
+// 创建工程变更单响应
+message CreateChangeOrderResponse {
+  // 创建的工程变更单
+  ChangeOrder change_order = 1;
+}
