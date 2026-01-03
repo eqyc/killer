@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package commercial.field_service.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/commercial.field_service.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service FieldService {
   // 创建服务订单
-  rpc CreateServiceOrder(CreateServiceOrderRequest) returns (CreateServiceOrderResponse);
+  rpc CreateServiceOrder(CreateServiceOrderRequest) returns (CreateServiceOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-field_service/serviceorder"
+    };
+  }
   // 获取服务订单
-  rpc GetServiceOrder(GetServiceOrderRequest) returns (GetServiceOrderResponse);
+  rpc GetServiceOrder(GetServiceOrderRequest) returns (GetServiceOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-field_service/serviceorder"
+    };
+  }
   // 查询服务订单列表
-  rpc ListServiceOrders(ListServiceOrdersRequest) returns (ListServiceOrdersResponse);
+  rpc ListServiceOrders(ListServiceOrdersRequest) returns (ListServiceOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-field_service/serviceorders"
+    };
+  }
   // 分配技术人员
-  rpc AssignTechnician(AssignTechnicianRequest) returns (AssignTechnicianResponse);
+  rpc AssignTechnician(AssignTechnicianRequest) returns (AssignTechnicianResponse) {
+    option (google.api.http) = {
+        post: "/v1-field_service/assigntechnician"
+    };
+  }
 }
 
 // =============================================================================

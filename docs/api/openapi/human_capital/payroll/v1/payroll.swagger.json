@@ -1,0 +1,503 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "human_capital/payroll/v1/payroll.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PayrollService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-payroll/payrollrecord": {
+      "post": {
+        "summary": "获取薪资记录",
+        "operationId": "PayrollService_GetPayrollRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPayrollRecordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PayrollService"
+        ]
+      }
+    },
+    "/v1-payroll/payrollrecords": {
+      "post": {
+        "summary": "查询薪资记录列表",
+        "operationId": "PayrollService_ListPayrollRecords",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPayrollRecordsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PayrollService"
+        ]
+      }
+    },
+    "/v1-payroll/runpayroll": {
+      "post": {
+        "summary": "执行薪资计算",
+        "operationId": "PayrollService_RunPayroll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RunPayrollResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PayrollService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1CreatePayrollRecordResponse": {
+      "type": "object",
+      "properties": {
+        "payrollRecord": {
+          "$ref": "#/definitions/v1PayrollRecord",
+          "title": "创建的薪资记录"
+        }
+      },
+      "title": "创建薪资记录响应"
+    },
+    "v1GetPayrollRecordResponse": {
+      "type": "object",
+      "properties": {
+        "payrollRecord": {
+          "$ref": "#/definitions/v1PayrollRecord",
+          "title": "薪资记录"
+        }
+      },
+      "title": "获取薪资记录响应"
+    },
+    "v1ListPayrollRecordsResponse": {
+      "type": "object",
+      "properties": {
+        "payrollRecords": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PayrollRecord"
+          },
+          "title": "薪资记录列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询薪资记录列表响应"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1PayrollItem": {
+      "type": "object",
+      "properties": {
+        "SEQNR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "行号"
+        },
+        "LGART": {
+          "type": "string",
+          "title": "工资类型，对应LGART"
+        },
+        "LGTXT": {
+          "type": "string",
+          "title": "工资类型描述"
+        },
+        "BETRG": {
+          "$ref": "#/definitions/v1Money",
+          "title": "金额，对应BETRG"
+        },
+        "ANZHL": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "数量/工时，对应ANZHL"
+        },
+        "EINHT": {
+          "type": "string",
+          "title": "单位"
+        },
+        "BASE": {
+          "$ref": "#/definitions/v1Money",
+          "title": "计算基数"
+        },
+        "RATE": {
+          "type": "string",
+          "title": "百分比"
+        },
+        "BEGDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "开始日期"
+        },
+        "ENDDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "结束日期"
+        },
+        "NOTES": {
+          "type": "string",
+          "title": "备注"
+        }
+      },
+      "title": "=============================================================================\nPayrollItem - 薪资明细行项目\n=============================================================================\n对应ERP工资类型明细"
+    },
+    "v1PayrollRecord": {
+      "type": "object",
+      "properties": {
+        "PERNR": {
+          "type": "string",
+          "title": "人员编号，对应PERNR"
+        },
+        "INFTY": {
+          "type": "string",
+          "title": "信息类型，对应INFTY"
+        },
+        "SUBTY": {
+          "type": "string",
+          "title": "子类型，对应SUBTY"
+        },
+        "BEGDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "生效日期，对应BEGDA"
+        },
+        "ENDDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "失效日期，对应ENDDA"
+        },
+        "SEQNR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "序号，对应SEQNR"
+        },
+        "TRFAR": {
+          "type": "string",
+          "title": "工资范围，对应TRFAR"
+        },
+        "TRFGR": {
+          "type": "string",
+          "title": "工资等级，对应TRFGR"
+        },
+        "TRFST": {
+          "type": "string",
+          "title": "工资级别，对应TRFST"
+        },
+        "ANSAL": {
+          "$ref": "#/definitions/v1Money",
+          "title": "年薪，对应ANSAL"
+        },
+        "WAERS": {
+          "type": "string",
+          "title": "货币代码，对应WAESSION"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PayrollItem"
+          },
+          "title": "工资类型明细"
+        }
+      },
+      "title": "=============================================================================\nPayrollRecord - 薪资记录（聚合根）\n=============================================================================\n对应ERP系统核心表PA0008（基本工资）"
+    },
+    "v1PayrollResult": {
+      "type": "object",
+      "properties": {
+        "PERNR": {
+          "type": "string",
+          "title": "人员编号"
+        },
+        "PERIOD": {
+          "type": "string",
+          "title": "薪资期间"
+        },
+        "FISCALYEAR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "会计年度"
+        },
+        "PAYROLLMONTH": {
+          "type": "integer",
+          "format": "int32",
+          "title": "薪资月份"
+        },
+        "GROSSPAY": {
+          "$ref": "#/definitions/v1Money",
+          "title": "应发工资"
+        },
+        "DEDUCTIONS": {
+          "$ref": "#/definitions/v1Money",
+          "title": "扣款合计"
+        },
+        "SOCIALINSURANCE": {
+          "$ref": "#/definitions/v1Money",
+          "title": "社保个人部分"
+        },
+        "INCOMETAX": {
+          "$ref": "#/definitions/v1Money",
+          "title": "个人所得税"
+        },
+        "NETPAY": {
+          "$ref": "#/definitions/v1Money",
+          "title": "实发工资"
+        },
+        "WAERS": {
+          "type": "string",
+          "title": "货币代码"
+        },
+        "STATUS": {
+          "type": "string",
+          "title": "发放状态"
+        },
+        "CALCULATEDAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计算时间"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PayrollItem"
+          },
+          "title": "明细列表"
+        }
+      },
+      "title": "=============================================================================\nPayrollResult - 薪资计算结果\n=============================================================================\n对应PCL2薪资结果簇"
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1RunPayrollResponse": {
+      "type": "object",
+      "properties": {
+        "RUNID": {
+          "type": "string",
+          "title": "运行标识"
+        },
+        "PROCESSEDCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "处理人数"
+        },
+        "SUCCESSCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "成功人数"
+        },
+        "FAILEDCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "失败人数"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PayrollResult"
+          },
+          "title": "薪资结果列表"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计算完成时间"
+        }
+      },
+      "title": "执行薪资计算响应"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    }
+  }
+}

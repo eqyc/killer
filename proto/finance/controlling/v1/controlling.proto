@@ -1,6 +1,10 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package finance.controlling.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/finance.controlling.v1";
 
 import "common/v1/types.proto";
 import "google/protobuf/timestamp.proto";
@@ -12,95 +16,247 @@ import "google/protobuf/timestamp.proto";
 service ControllingService {
   // === 成本凭证管理 ===
   // 创建成本凭证
-  rpc CreateCostDocument(CreateCostDocumentRequest) returns (CreateCostDocumentResponse);
+  rpc CreateCostDocument(CreateCostDocumentRequest) returns (CreateCostDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costdocument"
+    };
+  }
   // 获取成本凭证
-  rpc GetCostDocument(GetCostDocumentRequest) returns (GetCostDocumentResponse);
+  rpc GetCostDocument(GetCostDocumentRequest) returns (GetCostDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costdocument"
+    };
+  }
   // 查询成本凭证列表
-  rpc ListCostDocuments(ListCostDocumentsRequest) returns (ListCostDocumentsResponse);
+  rpc ListCostDocuments(ListCostDocumentsRequest) returns (ListCostDocumentsResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costdocuments"
+    };
+  }
   // 冲销成本凭证
-  rpc ReverseCostDocument(ReverseCostDocumentRequest) returns (ReverseCostDocumentResponse);
+  rpc ReverseCostDocument(ReverseCostDocumentRequest) returns (ReverseCostDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/reversecostdocument"
+    };
+  }
   // 批量创建凭证
-  rpc BatchCreateCostDocuments(BatchCreateCostDocumentsRequest) returns (BatchCreateCostDocumentsResponse);
+  rpc BatchCreateCostDocuments(BatchCreateCostDocumentsRequest) returns (BatchCreateCostDocumentsResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costdocuments"
+    };
+  }
 
   // === 成本中心 ===
   // 获取成本中心主数据
-  rpc GetCostCenter(GetCostCenterRequest) returns (GetCostCenterResponse);
+  rpc GetCostCenter(GetCostCenterRequest) returns (GetCostCenterResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costcenter"
+    };
+  }
   // 查询成本中心列表
-  rpc ListCostCenters(ListCostCentersRequest) returns (ListCostCentersResponse);
+  rpc ListCostCenters(ListCostCentersRequest) returns (ListCostCentersResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costcenters"
+    };
+  }
   // 成本中心初始过账
-  rpc PostCostCenterPosting(PostCostCenterPostingRequest) returns (PostCostCenterPostingResponse);
+  rpc PostCostCenterPosting(PostCostCenterPostingRequest) returns (PostCostCenterPostingResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postcostcenterposting"
+    };
+  }
   // 成本中心转移过账
-  rpc PostCostCenterTransfer(PostCostCenterTransferRequest) returns (PostCostCenterTransferResponse);
+  rpc PostCostCenterTransfer(PostCostCenterTransferRequest) returns (PostCostCenterTransferResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postcostcentertransfer"
+    };
+  }
   // 成本中心重过账
-  rpc PostCostCenterReposting(PostCostCenterRepostingRequest) returns (PostCostCenterRepostingResponse);
+  rpc PostCostCenterReposting(PostCostCenterRepostingRequest) returns (PostCostCenterRepostingResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postcostcenterreposting"
+    };
+  }
   // 成本中心报表
-  rpc GetCostCenterReport(GetCostCenterReportRequest) returns (GetCostCenterReportResponse);
+  rpc GetCostCenterReport(GetCostCenterReportRequest) returns (GetCostCenterReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costcenterreport"
+    };
+  }
   // 计划/实际对比
-  rpc GetCostCenterPlanActual(GetCostCenterPlanActualRequest) returns (GetCostCenterPlanActualResponse);
+  rpc GetCostCenterPlanActual(GetCostCenterPlanActualRequest) returns (GetCostCenterPlanActualResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/costcenterplanactual"
+    };
+  }
 
   // === 内部订单 ===
   // 创建内部订单
-  rpc CreateInternalOrder(CreateInternalOrderRequest) returns (CreateInternalOrderResponse);
+  rpc CreateInternalOrder(CreateInternalOrderRequest) returns (CreateInternalOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/internalorder"
+    };
+  }
   // 获取内部订单
-  rpc GetInternalOrder(GetInternalOrderRequest) returns (GetInternalOrderResponse);
+  rpc GetInternalOrder(GetInternalOrderRequest) returns (GetInternalOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/internalorder"
+    };
+  }
   // 查询内部订单
-  rpc ListInternalOrders(ListInternalOrdersRequest) returns (ListInternalOrdersResponse);
+  rpc ListInternalOrders(ListInternalOrdersRequest) returns (ListInternalOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/internalorders"
+    };
+  }
   // 下达内部订单
-  rpc ReleaseInternalOrder(ReleaseInternalOrderRequest) returns (ReleaseInternalOrderResponse);
+  rpc ReleaseInternalOrder(ReleaseInternalOrderRequest) returns (ReleaseInternalOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/releaseinternalorder"
+    };
+  }
   // 内部订单过账
-  rpc PostInternalOrderPosting(PostInternalOrderPostingRequest) returns (PostInternalOrderPostingResponse);
+  rpc PostInternalOrderPosting(PostInternalOrderPostingRequest) returns (PostInternalOrderPostingResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postinternalorderposting"
+    };
+  }
   // 内部订单结算
-  rpc SettleInternalOrder(SettleInternalOrderRequest) returns (SettleInternalOrderResponse);
+  rpc SettleInternalOrder(SettleInternalOrderRequest) returns (SettleInternalOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/settleinternalorder"
+    };
+  }
   // 关闭内部订单
-  rpc CloseInternalOrder(CloseInternalOrderRequest) returns (CloseInternalOrderResponse);
+  rpc CloseInternalOrder(CloseInternalOrderRequest) returns (CloseInternalOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/closeinternalorder"
+    };
+  }
   // 内部订单报表
-  rpc GetInternalOrderReport(GetInternalOrderReportRequest) returns (GetInternalOrderReportResponse);
+  rpc GetInternalOrderReport(GetInternalOrderReportRequest) returns (GetInternalOrderReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/internalorderreport"
+    };
+  }
 
   // === 作业会计 ===
   // 获取作业类型
-  rpc GetActivityType(GetActivityTypeRequest) returns (GetActivityTypeResponse);
+  rpc GetActivityType(GetActivityTypeRequest) returns (GetActivityTypeResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/activitytype"
+    };
+  }
   // 查询作业类型
-  rpc ListActivityTypes(ListActivityTypesRequest) returns (ListActivityTypesResponse);
+  rpc ListActivityTypes(ListActivityTypesRequest) returns (ListActivityTypesResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/activitytypes"
+    };
+  }
   // 作业分配过账
-  rpc PostActivityAllocation(PostActivityAllocationRequest) returns (PostActivityAllocationResponse);
+  rpc PostActivityAllocation(PostActivityAllocationRequest) returns (PostActivityAllocationResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postactivityallocation"
+    };
+  }
   // 统计指标过账
-  rpc PostStatisticalKeyFigure(PostStatisticalKeyFigureRequest) returns (PostStatisticalKeyFigureResponse);
+  rpc PostStatisticalKeyFigure(PostStatisticalKeyFigureRequest) returns (PostStatisticalKeyFigureResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/poststatisticalkeyfigure"
+    };
+  }
   // 作业价格计算
-  rpc CalculateActivityPrice(CalculateActivityPriceRequest) returns (CalculateActivityPriceResponse);
+  rpc CalculateActivityPrice(CalculateActivityPriceRequest) returns (CalculateActivityPriceResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/calculateactivityprice"
+    };
+  }
 
   // === 分摊/分配 ===
   // 获取分摊周期
-  rpc GetAllocationCycle(GetAllocationCycleRequest) returns (GetAllocationCycleResponse);
+  rpc GetAllocationCycle(GetAllocationCycleRequest) returns (GetAllocationCycleResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/allocationcycle"
+    };
+  }
   // 执行分摊
-  rpc ExecuteAssessment(ExecuteAssessmentRequest) returns (ExecuteAssessmentResponse);
+  rpc ExecuteAssessment(ExecuteAssessmentRequest) returns (ExecuteAssessmentResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executeassessment"
+    };
+  }
   // 执行分配
-  rpc ExecuteDistribution(ExecuteDistributionRequest) returns (ExecuteDistributionResponse);
+  rpc ExecuteDistribution(ExecuteDistributionRequest) returns (ExecuteDistributionResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executedistribution"
+    };
+  }
   // 执行周期性重过账
-  rpc ExecutePeriodicReposting(ExecutePeriodicRepostingRequest) returns (ExecutePeriodicRepostingResponse);
+  rpc ExecutePeriodicReposting(ExecutePeriodicRepostingRequest) returns (ExecutePeriodicRepostingResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executeperiodicreposting"
+    };
+  }
 
   // === 获利能力分析 ===
   // PA凭证过账
-  rpc PostProfitabilityDocument(PostProfitabilityDocumentRequest) returns (PostProfitabilityDocumentResponse);
+  rpc PostProfitabilityDocument(PostProfitabilityDocumentRequest) returns (PostProfitabilityDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/postprofitabilitydocument"
+    };
+  }
   // 获利分析报表
-  rpc GetProfitabilityReport(GetProfitabilityReportRequest) returns (GetProfitabilityReportResponse);
+  rpc GetProfitabilityReport(GetProfitabilityReportRequest) returns (GetProfitabilityReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/profitabilityreport"
+    };
+  }
 
   // === 利润中心 ===
   // 获取利润中心
-  rpc GetProfitCenter(GetProfitCenterRequest) returns (GetProfitCenterResponse);
+  rpc GetProfitCenter(GetProfitCenterRequest) returns (GetProfitCenterResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/profitcenter"
+    };
+  }
   // 查询利润中心
-  rpc ListProfitCenters(ListProfitCentersRequest) returns (ListProfitCentersResponse);
+  rpc ListProfitCenters(ListProfitCentersRequest) returns (ListProfitCentersResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/profitcenters"
+    };
+  }
   // 利润中心报表
-  rpc GetProfitCenterReport(GetProfitCenterReportRequest) returns (GetProfitCenterReportResponse);
+  rpc GetProfitCenterReport(GetProfitCenterReportRequest) returns (GetProfitCenterReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/profitcenterreport"
+    };
+  }
 
   // === 期末处理 ===
   // 期末关账
-  rpc ExecutePeriodClose(ExecutePeriodCloseRequest) returns (ExecutePeriodCloseResponse);
+  rpc ExecutePeriodClose(ExecutePeriodCloseRequest) returns (ExecutePeriodCloseResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executeperiodclose"
+    };
+  }
   // 实际成本拆分
-  rpc ExecuteActualCostSplit(ExecuteActualCostSplitRequest) returns (ExecuteActualCostSplitResponse);
+  rpc ExecuteActualCostSplit(ExecuteActualCostSplitRequest) returns (ExecuteActualCostSplitResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executeactualcostsplit"
+    };
+  }
   // 在制品计算
-  rpc ExecuteWIPCalculation(ExecuteWIPCalculationRequest) returns (ExecuteWIPCalculationResponse);
+  rpc ExecuteWIPCalculation(ExecuteWIPCalculationRequest) returns (ExecuteWIPCalculationResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executewipcalculation"
+    };
+  }
   // 差异计算
-  rpc ExecuteVarianceCalculation(ExecuteVarianceCalculationRequest) returns (ExecuteVarianceCalculationResponse);
+  rpc ExecuteVarianceCalculation(ExecuteVarianceCalculationRequest) returns (ExecuteVarianceCalculationResponse) {
+    option (google.api.http) = {
+        post: "/v1-controlling/executevariancecalculation"
+    };
+  }
 }
 
 // =============================================================================

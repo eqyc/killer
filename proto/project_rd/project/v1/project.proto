@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package project_rd.project.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/project_rd.project.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service ProjectService {
   // 创建项目
-  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {
+    option (google.api.http) = {
+        post: "/v1-project/project"
+    };
+  }
   // 获取项目
-  rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
+    option (google.api.http) = {
+        post: "/v1-project/project"
+    };
+  }
   // 查询项目列表
-  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {
+    option (google.api.http) = {
+        post: "/v1-project/projects"
+    };
+  }
   // 创建WBS元素
-  rpc CreateWBSElement(CreateWBSElementRequest) returns (CreateWBSElementResponse);
+  rpc CreateWBSElement(CreateWBSElementRequest) returns (CreateWBSElementResponse) {
+    option (google.api.http) = {
+        post: "/v1-project/wbselement"
+    };
+  }
 }
 
 // =============================================================================

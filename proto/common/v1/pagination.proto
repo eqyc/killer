@@ -12,6 +12,8 @@ syntax = "proto3";
 
 package common.v1;
 
+option go_package = "github.com/killer-erp/api-contracts/gen/common.v1";
+
 // =============================================================================
 // SortOrder - 排序方向
 // =============================================================================

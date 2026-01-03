@@ -1,0 +1,378 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "common/v1/master_data.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MasterDataService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-master_data/masterrecord": {
+      "post": {
+        "summary": "获取主数据记录",
+        "operationId": "MasterDataService_GetMasterRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMasterRecordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "MasterDataService"
+        ]
+      }
+    },
+    "/v1-master_data/masterrecords": {
+      "post": {
+        "summary": "查询主数据记录列表",
+        "operationId": "MasterDataService_ListMasterRecords",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListMasterRecordsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "MasterDataService"
+        ]
+      }
+    },
+    "/v1-master_data/masterrecordstatus": {
+      "post": {
+        "summary": "更新主数据状态",
+        "operationId": "MasterDataService_UpdateMasterRecordStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMasterRecordStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "MasterDataService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1CreateMasterRecordResponse": {
+      "type": "object",
+      "properties": {
+        "masterRecord": {
+          "$ref": "#/definitions/v1MasterRecord",
+          "title": "创建的主数据记录"
+        }
+      },
+      "title": "创建主数据记录响应"
+    },
+    "v1GetMasterRecordResponse": {
+      "type": "object",
+      "properties": {
+        "masterRecord": {
+          "$ref": "#/definitions/v1MasterRecord",
+          "title": "主数据记录"
+        }
+      },
+      "title": "获取主数据记录响应"
+    },
+    "v1ListMasterRecordsResponse": {
+      "type": "object",
+      "properties": {
+        "masterRecords": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MasterRecord"
+          },
+          "title": "主数据记录列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询主数据记录列表响应"
+    },
+    "v1MasterRecord": {
+      "type": "object",
+      "properties": {
+        "RECORDID": {
+          "type": "string",
+          "title": "记录标识"
+        },
+        "TYPE": {
+          "type": "string",
+          "title": "主数据类型（物料/客户/供应商/科目等）"
+        },
+        "OBJECTID": {
+          "type": "string",
+          "title": "主数据对象编号（如物料号、客户号等）"
+        },
+        "DESCRIPTION": {
+          "type": "string",
+          "title": "描述"
+        },
+        "ATTRIBUTES": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "属性集合（键值对）"
+        },
+        "CREQUESTID": {
+          "type": "string",
+          "title": "变更请求号，对应CREQUEST_ID"
+        },
+        "STATUS": {
+          "type": "string",
+          "title": "状态（草稿/待审批/已激活/已废弃）"
+        },
+        "SOURCESYSTEM": {
+          "type": "string",
+          "title": "数据来源"
+        },
+        "VERSION": {
+          "type": "integer",
+          "format": "int32",
+          "title": "版本号"
+        },
+        "VALIDFROM": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效起始日期"
+        },
+        "VALIDTO": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效截止日期"
+        },
+        "BUKRS": {
+          "type": "string",
+          "title": "公司代码"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂"
+        },
+        "ORGDATA": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "组织层级数据"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MasterRecordField"
+          },
+          "title": "扩展字段列表"
+        }
+      },
+      "title": "=============================================================================\nMasterRecord - 主数据记录（聚合根）\n=============================================================================\n对应MDG通用主数据模型"
+    },
+    "v1MasterRecordField": {
+      "type": "object",
+      "properties": {
+        "FIELDNAME": {
+          "type": "string",
+          "title": "字段名称"
+        },
+        "FIELDVALUE": {
+          "type": "string",
+          "title": "字段值"
+        },
+        "FIELDTYPE": {
+          "type": "string",
+          "title": "字段类型（字符串/数字/日期等）"
+        },
+        "FIELDDESC": {
+          "type": "string",
+          "title": "字段描述"
+        },
+        "REQUIRED": {
+          "type": "boolean",
+          "title": "是否必填"
+        },
+        "VALIDATIONRULE": {
+          "type": "string",
+          "title": "验证规则"
+        },
+        "ORGLEVEL": {
+          "type": "string",
+          "title": "组织级别"
+        }
+      },
+      "title": "=============================================================================\nMasterRecordField - 主数据字段\n============================================================================="
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    },
+    "v1UpdateMasterRecordStatusResponse": {
+      "type": "object",
+      "properties": {
+        "masterRecord": {
+          "$ref": "#/definitions/v1MasterRecord",
+          "title": "更新后的主数据记录"
+        }
+      },
+      "title": "更新主数据状态响应"
+    }
+  }
+}

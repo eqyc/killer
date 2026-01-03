@@ -1,0 +1,2031 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "finance/treasury/v1/treasury.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TreasuryService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-treasury/accountbalance": {
+      "post": {
+        "summary": "获取账户余额",
+        "operationId": "TreasuryService_GetAccountBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/accounttransactions": {
+      "post": {
+        "summary": "查询账户交易",
+        "operationId": "TreasuryService_ListAccountTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListAccountTransactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/adjustposition": {
+      "post": {
+        "summary": "调整资金头寸",
+        "operationId": "TreasuryService_AdjustPosition",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AdjustPositionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/bankaccount": {
+      "post": {
+        "summary": "更新银行账户",
+        "operationId": "TreasuryService_UpdateBankAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBankAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/bankaccounts": {
+      "post": {
+        "summary": "查询银行账户列表",
+        "operationId": "TreasuryService_ListBankAccounts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListBankAccountsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cancelcashflow": {
+      "post": {
+        "summary": "取消现金流",
+        "operationId": "TreasuryService_CancelCashFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CancelCashFlowResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cashflow": {
+      "post": {
+        "summary": "获取现金流",
+        "operationId": "TreasuryService_GetCashFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCashFlowResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cashflows": {
+      "post": {
+        "summary": "查询现金流列表",
+        "operationId": "TreasuryService_ListCashFlows",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCashFlowsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cashflowsummary": {
+      "post": {
+        "summary": "现金流汇总",
+        "operationId": "TreasuryService_GetCashFlowSummary",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCashFlowSummaryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cashpool": {
+      "post": {
+        "summary": "=== 现金池管理 (Cash Pooling) ===\n创建现金池",
+        "operationId": "TreasuryService_CreateCashPool",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateCashPoolResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/cashpoolstatus": {
+      "post": {
+        "summary": "查询现金池状态",
+        "operationId": "TreasuryService_GetCashPoolStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCashPoolStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/confirmcashflow": {
+      "post": {
+        "summary": "确认现金流",
+        "operationId": "TreasuryService_ConfirmCashFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmCashFlowResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/drawdownloan": {
+      "post": {
+        "summary": "贷款提款",
+        "operationId": "TreasuryService_DrawdownLoan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DrawdownLoanResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/executecashpool": {
+      "post": {
+        "summary": "执行现金池归集",
+        "operationId": "TreasuryService_ExecuteCashPool",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteCashPoolResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/executefxtransaction": {
+      "post": {
+        "summary": "执行外汇交易",
+        "operationId": "TreasuryService_ExecuteFXTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteFXTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/fxexposure": {
+      "post": {
+        "summary": "查询外汇敞口",
+        "operationId": "TreasuryService_GetFXExposure",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetFXExposureResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/fxtransaction": {
+      "post": {
+        "summary": "创建外汇交易",
+        "operationId": "TreasuryService_CreateFXTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateFXTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/generateliquidityforecast": {
+      "post": {
+        "summary": "流动性预测",
+        "operationId": "TreasuryService_GenerateLiquidityForecast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GenerateLiquidityForecastResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/internalbankaccount": {
+      "post": {
+        "summary": "=== 内部银行 (Internal Bank) ===\n创建内部银行账户",
+        "operationId": "TreasuryService_CreateInternalBankAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateInternalBankAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/internalbankstatement": {
+      "post": {
+        "summary": "获取内部银行对账单",
+        "operationId": "TreasuryService_GetInternalBankStatement",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetInternalBankStatementResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/internaltransfer": {
+      "post": {
+        "summary": "内部转账",
+        "operationId": "TreasuryService_InternalTransfer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1InternalTransferResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/investments": {
+      "post": {
+        "summary": "查询投资组合",
+        "operationId": "TreasuryService_ListInvestments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListInvestmentsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/liquidityreport": {
+      "post": {
+        "summary": "=== 流动性管理 (Liquidity Management) ===\n获取流动性报表",
+        "operationId": "TreasuryService_GetLiquidityReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetLiquidityReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/loan": {
+      "post": {
+        "summary": "创建贷款",
+        "operationId": "TreasuryService_CreateLoan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateLoanResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/loans": {
+      "post": {
+        "summary": "查询贷款列表",
+        "operationId": "TreasuryService_ListLoans",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListLoansResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/positionhistory": {
+      "post": {
+        "summary": "查询头寸历史",
+        "operationId": "TreasuryService_ListPositionHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPositionHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/processmaturity": {
+      "post": {
+        "summary": "到期处理",
+        "operationId": "TreasuryService_ProcessMaturity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProcessMaturityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/repayloan": {
+      "post": {
+        "summary": "偿还贷款",
+        "operationId": "TreasuryService_RepayLoan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RepayLoanResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/revaluefxposition": {
+      "post": {
+        "summary": "外汇重估",
+        "operationId": "TreasuryService_RevalueFXPosition",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RevalueFXPositionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/termdeposit": {
+      "post": {
+        "summary": "创建定期存款",
+        "operationId": "TreasuryService_CreateTermDeposit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateTermDepositResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    },
+    "/v1-treasury/treasuryposition": {
+      "post": {
+        "summary": "=== 资金头寸 (Treasury Position) ===\n获取资金头寸",
+        "operationId": "TreasuryService_GetTreasuryPosition",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetTreasuryPositionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TreasuryService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AdjustPositionResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "TRANSACTIONID": {
+          "type": "string"
+        }
+      },
+      "title": "调整资金头寸响应"
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1BankAccount": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "BANKS": {
+          "type": "string"
+        },
+        "BANKL": {
+          "type": "string"
+        },
+        "BANKA": {
+          "type": "string"
+        },
+        "IBAN": {
+          "type": "string"
+        },
+        "SWIFT": {
+          "type": "string"
+        },
+        "ACCOUNTTYPE": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "CURRENCY": {
+          "type": "string"
+        },
+        "CURRENTBALANCE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "AVAILABLEBALANCE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "BLOCKEDAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "OPENINGDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "LASTTRANSACTION": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1BankAccountStatus"
+        },
+        "REMARKS": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "银行账户主数据"
+    },
+    "v1BankAccountStatus": {
+      "type": "string",
+      "enum": [
+        "BANK_ACCOUNT_STATUS_UNSPECIFIED",
+        "BANK_ACCOUNT_STATUS_ACTIVE",
+        "BANK_ACCOUNT_STATUS_BLOCKED",
+        "BANK_ACCOUNT_STATUS_CLOSED"
+      ],
+      "default": "BANK_ACCOUNT_STATUS_UNSPECIFIED",
+      "title": "账户状态枚举"
+    },
+    "v1BankAccountTransaction": {
+      "type": "object",
+      "properties": {
+        "TRANSACTIONID": {
+          "type": "string"
+        },
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "TRANSACTIONTYPE": {
+          "type": "string"
+        },
+        "AMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "COUNTERPARTY": {
+          "type": "string"
+        },
+        "REFERENCE": {
+          "type": "string"
+        },
+        "TRANSACTIONDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "VALUEDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "REMARKS": {
+          "type": "string"
+        }
+      },
+      "title": "银行账户交易"
+    },
+    "v1CancelCashFlowResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "title": "取消现金流响应"
+    },
+    "v1CashFlow": {
+      "type": "object",
+      "properties": {
+        "FLOWID": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "CASHFLOWTYPE": {
+          "$ref": "#/definitions/v1CashFlowType"
+        },
+        "LIQUIDITYITEM": {
+          "type": "string"
+        },
+        "PLANDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "BUDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "PARTNER": {
+          "type": "string"
+        },
+        "REFDOC": {
+          "type": "string"
+        },
+        "SOURCE": {
+          "type": "string"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1CashFlowStatus"
+        },
+        "NOTES": {
+          "type": "string"
+        },
+        "LOEKZ": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CashFlowItem"
+          }
+        }
+      },
+      "title": "现金流项目"
+    },
+    "v1CashFlowItem": {
+      "type": "object",
+      "properties": {
+        "POSNR": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "LIQUIDITYITEM": {
+          "type": "string"
+        },
+        "AMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "VALUEDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "DESCRIPTION": {
+          "type": "string"
+        },
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "REFDOC": {
+          "type": "string"
+        },
+        "REFPOSNR": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "AUFNR": {
+          "type": "string"
+        },
+        "KOSTL": {
+          "type": "string"
+        }
+      },
+      "title": "现金流行项目"
+    },
+    "v1CashFlowStatus": {
+      "type": "string",
+      "enum": [
+        "CASH_FLOW_STATUS_UNSPECIFIED",
+        "CASH_FLOW_STATUS_PLANNED",
+        "CASH_FLOW_STATUS_CONFIRMED",
+        "CASH_FLOW_STATUS_ACTUAL",
+        "CASH_FLOW_STATUS_CANCELLED"
+      ],
+      "default": "CASH_FLOW_STATUS_UNSPECIFIED",
+      "title": "现金流状态枚举"
+    },
+    "v1CashFlowSummaryLine": {
+      "type": "object",
+      "properties": {
+        "groupKey": {
+          "type": "string"
+        },
+        "groupName": {
+          "type": "string"
+        },
+        "inflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "outflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "net": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "汇总行"
+    },
+    "v1CashFlowType": {
+      "type": "string",
+      "enum": [
+        "CASH_FLOW_TYPE_UNSPECIFIED",
+        "CASH_FLOW_TYPE_INFLOW",
+        "CASH_FLOW_TYPE_OUTFLOW"
+      ],
+      "default": "CASH_FLOW_TYPE_UNSPECIFIED",
+      "title": "现金流类型枚举"
+    },
+    "v1ConfirmCashFlowResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "CONFIRMEDID": {
+          "type": "string"
+        }
+      },
+      "title": "确认现金流响应"
+    },
+    "v1CreateBankAccountResponse": {
+      "type": "object",
+      "properties": {
+        "BANKACCOUNT": {
+          "type": "string"
+        }
+      },
+      "title": "创建银行账户响应"
+    },
+    "v1CreateCashFlowResponse": {
+      "type": "object",
+      "properties": {
+        "FLOWID": {
+          "type": "string"
+        }
+      },
+      "title": "创建现金流响应"
+    },
+    "v1CreateCashPoolResponse": {
+      "type": "object",
+      "properties": {
+        "POOLID": {
+          "type": "string"
+        }
+      },
+      "title": "创建现金池响应"
+    },
+    "v1CreateFXTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "FXID": {
+          "type": "string"
+        }
+      },
+      "title": "创建外汇交易响应"
+    },
+    "v1CreateInternalBankAccountResponse": {
+      "type": "object",
+      "properties": {
+        "ACCOUNTID": {
+          "type": "string"
+        }
+      },
+      "title": "创建内部银行账户响应"
+    },
+    "v1CreateLoanResponse": {
+      "type": "object",
+      "properties": {
+        "LOANID": {
+          "type": "string"
+        }
+      },
+      "title": "创建贷款响应"
+    },
+    "v1CreateTermDepositResponse": {
+      "type": "object",
+      "properties": {
+        "DEPOSITID": {
+          "type": "string"
+        }
+      },
+      "title": "创建定期存款响应"
+    },
+    "v1DailyLiquidity": {
+      "type": "object",
+      "properties": {
+        "DATE": {
+          "type": "string"
+        },
+        "expectedBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "inflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "outflow": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "每日流动性"
+    },
+    "v1DrawdownLoanResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "DRAWDOWNID": {
+          "type": "string"
+        },
+        "DRAWNAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "贷款提款响应"
+    },
+    "v1ExecuteCashPoolResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "TRANSACTIONID": {
+          "type": "string"
+        },
+        "transfers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PoolTransferResult"
+          }
+        }
+      },
+      "title": "执行现金池归集响应"
+    },
+    "v1ExecuteFXTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "FXID": {
+          "type": "string"
+        },
+        "SETTLEMENTID": {
+          "type": "string"
+        }
+      },
+      "title": "执行外汇交易响应"
+    },
+    "v1FXExposure": {
+      "type": "object",
+      "properties": {
+        "EXPOSUREID": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "CURRENCY": {
+          "type": "string"
+        },
+        "EXPOSUREAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "HEDGEDAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "UNHEDGEDAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CURRENTRATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "MARKTOMARKET": {
+          "type": "number",
+          "format": "double"
+        },
+        "RISKLEVEL": {
+          "type": "string"
+        }
+      },
+      "title": "外汇敞口"
+    },
+    "v1FXTransaction": {
+      "type": "object",
+      "properties": {
+        "FXID": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "TRANSACTIONTYPE": {
+          "type": "string"
+        },
+        "BUYCURRENCY": {
+          "type": "string"
+        },
+        "SELLCURRENCY": {
+          "type": "string"
+        },
+        "BUYAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "SELLAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "EXCHANGERATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "TRADEDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "VALUEDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "COUNTERPARTY": {
+          "type": "string"
+        },
+        "STATUS": {
+          "type": "string"
+        },
+        "NOTES": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "外汇交易"
+    },
+    "v1FXTransactionType": {
+      "type": "string",
+      "enum": [
+        "FX_TRANSACTION_TYPE_UNSPECIFIED",
+        "FX_TRANSACTION_TYPE_SPOT",
+        "FX_TRANSACTION_TYPE_FORWARD",
+        "FX_TRANSACTION_TYPE_SWAP",
+        "FX_TRANSACTION_TYPE_OPTION"
+      ],
+      "default": "FX_TRANSACTION_TYPE_UNSPECIFIED",
+      "title": "外汇交易类型枚举"
+    },
+    "v1GenerateLiquidityForecastResponse": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "dailyData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1DailyLiquidity"
+          }
+        },
+        "minimumBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "peakBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CURRENCY": {
+          "type": "string"
+        }
+      },
+      "title": "流动性预测响应"
+    },
+    "v1GetAccountBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "currentBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "availableBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "blockedAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "asOfDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "获取账户余额响应"
+    },
+    "v1GetBankAccountResponse": {
+      "type": "object",
+      "properties": {
+        "bankAccount": {
+          "$ref": "#/definitions/v1BankAccount"
+        }
+      },
+      "title": "获取银行账户响应"
+    },
+    "v1GetCashFlowResponse": {
+      "type": "object",
+      "properties": {
+        "cashFlow": {
+          "$ref": "#/definitions/v1CashFlow"
+        }
+      },
+      "title": "获取现金流响应"
+    },
+    "v1GetCashFlowSummaryResponse": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CashFlowSummaryLine"
+          }
+        },
+        "totalInflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalOutflow": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "现金流汇总响应"
+    },
+    "v1GetCashPoolStatusResponse": {
+      "type": "object",
+      "properties": {
+        "POOLID": {
+          "type": "string"
+        },
+        "POOLNAME": {
+          "type": "string"
+        },
+        "ACTIVE": {
+          "type": "boolean"
+        },
+        "LASTEXECUTED": {
+          "type": "string"
+        },
+        "NEXTEXECUTED": {
+          "type": "string"
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PoolAccountStatus"
+          }
+        }
+      },
+      "title": "查询现金池状态响应"
+    },
+    "v1GetFXExposureResponse": {
+      "type": "object",
+      "properties": {
+        "exposures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1FXExposure"
+          }
+        },
+        "totalExposure": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalHedged": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalUnhedged": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "查询外汇敞口响应"
+    },
+    "v1GetFXTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "fxTransaction": {
+          "$ref": "#/definitions/v1FXTransaction"
+        }
+      },
+      "title": "获取外汇交易响应"
+    },
+    "v1GetInternalBankStatementResponse": {
+      "type": "object",
+      "properties": {
+        "ACCOUNTID": {
+          "type": "string"
+        },
+        "ACCOUNTNAME": {
+          "type": "string"
+        },
+        "OPENINGBALANCE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CLOSINGBALANCE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InternalTransferTransaction"
+          }
+        }
+      },
+      "title": "获取内部银行对账单响应"
+    },
+    "v1GetLiquidityReportResponse": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "openingBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalInflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalOutflow": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "closingBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "byCurrency": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1LiquidityByCurrency"
+          }
+        },
+        "byBank": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1LiquidityByBank"
+          }
+        }
+      },
+      "title": "获取流动性报表响应"
+    },
+    "v1GetLoanResponse": {
+      "type": "object",
+      "properties": {
+        "loan": {
+          "$ref": "#/definitions/v1Loan"
+        }
+      },
+      "title": "获取贷款响应"
+    },
+    "v1GetTermDepositResponse": {
+      "type": "object",
+      "properties": {
+        "termDeposit": {
+          "$ref": "#/definitions/v1TermDeposit"
+        }
+      },
+      "title": "获取定期存款响应"
+    },
+    "v1GetTreasuryPositionResponse": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1TreasuryPosition"
+          }
+        },
+        "totalNetPosition": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalAvailableFunds": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "获取资金头寸响应"
+    },
+    "v1InternalTransferResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "TRANSACTIONID": {
+          "type": "string"
+        }
+      },
+      "title": "内部转账响应"
+    },
+    "v1InternalTransferTransaction": {
+      "type": "object",
+      "properties": {
+        "TRANSACTIONID": {
+          "type": "string"
+        },
+        "FROMACCOUNT": {
+          "type": "string"
+        },
+        "TOACCOUNT": {
+          "type": "string"
+        },
+        "AMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "TRANSACTIONDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "REFERENCE": {
+          "type": "string"
+        }
+      },
+      "title": "内部转账交易"
+    },
+    "v1InvestmentType": {
+      "type": "string",
+      "enum": [
+        "INVESTMENT_TYPE_UNSPECIFIED",
+        "INVESTMENT_TYPE_TERM_DEPOSIT",
+        "INVESTMENT_TYPE_STRUCTURED",
+        "INVESTMENT_TYPE_MONEY_MARKET",
+        "INVESTMENT_TYPE_BOND",
+        "INVESTMENT_TYPE_EQUITY"
+      ],
+      "default": "INVESTMENT_TYPE_UNSPECIFIED",
+      "title": "投资类型枚举"
+    },
+    "v1LiquidityByBank": {
+      "type": "object",
+      "properties": {
+        "BANKL": {
+          "type": "string"
+        },
+        "BANKA": {
+          "type": "string"
+        },
+        "balance": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "按银行汇总"
+    },
+    "v1LiquidityByCurrency": {
+      "type": "object",
+      "properties": {
+        "CURRENCY": {
+          "type": "string"
+        },
+        "balance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "percent": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "按货币汇总"
+    },
+    "v1ListAccountTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1BankAccountTransaction"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询账户交易响应"
+    },
+    "v1ListBankAccountsResponse": {
+      "type": "object",
+      "properties": {
+        "bankAccounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1BankAccount"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询银行账户列表响应"
+    },
+    "v1ListCashFlowsResponse": {
+      "type": "object",
+      "properties": {
+        "cashFlows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CashFlow"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询现金流列表响应"
+    },
+    "v1ListInvestmentsResponse": {
+      "type": "object",
+      "properties": {
+        "investments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1TermDeposit"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPrincipal": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalValue": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "查询投资组合响应"
+    },
+    "v1ListLoansResponse": {
+      "type": "object",
+      "properties": {
+        "loans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Loan"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPrincipal": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalOutstanding": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "查询贷款列表响应"
+    },
+    "v1ListPositionHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1TreasuryPosition"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询头寸历史响应"
+    },
+    "v1Loan": {
+      "type": "object",
+      "properties": {
+        "LOANID": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "LENDER": {
+          "type": "string"
+        },
+        "LOANTYPE": {
+          "type": "string"
+        },
+        "PRINCIPAL": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CURRENCY": {
+          "type": "string"
+        },
+        "INTERESTRATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "STARTDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ENDDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TERMMONTHS": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "REPAYMENTTYPE": {
+          "type": "string"
+        },
+        "DRAWNAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "REPAIDAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "OUTSTANDING": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1LoanStatus"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "贷款"
+    },
+    "v1LoanStatus": {
+      "type": "string",
+      "enum": [
+        "LOAN_STATUS_UNSPECIFIED",
+        "LOAN_STATUS_APPROVED",
+        "LOAN_STATUS_ACTIVE",
+        "LOAN_STATUS_DRAWDOWN",
+        "LOAN_STATUS_REPAID",
+        "LOAN_STATUS_NPL"
+      ],
+      "default": "LOAN_STATUS_UNSPECIFIED",
+      "title": "贷款状态枚举"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1PoolAccountStatus": {
+      "type": "object",
+      "properties": {
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "balance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "transferredIn": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "transferredOut": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "池账户状态"
+    },
+    "v1PoolTransferResult": {
+      "type": "object",
+      "properties": {
+        "fromAccount": {
+          "type": "string"
+        },
+        "toAccount": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "池转账结果"
+    },
+    "v1ProcessMaturityResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "DEPOSITID": {
+          "type": "string"
+        },
+        "MATURITYAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "到期处理响应"
+    },
+    "v1RepayLoanResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "REPAYMENTID": {
+          "type": "string"
+        },
+        "OUTSTANDING": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "偿还贷款响应"
+    },
+    "v1RevalueFXPositionResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "OLDRATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "NEWRATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "GAIN": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "LOSS": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "ADJUSTMENTDOC": {
+          "type": "string"
+        }
+      },
+      "title": "外汇重估响应"
+    },
+    "v1TermDeposit": {
+      "type": "object",
+      "properties": {
+        "DEPOSITID": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "INVESTMENTTYPE": {
+          "type": "string"
+        },
+        "PRINCIPAL": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CURRENCY": {
+          "type": "string"
+        },
+        "INTERESTRATE": {
+          "type": "number",
+          "format": "double"
+        },
+        "DEPOSITDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "MATURITYDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "INTEREST": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "MATURITYAMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "STATUS": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "定期存款"
+    },
+    "v1TreasuryPosition": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "CURRENCY": {
+          "type": "string"
+        },
+        "POSITIONDATE": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "CASHBALANCE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "INVESTMENTS": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "LOANS": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "NETPOSITION": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "AVAILABLEFUNDS": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "CREDITLINE": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "UTILIZEDLINE": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "资金头寸"
+    },
+    "v1UpdateBankAccountResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "title": "更新银行账户响应"
+    }
+  }
+}

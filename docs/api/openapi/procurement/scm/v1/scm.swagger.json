@@ -1,0 +1,430 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "procurement/scm/v1/scm.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SupplyChainService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-scm/runmrp": {
+      "post": {
+        "summary": "执行MRP运行",
+        "operationId": "SupplyChainService_RunMRP",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RunMRPResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "SupplyChainService"
+        ]
+      }
+    },
+    "/v1-scm/supplyplan": {
+      "post": {
+        "summary": "获取供应链计划",
+        "operationId": "SupplyChainService_GetSupplyPlan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetSupplyPlanResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "SupplyChainService"
+        ]
+      }
+    },
+    "/v1-scm/supplyplans": {
+      "post": {
+        "summary": "查询供应链计划列表",
+        "operationId": "SupplyChainService_ListSupplyPlans",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListSupplyPlansResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "SupplyChainService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1CreateSupplyPlanResponse": {
+      "type": "object",
+      "properties": {
+        "supplyPlan": {
+          "$ref": "#/definitions/v1SupplyPlan",
+          "title": "创建的供应链计划"
+        }
+      },
+      "title": "创建供应链计划响应"
+    },
+    "v1GetSupplyPlanResponse": {
+      "type": "object",
+      "properties": {
+        "supplyPlan": {
+          "$ref": "#/definitions/v1SupplyPlan",
+          "title": "供应链计划"
+        }
+      },
+      "title": "获取供应链计划响应"
+    },
+    "v1ListSupplyPlansResponse": {
+      "type": "object",
+      "properties": {
+        "supplyPlans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1SupplyPlan"
+          },
+          "title": "供应链计划列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询供应链计划列表响应"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1RunMRPResponse": {
+      "type": "object",
+      "properties": {
+        "RUNID": {
+          "type": "string",
+          "title": "运行标识"
+        },
+        "PROCESSEDCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "处理物料数"
+        },
+        "PURCHASEREQCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "生成采购申请数"
+        },
+        "PLANNEDORDERCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "生成计划订单数"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "运行完成时间"
+        }
+      },
+      "title": "执行MRP运行响应"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    },
+    "v1SupplyPlan": {
+      "type": "object",
+      "properties": {
+        "PLANID": {
+          "type": "string",
+          "title": "计划标识"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "物料号，对应MATNR"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "PLANDATE": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划日期，对应PLAN_DATE"
+        },
+        "DEMANDQTY": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "需求数量"
+        },
+        "SUPPLYQTY": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "供应数量"
+        },
+        "PROJECTEDSTOCK": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "预计库存"
+        },
+        "SAFETYSTOCK": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "安全库存"
+        },
+        "REORDERPOINT": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "再订货点"
+        },
+        "VERSION": {
+          "type": "string",
+          "title": "计划版本"
+        },
+        "PLANTYPE": {
+          "type": "string",
+          "title": "计划类型（需求计划/供应计划）"
+        },
+        "STATUS": {
+          "type": "string",
+          "title": "状态"
+        },
+        "DISPO": {
+          "type": "string",
+          "title": "MRP控制者，对应DISPO"
+        },
+        "DISMM": {
+          "type": "string",
+          "title": "MRP类型，对应DISMM"
+        },
+        "DISLS": {
+          "type": "string",
+          "title": "批量大小，对应DISLS"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1SupplyPlanItem"
+          },
+          "title": "计划行项目"
+        }
+      },
+      "title": "=============================================================================\nSupplyPlan - 供应链计划（聚合根）\n=============================================================================\n参考SNP计划表设计"
+    },
+    "v1SupplyPlanItem": {
+      "type": "object",
+      "properties": {
+        "POSNR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "行号"
+        },
+        "PLANDATE": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划日期"
+        },
+        "DEMANDTYPE": {
+          "type": "string",
+          "title": "需求类型（独立需求/相关需求）"
+        },
+        "DEMANDSOURCE": {
+          "type": "string",
+          "title": "需求来源（销售订单/预测等）"
+        },
+        "SOURCEDOC": {
+          "type": "string",
+          "title": "需求来源凭证号"
+        },
+        "DEMANDQTY": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "需求数量"
+        },
+        "SUPPLYTYPE": {
+          "type": "string",
+          "title": "供应类型（采购订单/生产订单等）"
+        },
+        "SUPPLYDOC": {
+          "type": "string",
+          "title": "供应来源凭证号"
+        },
+        "SUPPLYQTY": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "供应数量"
+        },
+        "AVAILQTY": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "可用库存"
+        },
+        "SHORTAGE": {
+          "type": "boolean",
+          "title": "缺料标识"
+        },
+        "NOTES": {
+          "type": "string",
+          "title": "备注"
+        }
+      },
+      "title": "=============================================================================\nSupplyPlanItem - 供应链计划行项目\n============================================================================="
+    }
+  }
+}

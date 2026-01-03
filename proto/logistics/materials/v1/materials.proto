@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package logistics.materials.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/logistics.materials.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service MaterialsService {
   // 创建物料凭证
-  rpc CreateMaterialDocument(CreateMaterialDocumentRequest) returns (CreateMaterialDocumentResponse);
+  rpc CreateMaterialDocument(CreateMaterialDocumentRequest) returns (CreateMaterialDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-materials/materialdocument"
+    };
+  }
   // 获取物料凭证
-  rpc GetMaterialDocument(GetMaterialDocumentRequest) returns (GetMaterialDocumentResponse);
+  rpc GetMaterialDocument(GetMaterialDocumentRequest) returns (GetMaterialDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-materials/materialdocument"
+    };
+  }
   // 查询物料凭证列表
-  rpc ListMaterialDocuments(ListMaterialDocumentsRequest) returns (ListMaterialDocumentsResponse);
+  rpc ListMaterialDocuments(ListMaterialDocumentsRequest) returns (ListMaterialDocumentsResponse) {
+    option (google.api.http) = {
+        post: "/v1-materials/materialdocuments"
+    };
+  }
   // 冲销物料凭证
-  rpc ReverseMaterialDocument(ReverseMaterialDocumentRequest) returns (ReverseMaterialDocumentResponse);
+  rpc ReverseMaterialDocument(ReverseMaterialDocumentRequest) returns (ReverseMaterialDocumentResponse) {
+    option (google.api.http) = {
+        post: "/v1-materials/reversematerialdocument"
+    };
+  }
 }
 
 // =============================================================================

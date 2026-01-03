@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package commercial.crm.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/commercial.crm.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service CRMService {
   // 创建CRM订单
-  rpc CreateCRMOrder(CreateCRMOrderRequest) returns (CreateCRMOrderResponse);
+  rpc CreateCRMOrder(CreateCRMOrderRequest) returns (CreateCRMOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-crm/crmorder"
+    };
+  }
   // 获取CRM订单
-  rpc GetCRMOrder(GetCRMOrderRequest) returns (GetCRMOrderResponse);
+  rpc GetCRMOrder(GetCRMOrderRequest) returns (GetCRMOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-crm/crmorder"
+    };
+  }
   // 查询CRM订单列表
-  rpc ListCRMOrders(ListCRMOrdersRequest) returns (ListCRMOrdersResponse);
+  rpc ListCRMOrders(ListCRMOrdersRequest) returns (ListCRMOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-crm/crmorders"
+    };
+  }
   // 更新CRM订单状态
-  rpc UpdateCRMOrderStatus(UpdateCRMOrderStatusRequest) returns (UpdateCRMOrderStatusResponse);
+  rpc UpdateCRMOrderStatus(UpdateCRMOrderStatusRequest) returns (UpdateCRMOrderStatusResponse) {
+    option (google.api.http) = {
+        post: "/v1-crm/crmorderstatus"
+    };
+  }
 }
 
 // =============================================================================

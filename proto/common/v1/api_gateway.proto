@@ -9,7 +9,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package common.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/common.v1";
 
 import "google/protobuf/timestamp.proto";
 
@@ -18,9 +22,17 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service APIGatewayService {
   // 代理请求
-  rpc ProxyRequest(ProxyRequestRequest) returns (ProxyRequestResponse);
+  rpc ProxyRequest(ProxyRequestRequest) returns (ProxyRequestResponse) {
+    option (google.api.http) = {
+        post: "/v1-api_gateway/proxyrequest"
+    };
+  }
   // 健康检查
-  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+        post: "/v1-api_gateway/healthcheck"
+    };
+  }
 }
 
 // =============================================================================

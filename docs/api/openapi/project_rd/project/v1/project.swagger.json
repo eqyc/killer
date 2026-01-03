@@ -1,0 +1,475 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "project_rd/project/v1/project.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProjectService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-project/project": {
+      "post": {
+        "summary": "获取项目",
+        "operationId": "ProjectService_GetProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProjectService"
+        ]
+      }
+    },
+    "/v1-project/projects": {
+      "post": {
+        "summary": "查询项目列表",
+        "operationId": "ProjectService_ListProjects",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListProjectsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProjectService"
+        ]
+      }
+    },
+    "/v1-project/wbselement": {
+      "post": {
+        "summary": "创建WBS元素",
+        "operationId": "ProjectService_CreateWBSElement",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateWBSElementResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProjectService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1CreateProjectResponse": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/v1Project",
+          "title": "创建的项目"
+        }
+      },
+      "title": "创建项目响应"
+    },
+    "v1CreateWBSElementResponse": {
+      "type": "object",
+      "properties": {
+        "wbsElement": {
+          "$ref": "#/definitions/v1WBSElement",
+          "title": "创建的WBS元素"
+        }
+      },
+      "title": "创建WBS元素响应"
+    },
+    "v1GetProjectResponse": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/v1Project",
+          "title": "项目"
+        }
+      },
+      "title": "获取项目响应"
+    },
+    "v1ListProjectsResponse": {
+      "type": "object",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Project"
+          },
+          "title": "项目列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询项目列表响应"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1Project": {
+      "type": "object",
+      "properties": {
+        "PSPNR": {
+          "type": "string",
+          "title": "项目定义内部编号，对应PSPNR（PROJ表主键）"
+        },
+        "PSPID": {
+          "type": "string",
+          "title": "项目定义编号，对应PSPID"
+        },
+        "POST1": {
+          "type": "string",
+          "title": "项目描述，对应POST1"
+        },
+        "PRART": {
+          "type": "string",
+          "title": "项目类型，对应PRART"
+        },
+        "VBUKR": {
+          "type": "string",
+          "title": "公司代码，对应VBUKR"
+        },
+        "PRCTR": {
+          "type": "string",
+          "title": "利润中心，对应PRCTR"
+        },
+        "PKOSTL": {
+          "type": "string",
+          "title": "责任成本中心，对应PKOSTL"
+        },
+        "VERNR": {
+          "type": "string",
+          "title": "负责人，对应VERNR"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "PLFAZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划开始日期，对应PLFAZ"
+        },
+        "PLSEZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划完成日期，对应PLSEZ"
+        },
+        "ERFAZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "实际开始日期，对应ERFAZ"
+        },
+        "ERSEZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "实际完成日期，对应ERSEZ"
+        },
+        "PRFAZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "预测开始日期，对应PRFAZ"
+        },
+        "PRSEZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "预测完成日期，对应PRSEZ"
+        },
+        "SYSST": {
+          "type": "string",
+          "title": "系统状态，对应SYSST"
+        },
+        "USRST": {
+          "type": "string",
+          "title": "用户状态，对应USRST"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1WBSElement"
+          },
+          "title": "WBS元素列表"
+        }
+      },
+      "title": "=============================================================================\nProject - 项目定义（聚合根）\n=============================================================================\n对应ERP系统核心表PROJ"
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    },
+    "v1WBSElement": {
+      "type": "object",
+      "properties": {
+        "PSPNR": {
+          "type": "string",
+          "title": "WBS元素内部编号，对应PSPNR（PRPS表主键）"
+        },
+        "POSID": {
+          "type": "string",
+          "title": "WBS元素编号，对应POSID"
+        },
+        "PSPHI": {
+          "type": "string",
+          "title": "项目定义编号（上级），对应PSPHI"
+        },
+        "OBJNR": {
+          "type": "string",
+          "title": "对象编号，对应OBJNR"
+        },
+        "POST1": {
+          "type": "string",
+          "title": "WBS描述，对应POST1"
+        },
+        "STUFE": {
+          "type": "integer",
+          "format": "int32",
+          "title": "层级，对应STUFE"
+        },
+        "PROJU": {
+          "type": "string",
+          "title": "上级WBS，对应PROJU"
+        },
+        "PBUKR": {
+          "type": "string",
+          "title": "公司代码，对应PBUKR"
+        },
+        "PRCTR": {
+          "type": "string",
+          "title": "利润中心，对应PRCTR"
+        },
+        "PKOSTL": {
+          "type": "string",
+          "title": "责任成本中心，对应PKOSTL"
+        },
+        "VERNR": {
+          "type": "string",
+          "title": "负责人，对应VERNR"
+        },
+        "PLFAZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划开始日期，对应PLFAZ"
+        },
+        "PLSEZ": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划完成日期，对应PLSEZ"
+        },
+        "PLANHOURS": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "计划工时"
+        },
+        "ACTUALHOURS": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "实际工时"
+        },
+        "PLANCOST": {
+          "$ref": "#/definitions/v1Money",
+          "title": "计划成本"
+        },
+        "ACTUALCOST": {
+          "$ref": "#/definitions/v1Money",
+          "title": "实际成本"
+        },
+        "SYSST": {
+          "type": "string",
+          "title": "系统状态"
+        },
+        "USRST": {
+          "type": "string",
+          "title": "用户状态"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识"
+        }
+      },
+      "title": "=============================================================================\nWBSElement - WBS元素（项目行项目）\n=============================================================================\n对应ERP系统核心表PRPS"
+    }
+  }
+}

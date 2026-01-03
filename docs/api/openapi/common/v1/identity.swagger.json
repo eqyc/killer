@@ -1,0 +1,439 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "common/v1/identity.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "IdentityService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-identity/authenticate": {
+      "post": {
+        "summary": "用户认证",
+        "operationId": "IdentityService_Authenticate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthenticateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IdentityService"
+        ]
+      }
+    },
+    "/v1-identity/user": {
+      "post": {
+        "summary": "获取用户信息",
+        "operationId": "IdentityService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IdentityService"
+        ]
+      }
+    },
+    "/v1-identity/users": {
+      "post": {
+        "summary": "查询用户列表",
+        "operationId": "IdentityService_ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IdentityService"
+        ]
+      }
+    },
+    "/v1-identity/validatetoken": {
+      "post": {
+        "summary": "验证令牌",
+        "operationId": "IdentityService_ValidateToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ValidateTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IdentityService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1AuthenticateResponse": {
+      "type": "object",
+      "properties": {
+        "SUCCESS": {
+          "type": "boolean",
+          "title": "是否成功"
+        },
+        "ACCESSTOKEN": {
+          "type": "string",
+          "title": "访问令牌"
+        },
+        "REFRESHTOKEN": {
+          "type": "string",
+          "title": "刷新令牌"
+        },
+        "EXPIRESAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "令牌过期时间"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User",
+          "title": "用户信息"
+        },
+        "ERRORMESSAGE": {
+          "type": "string",
+          "title": "错误消息（如失败）"
+        }
+      },
+      "title": "用户认证响应"
+    },
+    "v1GetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User",
+          "title": "用户信息"
+        }
+      },
+      "title": "获取用户响应"
+    },
+    "v1ListUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1User"
+          },
+          "title": "用户列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询用户列表响应"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "BNAME": {
+          "type": "string",
+          "title": "用户名，对应BNAME"
+        },
+        "USTYP": {
+          "type": "string",
+          "title": "用户类型，对应USTYP (A=对话用户, B=系统用户, C=通讯用户等)"
+        },
+        "GLTGV": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效起始日期，对应GLTGV"
+        },
+        "GLTGB": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效截止日期，对应GLTGB"
+        },
+        "CLASS": {
+          "type": "string",
+          "title": "用户组，对应CLASS"
+        },
+        "PERSNUMBER": {
+          "type": "string",
+          "title": "人员编号（关联HR），对应PERSNUMBER"
+        },
+        "FULLNAME": {
+          "type": "string",
+          "title": "姓名"
+        },
+        "EMAIL": {
+          "type": "string",
+          "title": "电子邮箱"
+        },
+        "PHONE": {
+          "type": "string",
+          "title": "电话"
+        },
+        "DEPARTMENT": {
+          "type": "string",
+          "title": "部门"
+        },
+        "LASTLOGIN": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后登录时间，对应TRDAT/LTIME"
+        },
+        "FAILCOUNT": {
+          "type": "integer",
+          "format": "int32",
+          "title": "登录失败次数"
+        },
+        "UFLAG": {
+          "type": "string",
+          "title": "锁定状态，对应UFLAG"
+        },
+        "PWDCHGDATE": {
+          "type": "string",
+          "format": "date-time",
+          "title": "密码更改日期，对应PWDCHGDATE"
+        },
+        "LANGUAGE": {
+          "type": "string",
+          "title": "默认语言"
+        },
+        "TIMEZONE": {
+          "type": "string",
+          "title": "默认时区"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1UserRole"
+          },
+          "title": "用户角色列表"
+        }
+      },
+      "title": "=============================================================================\nUser - 用户（聚合根）\n=============================================================================\n对应ERP系统核心表USR01/USR02"
+    },
+    "v1UserRole": {
+      "type": "object",
+      "properties": {
+        "AGRNAME": {
+          "type": "string",
+          "title": "角色名称，对应AGR_NAME"
+        },
+        "DESCRIPTION": {
+          "type": "string",
+          "title": "角色描述"
+        },
+        "FROMDAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效起始日期，对应FROM_DAT"
+        },
+        "TODAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效截止日期，对应TO_DAT"
+        },
+        "ORGVALUES": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "组织级别值"
+        }
+      },
+      "title": "=============================================================================\nUserRole - 用户角色\n=============================================================================\n对应AGR_USERS表"
+    },
+    "v1ValidateTokenResponse": {
+      "type": "object",
+      "properties": {
+        "VALID": {
+          "type": "boolean",
+          "title": "是否有效"
+        },
+        "BNAME": {
+          "type": "string",
+          "title": "用户名"
+        },
+        "EXPIRESAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "过期时间"
+        },
+        "ROLES": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "用户角色列表"
+        }
+      },
+      "title": "验证令牌响应"
+    }
+  }
+}

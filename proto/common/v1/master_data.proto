@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package common.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/common.v1";
 
 import "google/protobuf/timestamp.proto";
 import "common/v1/types.proto";
@@ -21,13 +25,29 @@ import "common/v1/pagination.proto";
 // =============================================================================
 service MasterDataService {
   // 创建主数据记录
-  rpc CreateMasterRecord(CreateMasterRecordRequest) returns (CreateMasterRecordResponse);
+  rpc CreateMasterRecord(CreateMasterRecordRequest) returns (CreateMasterRecordResponse) {
+    option (google.api.http) = {
+        post: "/v1-master_data/masterrecord"
+    };
+  }
   // 获取主数据记录
-  rpc GetMasterRecord(GetMasterRecordRequest) returns (GetMasterRecordResponse);
+  rpc GetMasterRecord(GetMasterRecordRequest) returns (GetMasterRecordResponse) {
+    option (google.api.http) = {
+        post: "/v1-master_data/masterrecord"
+    };
+  }
   // 查询主数据记录列表
-  rpc ListMasterRecords(ListMasterRecordsRequest) returns (ListMasterRecordsResponse);
+  rpc ListMasterRecords(ListMasterRecordsRequest) returns (ListMasterRecordsResponse) {
+    option (google.api.http) = {
+        post: "/v1-master_data/masterrecords"
+    };
+  }
   // 更新主数据状态
-  rpc UpdateMasterRecordStatus(UpdateMasterRecordStatusRequest) returns (UpdateMasterRecordStatusResponse);
+  rpc UpdateMasterRecordStatus(UpdateMasterRecordStatusRequest) returns (UpdateMasterRecordStatusResponse) {
+    option (google.api.http) = {
+        post: "/v1-master_data/masterrecordstatus"
+    };
+  }
 }
 
 // =============================================================================

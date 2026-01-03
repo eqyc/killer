@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package project_rd.plm.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/project_rd.plm.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service PLMService {
   // 创建BOM
-  rpc CreateBOM(CreateBOMRequest) returns (CreateBOMResponse);
+  rpc CreateBOM(CreateBOMRequest) returns (CreateBOMResponse) {
+    option (google.api.http) = {
+        post: "/v1-plm/bom"
+    };
+  }
   // 获取BOM
-  rpc GetBOM(GetBOMRequest) returns (GetBOMResponse);
+  rpc GetBOM(GetBOMRequest) returns (GetBOMResponse) {
+    option (google.api.http) = {
+        post: "/v1-plm/bom"
+    };
+  }
   // 查询BOM列表
-  rpc ListBOMs(ListBOMsRequest) returns (ListBOMsResponse);
+  rpc ListBOMs(ListBOMsRequest) returns (ListBOMsResponse) {
+    option (google.api.http) = {
+        post: "/v1-plm/boms"
+    };
+  }
   // 创建工程变更单
-  rpc CreateChangeOrder(CreateChangeOrderRequest) returns (CreateChangeOrderResponse);
+  rpc CreateChangeOrder(CreateChangeOrderRequest) returns (CreateChangeOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-plm/changeorder"
+    };
+  }
 }
 
 // =============================================================================

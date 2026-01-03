@@ -1,0 +1,473 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "procurement/purchasing/v1/purchasing.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PurchasingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-purchasing/confirmpurchaseorder": {
+      "post": {
+        "summary": "确认采购订单",
+        "operationId": "PurchasingService_ConfirmPurchaseOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmPurchaseOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PurchasingService"
+        ]
+      }
+    },
+    "/v1-purchasing/purchaseorder": {
+      "post": {
+        "summary": "获取采购订单",
+        "operationId": "PurchasingService_GetPurchaseOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPurchaseOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PurchasingService"
+        ]
+      }
+    },
+    "/v1-purchasing/purchaseorders": {
+      "post": {
+        "summary": "查询采购订单列表",
+        "operationId": "PurchasingService_ListPurchaseOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPurchaseOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PurchasingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1BSTYP": {
+      "type": "string",
+      "enum": [
+        "BSTYP_UNSPECIFIED",
+        "BSTYP_F",
+        "BSTYP_K",
+        "BSTYP_L",
+        "BSTYP_A"
+      ],
+      "default": "BSTYP_UNSPECIFIED",
+      "description": "- BSTYP_UNSPECIFIED: 未指定\n - BSTYP_F: F = 标准采购订单\n - BSTYP_K: K = 合同\n - BSTYP_L: L = 计划协议\n - BSTYP_A: A = 询价",
+      "title": "=============================================================================\nBSTYP - 采购凭证类型枚举\n=============================================================================\n对应EKKO-BSTYP字段"
+    },
+    "v1ConfirmPurchaseOrderResponse": {
+      "type": "object",
+      "properties": {
+        "EBELN": {
+          "type": "string",
+          "title": "采购凭证号"
+        },
+        "confirmedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "确认时间"
+        }
+      },
+      "title": "确认采购订单响应"
+    },
+    "v1CreatePurchaseOrderResponse": {
+      "type": "object",
+      "properties": {
+        "purchaseOrder": {
+          "$ref": "#/definitions/v1PurchaseOrder",
+          "title": "创建的采购订单"
+        }
+      },
+      "title": "创建采购订单响应"
+    },
+    "v1GetPurchaseOrderResponse": {
+      "type": "object",
+      "properties": {
+        "purchaseOrder": {
+          "$ref": "#/definitions/v1PurchaseOrder",
+          "title": "采购订单"
+        }
+      },
+      "title": "获取采购订单响应"
+    },
+    "v1ListPurchaseOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "purchaseOrders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PurchaseOrder"
+          },
+          "title": "采购订单列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询采购订单列表响应"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1PurchaseOrder": {
+      "type": "object",
+      "properties": {
+        "EBELN": {
+          "type": "string",
+          "title": "采购凭证号，对应EBELN"
+        },
+        "BUKRS": {
+          "type": "string",
+          "title": "公司代码，对应BUKRS"
+        },
+        "BSTYP": {
+          "$ref": "#/definitions/v1BSTYP",
+          "title": "采购凭证类型，对应BSTYP"
+        },
+        "BSART": {
+          "type": "string",
+          "title": "采购凭证类别，对应BSART"
+        },
+        "EKORG": {
+          "type": "string",
+          "title": "采购组织，对应EKORG"
+        },
+        "EKGRP": {
+          "type": "string",
+          "title": "采购组，对应EKGRP"
+        },
+        "LIFNR": {
+          "type": "string",
+          "title": "供应商，对应LIFNR"
+        },
+        "WAERS": {
+          "type": "string",
+          "title": "货币代码，对应WAERS"
+        },
+        "BEDAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "凭证日期，对应BEDAT"
+        },
+        "ZTERM": {
+          "type": "string",
+          "title": "付款条款，对应ZTERM"
+        },
+        "KONNR": {
+          "type": "string",
+          "title": "采购合同号，对应KDATB"
+        },
+        "RLWRT": {
+          "$ref": "#/definitions/v1Money",
+          "title": "总净值，对应RLWRT"
+        },
+        "STATU": {
+          "type": "string",
+          "title": "状态，对应STATU"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "SRCSYSTEM": {
+          "type": "string",
+          "title": "来源系统标识"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PurchaseOrderItem"
+          },
+          "title": "行项目列表"
+        }
+      },
+      "title": "=============================================================================\nPurchaseOrder - 采购订单（聚合根）\n=============================================================================\n对应ERP系统核心表EKKO"
+    },
+    "v1PurchaseOrderItem": {
+      "type": "object",
+      "properties": {
+        "EBELP": {
+          "type": "integer",
+          "format": "int32",
+          "title": "采购凭证项目号，对应EBELP"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "物料号，对应MATNR"
+        },
+        "TXZ01": {
+          "type": "string",
+          "title": "物料描述，对应TXZ01"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "LGORT": {
+          "type": "string",
+          "title": "库存地点，对应LGORT"
+        },
+        "MENGE": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "采购订单数量，对应MENGE"
+        },
+        "MEINS": {
+          "type": "string",
+          "title": "订单单位，对应MEINS"
+        },
+        "NETPR": {
+          "$ref": "#/definitions/v1Money",
+          "title": "净价，对应NETPR"
+        },
+        "PEINH": {
+          "type": "integer",
+          "format": "int32",
+          "title": "价格单位，对应PEINH"
+        },
+        "NETWR": {
+          "$ref": "#/definitions/v1Money",
+          "title": "净值，对应NETWR"
+        },
+        "MWSKZ": {
+          "type": "string",
+          "title": "税码，对应MWSKZ"
+        },
+        "EINDT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "交货日期，对应EINDT"
+        },
+        "KNTTP": {
+          "type": "string",
+          "title": "科目分配类别，对应KNTTP"
+        },
+        "KOSTL": {
+          "type": "string",
+          "title": "成本中心，对应KOSTL"
+        },
+        "WEMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "已收货数量，对应WEMNG"
+        },
+        "REMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "已开票数量，对应REMNG"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "BANFN": {
+          "type": "string",
+          "title": "采购申请号，对应BANFN"
+        },
+        "BNFPO": {
+          "type": "integer",
+          "format": "int32",
+          "title": "采购申请项目号，对应BNFPO"
+        }
+      },
+      "title": "=============================================================================\nPurchaseOrderItem - 采购订单行项目\n=============================================================================\n对应ERP系统核心表EKPO"
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    }
+  }
+}

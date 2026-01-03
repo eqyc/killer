@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package common.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/common.v1";
 
 import "google/protobuf/timestamp.proto";
 import "common/v1/types.proto";
@@ -21,13 +25,29 @@ import "common/v1/pagination.proto";
 // =============================================================================
 service IdentityService {
   // 用户认证
-  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {
+    option (google.api.http) = {
+        post: "/v1-identity/authenticate"
+    };
+  }
   // 验证令牌
-  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {
+    option (google.api.http) = {
+        post: "/v1-identity/validatetoken"
+    };
+  }
   // 获取用户信息
-  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+        post: "/v1-identity/user"
+    };
+  }
   // 查询用户列表
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+        post: "/v1-identity/users"
+    };
+  }
 }
 
 // =============================================================================

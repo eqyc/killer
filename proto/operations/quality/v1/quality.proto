@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package operations.quality.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/operations.quality.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service QualityService {
   // 创建质检批
-  rpc CreateInspectionLot(CreateInspectionLotRequest) returns (CreateInspectionLotResponse);
+  rpc CreateInspectionLot(CreateInspectionLotRequest) returns (CreateInspectionLotResponse) {
+    option (google.api.http) = {
+        post: "/v1-quality/inspectionlot"
+    };
+  }
   // 获取质检批
-  rpc GetInspectionLot(GetInspectionLotRequest) returns (GetInspectionLotResponse);
+  rpc GetInspectionLot(GetInspectionLotRequest) returns (GetInspectionLotResponse) {
+    option (google.api.http) = {
+        post: "/v1-quality/inspectionlot"
+    };
+  }
   // 查询质检批列表
-  rpc ListInspectionLots(ListInspectionLotsRequest) returns (ListInspectionLotsResponse);
+  rpc ListInspectionLots(ListInspectionLotsRequest) returns (ListInspectionLotsResponse) {
+    option (google.api.http) = {
+        post: "/v1-quality/inspectionlots"
+    };
+  }
   // 记录检验结果
-  rpc RecordInspectionResult(RecordInspectionResultRequest) returns (RecordInspectionResultResponse);
+  rpc RecordInspectionResult(RecordInspectionResultRequest) returns (RecordInspectionResultResponse) {
+    option (google.api.http) = {
+        post: "/v1-quality/recordinspectionresult"
+    };
+  }
 }
 
 // =============================================================================

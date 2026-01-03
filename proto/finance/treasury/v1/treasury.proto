@@ -1,6 +1,10 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package finance.treasury.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/finance.treasury.v1";
 
 import "common/v1/types.proto";
 import "google/protobuf/timestamp.proto";
@@ -13,95 +17,243 @@ import "google/protobuf/timestamp.proto";
 service TreasuryService {
   // === 现金管理 (Cash Management) ===
   // 获取银行账户
-  rpc GetBankAccount(GetBankAccountRequest) returns (GetBankAccountResponse);
+  rpc GetBankAccount(GetBankAccountRequest) returns (GetBankAccountResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/bankaccount"
+    };
+  }
   // 查询银行账户列表
-  rpc ListBankAccounts(ListBankAccountsRequest) returns (ListBankAccountsResponse);
+  rpc ListBankAccounts(ListBankAccountsRequest) returns (ListBankAccountsResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/bankaccounts"
+    };
+  }
   // 创建银行账户
-  rpc CreateBankAccount(CreateBankAccountRequest) returns (CreateBankAccountResponse);
+  rpc CreateBankAccount(CreateBankAccountRequest) returns (CreateBankAccountResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/bankaccount"
+    };
+  }
   // 更新银行账户
-  rpc UpdateBankAccount(UpdateBankAccountRequest) returns (UpdateBankAccountResponse);
+  rpc UpdateBankAccount(UpdateBankAccountRequest) returns (UpdateBankAccountResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/bankaccount"
+    };
+  }
   // 获取账户余额
-  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse);
+  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/accountbalance"
+    };
+  }
   // 查询账户交易
-  rpc ListAccountTransactions(ListAccountTransactionsRequest) returns (ListAccountTransactionsResponse);
+  rpc ListAccountTransactions(ListAccountTransactionsRequest) returns (ListAccountTransactionsResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/accounttransactions"
+    };
+  }
 
   // === 现金流管理 (Cash Flow Management) ===
   // 创建现金流
-  rpc CreateCashFlow(CreateCashFlowRequest) returns (CreateCashFlowResponse);
+  rpc CreateCashFlow(CreateCashFlowRequest) returns (CreateCashFlowResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashflow"
+    };
+  }
   // 获取现金流
-  rpc GetCashFlow(GetCashFlowRequest) returns (GetCashFlowResponse);
+  rpc GetCashFlow(GetCashFlowRequest) returns (GetCashFlowResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashflow"
+    };
+  }
   // 查询现金流列表
-  rpc ListCashFlows(ListCashFlowsRequest) returns (ListCashFlowsResponse);
+  rpc ListCashFlows(ListCashFlowsRequest) returns (ListCashFlowsResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashflows"
+    };
+  }
   // 确认现金流
-  rpc ConfirmCashFlow(ConfirmCashFlowRequest) returns (ConfirmCashFlowResponse);
+  rpc ConfirmCashFlow(ConfirmCashFlowRequest) returns (ConfirmCashFlowResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/confirmcashflow"
+    };
+  }
   // 取消现金流
-  rpc CancelCashFlow(CancelCashFlowRequest) returns (CancelCashFlowResponse);
+  rpc CancelCashFlow(CancelCashFlowRequest) returns (CancelCashFlowResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cancelcashflow"
+    };
+  }
 
   // === 流动性管理 (Liquidity Management) ===
   // 获取流动性报表
-  rpc GetLiquidityReport(GetLiquidityReportRequest) returns (GetLiquidityReportResponse);
+  rpc GetLiquidityReport(GetLiquidityReportRequest) returns (GetLiquidityReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/liquidityreport"
+    };
+  }
   // 流动性预测
-  rpc GenerateLiquidityForecast(GenerateLiquidityForecastRequest) returns (GenerateLiquidityForecastResponse);
+  rpc GenerateLiquidityForecast(GenerateLiquidityForecastRequest) returns (GenerateLiquidityForecastResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/generateliquidityforecast"
+    };
+  }
   // 现金流汇总
-  rpc GetCashFlowSummary(GetCashFlowSummaryRequest) returns (GetCashFlowSummaryResponse);
+  rpc GetCashFlowSummary(GetCashFlowSummaryRequest) returns (GetCashFlowSummaryResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashflowsummary"
+    };
+  }
 
   // === 现金池管理 (Cash Pooling) ===
   // 创建现金池
-  rpc CreateCashPool(CreateCashPoolRequest) returns (CreateCashPoolResponse);
+  rpc CreateCashPool(CreateCashPoolRequest) returns (CreateCashPoolResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashpool"
+    };
+  }
   // 执行现金池归集
-  rpc ExecuteCashPool(ExecuteCashPoolRequest) returns (ExecuteCashPoolResponse);
+  rpc ExecuteCashPool(ExecuteCashPoolRequest) returns (ExecuteCashPoolResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/executecashpool"
+    };
+  }
   // 查询现金池状态
-  rpc GetCashPoolStatus(GetCashPoolStatusRequest) returns (GetCashPoolStatusResponse);
+  rpc GetCashPoolStatus(GetCashPoolStatusRequest) returns (GetCashPoolStatusResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/cashpoolstatus"
+    };
+  }
 
   // === 资金头寸 (Treasury Position) ===
   // 获取资金头寸
-  rpc GetTreasuryPosition(GetTreasuryPositionRequest) returns (GetTreasuryPositionResponse);
+  rpc GetTreasuryPosition(GetTreasuryPositionRequest) returns (GetTreasuryPositionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/treasuryposition"
+    };
+  }
   // 查询头寸历史
-  rpc ListPositionHistory(ListPositionHistoryRequest) returns (ListPositionHistoryResponse);
+  rpc ListPositionHistory(ListPositionHistoryRequest) returns (ListPositionHistoryResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/positionhistory"
+    };
+  }
   // 调整资金头寸
-  rpc AdjustPosition(AdjustPositionRequest) returns (AdjustPositionResponse);
+  rpc AdjustPosition(AdjustPositionRequest) returns (AdjustPositionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/adjustposition"
+    };
+  }
 
   // === 投资管理 (Investment Management) ===
   // 获取定期存款
-  rpc GetTermDeposit(GetTermDepositRequest) returns (GetTermDepositResponse);
+  rpc GetTermDeposit(GetTermDepositRequest) returns (GetTermDepositResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/termdeposit"
+    };
+  }
   // 创建定期存款
-  rpc CreateTermDeposit(CreateTermDepositRequest) returns (CreateTermDepositResponse);
+  rpc CreateTermDeposit(CreateTermDepositRequest) returns (CreateTermDepositResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/termdeposit"
+    };
+  }
   // 到期处理
-  rpc ProcessMaturity(ProcessMaturityRequest) returns (ProcessMaturityResponse);
+  rpc ProcessMaturity(ProcessMaturityRequest) returns (ProcessMaturityResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/processmaturity"
+    };
+  }
   // 查询投资组合
-  rpc ListInvestments(ListInvestmentsRequest) returns (ListInvestmentsResponse);
+  rpc ListInvestments(ListInvestmentsRequest) returns (ListInvestmentsResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/investments"
+    };
+  }
 
   // === 融资管理 (Finance Management) ===
   // 获取贷款
-  rpc GetLoan(GetLoanRequest) returns (GetLoanResponse);
+  rpc GetLoan(GetLoanRequest) returns (GetLoanResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/loan"
+    };
+  }
   // 创建贷款
-  rpc CreateLoan(CreateLoanRequest) returns (CreateLoanResponse);
+  rpc CreateLoan(CreateLoanRequest) returns (CreateLoanResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/loan"
+    };
+  }
   // 贷款提款
-  rpc DrawdownLoan(DrawdownLoanRequest) returns (DrawdownLoanResponse);
+  rpc DrawdownLoan(DrawdownLoanRequest) returns (DrawdownLoanResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/drawdownloan"
+    };
+  }
   // 偿还贷款
-  rpc RepayLoan(RepayLoanRequest) returns (RepayLoanResponse);
+  rpc RepayLoan(RepayLoanRequest) returns (RepayLoanResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/repayloan"
+    };
+  }
   // 查询贷款列表
-  rpc ListLoans(ListLoansRequest) returns (ListLoansResponse);
+  rpc ListLoans(ListLoansRequest) returns (ListLoansResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/loans"
+    };
+  }
 
   // === 外汇管理 (Foreign Exchange) ===
   // 获取外汇交易
-  rpc GetFXTransaction(GetFXTransactionRequest) returns (GetFXTransactionResponse);
+  rpc GetFXTransaction(GetFXTransactionRequest) returns (GetFXTransactionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/fxtransaction"
+    };
+  }
   // 创建外汇交易
-  rpc CreateFXTransaction(CreateFXTransactionRequest) returns (CreateFXTransactionResponse);
+  rpc CreateFXTransaction(CreateFXTransactionRequest) returns (CreateFXTransactionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/fxtransaction"
+    };
+  }
   // 执行外汇交易
-  rpc ExecuteFXTransaction(ExecuteFXTransactionRequest) returns (ExecuteFXTransactionResponse);
+  rpc ExecuteFXTransaction(ExecuteFXTransactionRequest) returns (ExecuteFXTransactionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/executefxtransaction"
+    };
+  }
   // 查询外汇敞口
-  rpc GetFXExposure(GetFXExposureRequest) returns (GetFXExposureResponse);
+  rpc GetFXExposure(GetFXExposureRequest) returns (GetFXExposureResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/fxexposure"
+    };
+  }
   // 外汇重估
-  rpc RevalueFXPosition(RevalueFXPositionRequest) returns (RevalueFXPositionResponse);
+  rpc RevalueFXPosition(RevalueFXPositionRequest) returns (RevalueFXPositionResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/revaluefxposition"
+    };
+  }
 
   // === 内部银行 (Internal Bank) ===
   // 创建内部银行账户
-  rpc CreateInternalBankAccount(CreateInternalBankAccountRequest) returns (CreateInternalBankAccountResponse);
+  rpc CreateInternalBankAccount(CreateInternalBankAccountRequest) returns (CreateInternalBankAccountResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/internalbankaccount"
+    };
+  }
   // 内部转账
-  rpc InternalTransfer(InternalTransferRequest) returns (InternalTransferResponse);
+  rpc InternalTransfer(InternalTransferRequest) returns (InternalTransferResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/internaltransfer"
+    };
+  }
   // 获取内部银行对账单
-  rpc GetInternalBankStatement(GetInternalBankStatementRequest) returns (GetInternalBankStatementResponse);
+  rpc GetInternalBankStatement(GetInternalBankStatementRequest) returns (GetInternalBankStatementResponse) {
+    option (google.api.http) = {
+        post: "/v1-treasury/internalbankstatement"
+    };
+  }
 }
 
 // =============================================================================

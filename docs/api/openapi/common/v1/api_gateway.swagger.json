@@ -1,0 +1,171 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "common/v1/api_gateway.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "APIGatewayService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-api_gateway/healthcheck": {
+      "post": {
+        "summary": "健康检查",
+        "operationId": "APIGatewayService_HealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HealthCheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "APIGatewayService"
+        ]
+      }
+    },
+    "/v1-api_gateway/proxyrequest": {
+      "post": {
+        "summary": "代理请求",
+        "operationId": "APIGatewayService_ProxyRequest",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProxyRequestResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "APIGatewayService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1HealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "SERVICENAME": {
+          "type": "string",
+          "title": "服务名称"
+        },
+        "STATUS": {
+          "type": "string",
+          "title": "健康状态"
+        },
+        "VERSION": {
+          "type": "string",
+          "title": "版本号"
+        },
+        "STARTTIME": {
+          "type": "string",
+          "format": "date-time",
+          "title": "启动时间"
+        },
+        "CHECKTIME": {
+          "type": "string",
+          "format": "date-time",
+          "title": "检查时间"
+        },
+        "DETAILS": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "详细信息"
+        }
+      },
+      "title": "=============================================================================\nHealthCheckResponse - 健康检查响应\n============================================================================="
+    },
+    "v1ProxyRequestResponse": {
+      "type": "object",
+      "properties": {
+        "STATUSCODE": {
+          "type": "integer",
+          "format": "int32",
+          "title": "HTTP状态码"
+        },
+        "HEADERS": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "响应头"
+        },
+        "BODY": {
+          "type": "string",
+          "format": "byte",
+          "title": "响应体"
+        },
+        "REQUESTID": {
+          "type": "string",
+          "title": "请求ID（用于追踪）"
+        },
+        "RESPONSETIME": {
+          "type": "string",
+          "format": "date-time",
+          "title": "响应时间戳"
+        },
+        "DURATIONMS": {
+          "type": "string",
+          "format": "int64",
+          "title": "处理耗时（毫秒）"
+        },
+        "ERRORMESSAGE": {
+          "type": "string",
+          "title": "错误消息（如有）"
+        }
+      },
+      "title": "=============================================================================\nProxyRequestResponse - 代理响应消息\n============================================================================="
+    }
+  }
+}

@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package human_capital.hr.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/human_capital.hr.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service HRService {
   // 创建员工
-  rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse);
+  rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse) {
+    option (google.api.http) = {
+        post: "/v1-hr/employee"
+    };
+  }
   // 获取员工
-  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse);
+  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse) {
+    option (google.api.http) = {
+        post: "/v1-hr/employee"
+    };
+  }
   // 查询员工列表
-  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse);
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse) {
+    option (google.api.http) = {
+        post: "/v1-hr/employees"
+    };
+  }
   // 更新组织分配
-  rpc UpdateOrgAssignment(UpdateOrgAssignmentRequest) returns (UpdateOrgAssignmentResponse);
+  rpc UpdateOrgAssignment(UpdateOrgAssignmentRequest) returns (UpdateOrgAssignmentResponse) {
+    option (google.api.http) = {
+        post: "/v1-hr/orgassignment"
+    };
+  }
 }
 
 // =============================================================================

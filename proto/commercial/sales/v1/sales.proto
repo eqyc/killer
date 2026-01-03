@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package commercial.sales.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/commercial.sales.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service SalesService {
   // 创建销售订单
-  rpc CreateSalesOrder(CreateSalesOrderRequest) returns (CreateSalesOrderResponse);
+  rpc CreateSalesOrder(CreateSalesOrderRequest) returns (CreateSalesOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-sales/salesorder"
+    };
+  }
   // 获取销售订单
-  rpc GetSalesOrder(GetSalesOrderRequest) returns (GetSalesOrderResponse);
+  rpc GetSalesOrder(GetSalesOrderRequest) returns (GetSalesOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-sales/salesorder"
+    };
+  }
   // 查询销售订单列表
-  rpc ListSalesOrders(ListSalesOrdersRequest) returns (ListSalesOrdersResponse);
+  rpc ListSalesOrders(ListSalesOrdersRequest) returns (ListSalesOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-sales/salesorders"
+    };
+  }
   // 确认销售订单
-  rpc ConfirmSalesOrder(ConfirmSalesOrderRequest) returns (ConfirmSalesOrderResponse);
+  rpc ConfirmSalesOrder(ConfirmSalesOrderRequest) returns (ConfirmSalesOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-sales/confirmsalesorder"
+    };
+  }
 }
 
 // =============================================================================

@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package logistics.shipping.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/logistics.shipping.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service ShippingService {
   // 创建交货单
-  rpc CreateDelivery(CreateDeliveryRequest) returns (CreateDeliveryResponse);
+  rpc CreateDelivery(CreateDeliveryRequest) returns (CreateDeliveryResponse) {
+    option (google.api.http) = {
+        post: "/v1-shipping/delivery"
+    };
+  }
   // 获取交货单
-  rpc GetDelivery(GetDeliveryRequest) returns (GetDeliveryResponse);
+  rpc GetDelivery(GetDeliveryRequest) returns (GetDeliveryResponse) {
+    option (google.api.http) = {
+        post: "/v1-shipping/delivery"
+    };
+  }
   // 查询交货单列表
-  rpc ListDeliveries(ListDeliveriesRequest) returns (ListDeliveriesResponse);
+  rpc ListDeliveries(ListDeliveriesRequest) returns (ListDeliveriesResponse) {
+    option (google.api.http) = {
+        post: "/v1-shipping/deliveries"
+    };
+  }
   // 过账发货
-  rpc PostGoodsIssue(PostGoodsIssueRequest) returns (PostGoodsIssueResponse);
+  rpc PostGoodsIssue(PostGoodsIssueRequest) returns (PostGoodsIssueResponse) {
+    option (google.api.http) = {
+        post: "/v1-shipping/postgoodsissue"
+    };
+  }
 }
 
 // =============================================================================

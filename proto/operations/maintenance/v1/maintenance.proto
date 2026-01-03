@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package operations.maintenance.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/operations.maintenance.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service MaintenanceService {
   // 创建维护订单
-  rpc CreateMaintenanceOrder(CreateMaintenanceOrderRequest) returns (CreateMaintenanceOrderResponse);
+  rpc CreateMaintenanceOrder(CreateMaintenanceOrderRequest) returns (CreateMaintenanceOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-maintenance/maintenanceorder"
+    };
+  }
   // 获取维护订单
-  rpc GetMaintenanceOrder(GetMaintenanceOrderRequest) returns (GetMaintenanceOrderResponse);
+  rpc GetMaintenanceOrder(GetMaintenanceOrderRequest) returns (GetMaintenanceOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-maintenance/maintenanceorder"
+    };
+  }
   // 查询维护订单列表
-  rpc ListMaintenanceOrders(ListMaintenanceOrdersRequest) returns (ListMaintenanceOrdersResponse);
+  rpc ListMaintenanceOrders(ListMaintenanceOrdersRequest) returns (ListMaintenanceOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-maintenance/maintenanceorders"
+    };
+  }
   // 创建维护通知
-  rpc CreateMaintenanceNotification(CreateMaintenanceNotificationRequest) returns (CreateMaintenanceNotificationResponse);
+  rpc CreateMaintenanceNotification(CreateMaintenanceNotificationRequest) returns (CreateMaintenanceNotificationResponse) {
+    option (google.api.http) = {
+        post: "/v1-maintenance/maintenancenotification"
+    };
+  }
 }
 
 // =============================================================================

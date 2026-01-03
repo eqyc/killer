@@ -1,0 +1,407 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "human_capital/hr/v1/hr.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "HRService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-hr/employee": {
+      "post": {
+        "summary": "获取员工",
+        "operationId": "HRService_GetEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetEmployeeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HRService"
+        ]
+      }
+    },
+    "/v1-hr/employees": {
+      "post": {
+        "summary": "查询员工列表",
+        "operationId": "HRService_ListEmployees",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListEmployeesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HRService"
+        ]
+      }
+    },
+    "/v1-hr/orgassignment": {
+      "post": {
+        "summary": "更新组织分配",
+        "operationId": "HRService_UpdateOrgAssignment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateOrgAssignmentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HRService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1CreateEmployeeResponse": {
+      "type": "object",
+      "properties": {
+        "employee": {
+          "$ref": "#/definitions/v1Employee",
+          "title": "创建的员工"
+        }
+      },
+      "title": "创建员工响应"
+    },
+    "v1Employee": {
+      "type": "object",
+      "properties": {
+        "PERNR": {
+          "type": "string",
+          "title": "人员编号，对应PERNR"
+        },
+        "BUKRS": {
+          "type": "string",
+          "title": "公司代码，对应BUKRS"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "人事范围，对应WERKS"
+        },
+        "BTRTL": {
+          "type": "string",
+          "title": "人事子范围，对应BTRTL"
+        },
+        "KOSTL": {
+          "type": "string",
+          "title": "成本中心，对应KOSTL"
+        },
+        "ORGEH": {
+          "type": "string",
+          "title": "组织单位，对应ORGEH"
+        },
+        "PLANS": {
+          "type": "string",
+          "title": "职位，对应PLANS"
+        },
+        "ENAME": {
+          "type": "string",
+          "title": "员工姓名，对应ENAME（由PA0002复合）"
+        },
+        "NACHN": {
+          "type": "string",
+          "title": "姓，对应NACHN"
+        },
+        "VORNA": {
+          "type": "string",
+          "title": "名，对应VORNA"
+        },
+        "GBDAT": {
+          "type": "string",
+          "format": "date-time",
+          "title": "出生日期，对应GBDAT"
+        },
+        "GESCH": {
+          "type": "string",
+          "title": "性别，对应GESCH"
+        },
+        "NATIO": {
+          "type": "string",
+          "title": "国籍，对应NATIO"
+        },
+        "BEGDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "入职日期，对应BEGDA（PA0001首条记录）"
+        },
+        "ENDDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "离职日期，对应ENDDA"
+        },
+        "PERSG": {
+          "type": "string",
+          "title": "员工组，对应PERSG"
+        },
+        "PERSK": {
+          "type": "string",
+          "title": "员工子组，对应PERSK"
+        },
+        "TRFAR": {
+          "type": "string",
+          "title": "工资范围，对应TRFAR"
+        },
+        "TRFGR": {
+          "type": "string",
+          "title": "工资等级，对应TRFGR"
+        },
+        "TRFST": {
+          "type": "string",
+          "title": "工资级别，对应TRFST"
+        },
+        "FAMST": {
+          "type": "string",
+          "title": "婚姻状况，对应FAMST"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1EmployeeInfoRecord"
+          },
+          "title": "信息类型记录列表"
+        }
+      },
+      "title": "=============================================================================\nEmployee - 员工（聚合根）\n=============================================================================\n对应ERP系统核心表PA0001（组织分配）/PA0002（个人数据）"
+    },
+    "v1EmployeeInfoRecord": {
+      "type": "object",
+      "properties": {
+        "INFTY": {
+          "type": "string",
+          "title": "信息类型，对应INFTY"
+        },
+        "SUBTY": {
+          "type": "string",
+          "title": "子类型，对应SUBTY"
+        },
+        "BEGDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "生效日期，对应BEGDA"
+        },
+        "ENDDA": {
+          "type": "string",
+          "format": "date-time",
+          "title": "失效日期，对应ENDDA"
+        },
+        "SEQNR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "序号，对应SEQNR"
+        },
+        "DATA": {
+          "type": "string",
+          "title": "记录数据（JSON格式存储具体字段）"
+        },
+        "SPRPS": {
+          "type": "string",
+          "title": "锁定标识，对应SPRPS"
+        },
+        "REASON": {
+          "type": "string",
+          "title": "变更原因，对应AESSION"
+        }
+      },
+      "title": "=============================================================================\nEmployeeInfoRecord - 员工信息类型记录\n=============================================================================\n对应Infotype记录结构"
+    },
+    "v1GetEmployeeResponse": {
+      "type": "object",
+      "properties": {
+        "employee": {
+          "$ref": "#/definitions/v1Employee",
+          "title": "员工信息"
+        }
+      },
+      "title": "获取员工响应"
+    },
+    "v1ListEmployeesResponse": {
+      "type": "object",
+      "properties": {
+        "employees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Employee"
+          },
+          "title": "员工列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询员工列表响应"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    },
+    "v1UpdateOrgAssignmentResponse": {
+      "type": "object",
+      "properties": {
+        "employee": {
+          "$ref": "#/definitions/v1Employee",
+          "title": "更新后的员工信息"
+        }
+      },
+      "title": "更新组织分配响应"
+    }
+  }
+}

@@ -1,6 +1,10 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package finance.financial.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/finance.financial.v1";
 
 import "common/v1/types.proto";
 import "google/protobuf/timestamp.proto";
@@ -12,109 +16,297 @@ import "google/protobuf/timestamp.proto";
 service FinancialService {
   // === 总账会计 (General Ledger) ===
   // 获取总账科目
-  rpc GetGLAccount(GetGLAccountRequest) returns (GetGLAccountResponse);
+  rpc GetGLAccount(GetGLAccountRequest) returns (GetGLAccountResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/glaccount"
+    };
+  }
   // 查询总账科目列表
-  rpc ListGLAccounts(ListGLAccountsRequest) returns (ListGLAccountsResponse);
+  rpc ListGLAccounts(ListGLAccountsRequest) returns (ListGLAccountsResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/glaccounts"
+    };
+  }
   // 创建会计凭证
-  rpc CreateJournalEntry(CreateJournalEntryRequest) returns (CreateJournalEntryResponse);
+  rpc CreateJournalEntry(CreateJournalEntryRequest) returns (CreateJournalEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/journalentry"
+    };
+  }
   // 获取会计凭证
-  rpc GetJournalEntry(GetJournalEntryRequest) returns (GetJournalEntryResponse);
+  rpc GetJournalEntry(GetJournalEntryRequest) returns (GetJournalEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/journalentry"
+    };
+  }
   // 查询会计凭证列表
-  rpc ListJournalEntries(ListJournalEntriesRequest) returns (ListJournalEntriesResponse);
+  rpc ListJournalEntries(ListJournalEntriesRequest) returns (ListJournalEntriesResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/journalentries"
+    };
+  }
   // 过账会计凭证
-  rpc PostJournalEntry(PostJournalEntryRequest) returns (PostJournalEntryResponse);
+  rpc PostJournalEntry(PostJournalEntryRequest) returns (PostJournalEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postjournalentry"
+    };
+  }
   // 冲销会计凭证
-  rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (ReverseJournalEntryResponse);
+  rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (ReverseJournalEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/reversejournalentry"
+    };
+  }
   // 批量创建凭证
-  rpc BatchCreateJournalEntries(BatchCreateJournalEntriesRequest) returns (BatchCreateJournalEntriesResponse);
+  rpc BatchCreateJournalEntries(BatchCreateJournalEntriesRequest) returns (BatchCreateJournalEntriesResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/journalentries"
+    };
+  }
   // 模板创建凭证
-  rpc CreateJournalEntryWithTemplate(CreateJournalEntryWithTemplateRequest) returns (CreateJournalEntryWithTemplateResponse);
+  rpc CreateJournalEntryWithTemplate(CreateJournalEntryWithTemplateRequest) returns (CreateJournalEntryWithTemplateResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/journalentrywithtemplate"
+    };
+  }
   // 获取科目余额
-  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse);
+  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/accountbalance"
+    };
+  }
   // 获取科目余额清单
-  rpc GetAccountBalances(GetAccountBalancesRequest) returns (GetAccountBalancesResponse);
+  rpc GetAccountBalances(GetAccountBalancesRequest) returns (GetAccountBalancesResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/accountbalances"
+    };
+  }
   // 生成试算平衡表
-  rpc GenerateTrialBalance(GenerateTrialBalanceRequest) returns (GenerateTrialBalanceResponse);
+  rpc GenerateTrialBalance(GenerateTrialBalanceRequest) returns (GenerateTrialBalanceResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/generatetrialbalance"
+    };
+  }
 
   // === 应收账款 (Accounts Receivable) ===
   // 获取客户主数据
-  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/customer"
+    };
+  }
   // 查询客户列表
-  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/customers"
+    };
+  }
   // 创建客户
-  rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
+  rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/customer"
+    };
+  }
   // 更新客户
-  rpc UpdateCustomer(UpdateCustomerRequest) returns (UpdateCustomerResponse);
+  rpc UpdateCustomer(UpdateCustomerRequest) returns (UpdateCustomerResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/customer"
+    };
+  }
   // 过账应收凭证
-  rpc PostReceivableEntry(PostReceivableEntryRequest) returns (PostReceivableEntryResponse);
+  rpc PostReceivableEntry(PostReceivableEntryRequest) returns (PostReceivableEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postreceivableentry"
+    };
+  }
   // 过账收款
-  rpc PostIncomingPayment(PostIncomingPaymentRequest) returns (PostIncomingPaymentResponse);
+  rpc PostIncomingPayment(PostIncomingPaymentRequest) returns (PostIncomingPaymentResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postincomingpayment"
+    };
+  }
   // 客户清账
-  rpc ClearCustomerOpenItem(ClearCustomerOpenItemRequest) returns (ClearCustomerOpenItemResponse);
+  rpc ClearCustomerOpenItem(ClearCustomerOpenItemRequest) returns (ClearCustomerOpenItemResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/clearcustomeropenitem"
+    };
+  }
   // 客户催收
-  rpc SendCustomerDunning(SendCustomerDunningRequest) returns (SendCustomerDunningResponse);
+  rpc SendCustomerDunning(SendCustomerDunningRequest) returns (SendCustomerDunningResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/sendcustomerdunning"
+    };
+  }
   // 汇兑损益计算
-  rpc CalculateExchangeDifference(CalculateExchangeDifferenceRequest) returns (CalculateExchangeDifferenceResponse);
+  rpc CalculateExchangeDifference(CalculateExchangeDifferenceRequest) returns (CalculateExchangeDifferenceResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/calculateexchangedifference"
+    };
+  }
 
   // === 应付账款 (Accounts Payable) ===
   // 获取供应商主数据
-  rpc GetVendor(GetVendorRequest) returns (GetVendorResponse);
+  rpc GetVendor(GetVendorRequest) returns (GetVendorResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/vendor"
+    };
+  }
   // 查询供应商列表
-  rpc ListVendors(ListVendorsRequest) returns (ListVendorsResponse);
+  rpc ListVendors(ListVendorsRequest) returns (ListVendorsResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/vendors"
+    };
+  }
   // 创建供应商
-  rpc CreateVendor(CreateVendorRequest) returns (CreateVendorResponse);
+  rpc CreateVendor(CreateVendorRequest) returns (CreateVendorResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/vendor"
+    };
+  }
   // 更新供应商
-  rpc UpdateVendor(UpdateVendorRequest) returns (UpdateVendorResponse);
+  rpc UpdateVendor(UpdateVendorRequest) returns (UpdateVendorResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/vendor"
+    };
+  }
   // 过账应付凭证
-  rpc PostPayableEntry(PostPayableEntryRequest) returns (PostPayableEntryResponse);
+  rpc PostPayableEntry(PostPayableEntryRequest) returns (PostPayableEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postpayableentry"
+    };
+  }
   // 过账付款
-  rpc PostOutgoingPayment(PostOutgoingPaymentRequest) returns (PostOutgoingPaymentResponse);
+  rpc PostOutgoingPayment(PostOutgoingPaymentRequest) returns (PostOutgoingPaymentResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postoutgoingpayment"
+    };
+  }
   // 供应商清账
-  rpc ClearVendorOpenItem(ClearVendorOpenItemRequest) returns (ClearVendorOpenItemResponse);
+  rpc ClearVendorOpenItem(ClearVendorOpenItemRequest) returns (ClearVendorOpenItemResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/clearvendoropenitem"
+    };
+  }
   // 供应商付款冻结
-  rpc SetPaymentBlock(SetPaymentBlockRequest) returns (SetPaymentBlockResponse);
+  rpc SetPaymentBlock(SetPaymentBlockRequest) returns (SetPaymentBlockResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/setpaymentblock"
+    };
+  }
 
   // === 固定资产 (Fixed Assets) ===
   // 获取资产主数据
-  rpc GetFixedAsset(GetFixedAssetRequest) returns (GetFixedAssetResponse);
+  rpc GetFixedAsset(GetFixedAssetRequest) returns (GetFixedAssetResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/fixedasset"
+    };
+  }
   // 查询资产列表
-  rpc ListFixedAssets(ListFixedAssetsRequest) returns (ListFixedAssetsResponse);
+  rpc ListFixedAssets(ListFixedAssetsRequest) returns (ListFixedAssetsResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/fixedassets"
+    };
+  }
   // 创建资产
-  rpc CreateFixedAsset(CreateFixedAssetRequest) returns (CreateFixedAssetResponse);
+  rpc CreateFixedAsset(CreateFixedAssetRequest) returns (CreateFixedAssetResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/fixedasset"
+    };
+  }
   // 资产采购
-  rpc PostAssetAcquisition(PostAssetAcquisitionRequest) returns (PostAssetAcquisitionResponse);
+  rpc PostAssetAcquisition(PostAssetAcquisitionRequest) returns (PostAssetAcquisitionResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postassetacquisition"
+    };
+  }
   // 资产折旧
-  rpc PostAssetDepreciation(PostAssetDepreciationRequest) returns (PostAssetDepreciationResponse);
+  rpc PostAssetDepreciation(PostAssetDepreciationRequest) returns (PostAssetDepreciationResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postassetdepreciation"
+    };
+  }
   // 资产转移
-  rpc PostAssetTransfer(PostAssetTransferRequest) returns (PostAssetTransferResponse);
+  rpc PostAssetTransfer(PostAssetTransferRequest) returns (PostAssetTransferResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postassettransfer"
+    };
+  }
   // 资产报废
-  rpc PostAssetRetirement(PostAssetRetirementRequest) returns (PostAssetRetirementResponse);
+  rpc PostAssetRetirement(PostAssetRetirementRequest) returns (PostAssetRetirementResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postassetretirement"
+    };
+  }
   // 资产价值查询
-  rpc GetAssetValue(GetAssetValueRequest) returns (GetAssetValueResponse);
+  rpc GetAssetValue(GetAssetValueRequest) returns (GetAssetValueResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/assetvalue"
+    };
+  }
 
   // === 银行会计 (Bank Accounting) ===
   // 获取银行主数据
-  rpc GetBank(GetBankRequest) returns (GetBankResponse);
+  rpc GetBank(GetBankRequest) returns (GetBankResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/bank"
+    };
+  }
   // 查询银行列表
-  rpc ListBanks(ListBanksRequest) returns (ListBanksResponse);
+  rpc ListBanks(ListBanksRequest) returns (ListBanksResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/banks"
+    };
+  }
   // 银行支付
-  rpc PostBankPayment(PostBankPaymentRequest) returns (PostBankPaymentResponse);
+  rpc PostBankPayment(PostBankPaymentRequest) returns (PostBankPaymentResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postbankpayment"
+    };
+  }
   // 银行收款
-  rpc PostBankReceipt(PostBankReceiptRequest) returns (PostBankReceiptResponse);
+  rpc PostBankReceipt(PostBankReceiptRequest) returns (PostBankReceiptResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postbankreceipt"
+    };
+  }
   // 银行对账
-  rpc PostBankReconciliation(PostBankReconciliationRequest) returns (PostBankReconciliationResponse);
+  rpc PostBankReconciliation(PostBankReconciliationRequest) returns (PostBankReconciliationResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postbankreconciliation"
+    };
+  }
   // 银行科目余额
-  rpc GetBankAccountBalance(GetBankAccountBalanceRequest) returns (GetBankAccountBalanceResponse);
+  rpc GetBankAccountBalance(GetBankAccountBalanceRequest) returns (GetBankAccountBalanceResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/bankaccountbalance"
+    };
+  }
 
   // === 期末处理 (Period-End Closing) ===
   // 开启会计期间
-  rpc OpenFiscalPeriod(OpenFiscalPeriodRequest) returns (OpenFiscalPeriodResponse);
+  rpc OpenFiscalPeriod(OpenFiscalPeriodRequest) returns (OpenFiscalPeriodResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/openfiscalperiod"
+    };
+  }
   // 关闭会计期间
-  rpc CloseFiscalPeriod(CloseFiscalPeriodRequest) returns (CloseFiscalPeriodResponse);
+  rpc CloseFiscalPeriod(CloseFiscalPeriodRequest) returns (CloseFiscalPeriodResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/closefiscalperiod"
+    };
+  }
   // 期末调整过账
-  rpc PostPeriodClosingEntry(PostPeriodClosingEntryRequest) returns (PostPeriodClosingEntryResponse);
+  rpc PostPeriodClosingEntry(PostPeriodClosingEntryRequest) returns (PostPeriodClosingEntryResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/postperiodclosingentry"
+    };
+  }
   // 生成财务主数据报表
-  rpc GenerateGLAccountReport(GenerateGLAccountReportRequest) returns (GenerateGLAccountReportResponse);
+  rpc GenerateGLAccountReport(GenerateGLAccountReportRequest) returns (GenerateGLAccountReportResponse) {
+    option (google.api.http) = {
+        post: "/v1-financial/generateglaccountreport"
+    };
+  }
 }
 
 // =============================================================================

@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package procurement.scm.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/procurement.scm.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service SupplyChainService {
   // 创建供应链计划
-  rpc CreateSupplyPlan(CreateSupplyPlanRequest) returns (CreateSupplyPlanResponse);
+  rpc CreateSupplyPlan(CreateSupplyPlanRequest) returns (CreateSupplyPlanResponse) {
+    option (google.api.http) = {
+        post: "/v1-scm/supplyplan"
+    };
+  }
   // 获取供应链计划
-  rpc GetSupplyPlan(GetSupplyPlanRequest) returns (GetSupplyPlanResponse);
+  rpc GetSupplyPlan(GetSupplyPlanRequest) returns (GetSupplyPlanResponse) {
+    option (google.api.http) = {
+        post: "/v1-scm/supplyplan"
+    };
+  }
   // 查询供应链计划列表
-  rpc ListSupplyPlans(ListSupplyPlansRequest) returns (ListSupplyPlansResponse);
+  rpc ListSupplyPlans(ListSupplyPlansRequest) returns (ListSupplyPlansResponse) {
+    option (google.api.http) = {
+        post: "/v1-scm/supplyplans"
+    };
+  }
   // 执行MRP运行
-  rpc RunMRP(RunMRPRequest) returns (RunMRPResponse);
+  rpc RunMRP(RunMRPRequest) returns (RunMRPResponse) {
+    option (google.api.http) = {
+        post: "/v1-scm/runmrp"
+    };
+  }
 }
 
 // =============================================================================

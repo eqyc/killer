@@ -1,0 +1,463 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "project_rd/plm/v1/plm.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PLMService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-plm/bom": {
+      "post": {
+        "summary": "获取BOM",
+        "operationId": "PLMService_GetBOM",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBOMResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PLMService"
+        ]
+      }
+    },
+    "/v1-plm/boms": {
+      "post": {
+        "summary": "查询BOM列表",
+        "operationId": "PLMService_ListBOMs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListBOMsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PLMService"
+        ]
+      }
+    },
+    "/v1-plm/changeorder": {
+      "post": {
+        "summary": "创建工程变更单",
+        "operationId": "PLMService_CreateChangeOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateChangeOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PLMService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1BOMItem": {
+      "type": "object",
+      "properties": {
+        "STPOZ": {
+          "type": "integer",
+          "format": "int32",
+          "title": "项目编号，对应STPOZ"
+        },
+        "IDNRK": {
+          "type": "string",
+          "title": "组件物料号，对应IDNRK"
+        },
+        "OJTXP": {
+          "type": "string",
+          "title": "组件描述"
+        },
+        "POSTP": {
+          "type": "string",
+          "title": "项目类别，对应POSTP"
+        },
+        "MENGE": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "组件数量，对应MENGE"
+        },
+        "MEINS": {
+          "type": "string",
+          "title": "组件单位，对应MEINS"
+        },
+        "DATEFR": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效起始日期，对应DATEFR"
+        },
+        "DATETO": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效截止日期，对应DATETO"
+        },
+        "SORTF": {
+          "type": "string",
+          "title": "排序字符串，对应SORTF"
+        },
+        "POSNROP": {
+          "type": "string",
+          "title": "工序号（工艺路线关联），对应POSNR"
+        },
+        "SCRAPRATE": {
+          "type": "string",
+          "title": "废品率（百分比），对应AUESSION"
+        },
+        "FMENG": {
+          "type": "boolean",
+          "title": "固定数量标识，对应FMENG"
+        },
+        "ERSKZ": {
+          "type": "string",
+          "title": "成本相关标识，对应ERSKZ"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "NOTES": {
+          "type": "string",
+          "title": "备注"
+        }
+      },
+      "title": "=============================================================================\nBOMItem - BOM行项目\n=============================================================================\n对应ERP系统核心表STPO"
+    },
+    "v1BillOfMaterial": {
+      "type": "object",
+      "properties": {
+        "STLNR": {
+          "type": "string",
+          "title": "BOM编号，对应STLNR"
+        },
+        "STLTY": {
+          "type": "string",
+          "title": "BOM类别，对应STLTY"
+        },
+        "STLAN": {
+          "type": "string",
+          "title": "BOM用途，对应STLAN"
+        },
+        "STLAL": {
+          "type": "string",
+          "title": "替代BOM，对应STLAL"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "物料号，对应MATNR"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "BMENG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "基本数量，对应BMENG"
+        },
+        "BMEIN": {
+          "type": "string",
+          "title": "基本计量单位，对应BMEIN"
+        },
+        "DATEFR": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效起始日期，对应DATEFR"
+        },
+        "DATETO": {
+          "type": "string",
+          "format": "date-time",
+          "title": "有效截止日期，对应DATETO"
+        },
+        "STLST": {
+          "type": "string",
+          "title": "BOM状态，对应STLST"
+        },
+        "STKTX": {
+          "type": "string",
+          "title": "BOM文本，对应STKTX"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1BOMItem"
+          },
+          "title": "BOM项目列表"
+        }
+      },
+      "title": "=============================================================================\nBillOfMaterial - 物料清单（聚合根）\n=============================================================================\n对应ERP系统核心表STKO（BOM头）"
+    },
+    "v1ChangeOrder": {
+      "type": "object",
+      "properties": {
+        "CHANGENO": {
+          "type": "string",
+          "title": "变更单号"
+        },
+        "CHANGETYPE": {
+          "type": "string",
+          "title": "变更类型"
+        },
+        "DESCRIPTION": {
+          "type": "string",
+          "title": "描述"
+        },
+        "EFFECTIVEDATE": {
+          "type": "string",
+          "format": "date-time",
+          "title": "生效日期"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "物料号"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂"
+        },
+        "RESPONSIBLE": {
+          "type": "string",
+          "title": "负责人"
+        },
+        "STATUS": {
+          "type": "string",
+          "title": "状态"
+        },
+        "REASONCODE": {
+          "type": "string",
+          "title": "原因代码"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        }
+      },
+      "title": "=============================================================================\nChangeOrder - 工程变更单\n============================================================================="
+    },
+    "v1CreateBOMResponse": {
+      "type": "object",
+      "properties": {
+        "bom": {
+          "$ref": "#/definitions/v1BillOfMaterial",
+          "title": "创建的BOM"
+        }
+      },
+      "title": "创建BOM响应"
+    },
+    "v1CreateChangeOrderResponse": {
+      "type": "object",
+      "properties": {
+        "changeOrder": {
+          "$ref": "#/definitions/v1ChangeOrder",
+          "title": "创建的工程变更单"
+        }
+      },
+      "title": "创建工程变更单响应"
+    },
+    "v1GetBOMResponse": {
+      "type": "object",
+      "properties": {
+        "bom": {
+          "$ref": "#/definitions/v1BillOfMaterial",
+          "title": "BOM"
+        }
+      },
+      "title": "获取BOM响应"
+    },
+    "v1ListBOMsResponse": {
+      "type": "object",
+      "properties": {
+        "boms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1BillOfMaterial"
+          },
+          "title": "BOM列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询BOM列表响应"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    }
+  }
+}

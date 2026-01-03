@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package operations.production.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/operations.production.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service ProductionService {
   // 创建生产订单
-  rpc CreateProductionOrder(CreateProductionOrderRequest) returns (CreateProductionOrderResponse);
+  rpc CreateProductionOrder(CreateProductionOrderRequest) returns (CreateProductionOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-production/productionorder"
+    };
+  }
   // 获取生产订单
-  rpc GetProductionOrder(GetProductionOrderRequest) returns (GetProductionOrderResponse);
+  rpc GetProductionOrder(GetProductionOrderRequest) returns (GetProductionOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-production/productionorder"
+    };
+  }
   // 查询生产订单列表
-  rpc ListProductionOrders(ListProductionOrdersRequest) returns (ListProductionOrdersResponse);
+  rpc ListProductionOrders(ListProductionOrdersRequest) returns (ListProductionOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-production/productionorders"
+    };
+  }
   // 确认生产订单
-  rpc ConfirmProductionOrder(ConfirmProductionOrderRequest) returns (ConfirmProductionOrderResponse);
+  rpc ConfirmProductionOrder(ConfirmProductionOrderRequest) returns (ConfirmProductionOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-production/confirmproductionorder"
+    };
+  }
 }
 
 // =============================================================================

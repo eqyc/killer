@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package logistics.warehouse.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/logistics.warehouse.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service WarehouseService {
   // 创建仓库任务
-  rpc CreateWarehouseTask(CreateWarehouseTaskRequest) returns (CreateWarehouseTaskResponse);
+  rpc CreateWarehouseTask(CreateWarehouseTaskRequest) returns (CreateWarehouseTaskResponse) {
+    option (google.api.http) = {
+        post: "/v1-warehouse/warehousetask"
+    };
+  }
   // 获取仓库任务
-  rpc GetWarehouseTask(GetWarehouseTaskRequest) returns (GetWarehouseTaskResponse);
+  rpc GetWarehouseTask(GetWarehouseTaskRequest) returns (GetWarehouseTaskResponse) {
+    option (google.api.http) = {
+        post: "/v1-warehouse/warehousetask"
+    };
+  }
   // 查询仓库任务列表
-  rpc ListWarehouseTasks(ListWarehouseTasksRequest) returns (ListWarehouseTasksResponse);
+  rpc ListWarehouseTasks(ListWarehouseTasksRequest) returns (ListWarehouseTasksResponse) {
+    option (google.api.http) = {
+        post: "/v1-warehouse/warehousetasks"
+    };
+  }
   // 获取仓位库存
-  rpc GetStorageBinStock(GetStorageBinStockRequest) returns (GetStorageBinStockResponse);
+  rpc GetStorageBinStock(GetStorageBinStockRequest) returns (GetStorageBinStockResponse) {
+    option (google.api.http) = {
+        post: "/v1-warehouse/storagebinstock"
+    };
+  }
 }
 
 // =============================================================================

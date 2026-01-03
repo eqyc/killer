@@ -1,0 +1,2502 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "finance/financial/v1/financial.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "FinancialService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-financial/accountbalance": {
+      "post": {
+        "summary": "获取科目余额",
+        "operationId": "FinancialService_GetAccountBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/accountbalances": {
+      "post": {
+        "summary": "获取科目余额清单",
+        "operationId": "FinancialService_GetAccountBalances",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAccountBalancesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/assetvalue": {
+      "post": {
+        "summary": "资产价值查询",
+        "operationId": "FinancialService_GetAssetValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAssetValueResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/bank": {
+      "post": {
+        "summary": "=== 银行会计 (Bank Accounting) ===\n获取银行主数据",
+        "operationId": "FinancialService_GetBank",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBankResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/bankaccountbalance": {
+      "post": {
+        "summary": "银行科目余额",
+        "operationId": "FinancialService_GetBankAccountBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBankAccountBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/banks": {
+      "post": {
+        "summary": "查询银行列表",
+        "operationId": "FinancialService_ListBanks",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListBanksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/calculateexchangedifference": {
+      "post": {
+        "summary": "汇兑损益计算",
+        "operationId": "FinancialService_CalculateExchangeDifference",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CalculateExchangeDifferenceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/clearcustomeropenitem": {
+      "post": {
+        "summary": "客户清账",
+        "operationId": "FinancialService_ClearCustomerOpenItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ClearCustomerOpenItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/clearvendoropenitem": {
+      "post": {
+        "summary": "供应商清账",
+        "operationId": "FinancialService_ClearVendorOpenItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ClearVendorOpenItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/closefiscalperiod": {
+      "post": {
+        "summary": "关闭会计期间",
+        "operationId": "FinancialService_CloseFiscalPeriod",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CloseFiscalPeriodResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/customer": {
+      "post": {
+        "summary": "更新客户",
+        "operationId": "FinancialService_UpdateCustomer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateCustomerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/customers": {
+      "post": {
+        "summary": "查询客户列表",
+        "operationId": "FinancialService_ListCustomers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCustomersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/fixedasset": {
+      "post": {
+        "summary": "创建资产",
+        "operationId": "FinancialService_CreateFixedAsset",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateFixedAssetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/fixedassets": {
+      "post": {
+        "summary": "查询资产列表",
+        "operationId": "FinancialService_ListFixedAssets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListFixedAssetsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/generateglaccountreport": {
+      "post": {
+        "summary": "生成财务主数据报表",
+        "operationId": "FinancialService_GenerateGLAccountReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GenerateGLAccountReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/generatetrialbalance": {
+      "post": {
+        "summary": "生成试算平衡表",
+        "operationId": "FinancialService_GenerateTrialBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GenerateTrialBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/glaccount": {
+      "post": {
+        "summary": "=== 总账会计 (General Ledger) ===\n获取总账科目",
+        "operationId": "FinancialService_GetGLAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetGLAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/glaccounts": {
+      "post": {
+        "summary": "查询总账科目列表",
+        "operationId": "FinancialService_ListGLAccounts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListGLAccountsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/journalentries": {
+      "post": {
+        "summary": "批量创建凭证",
+        "operationId": "FinancialService_BatchCreateJournalEntries",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BatchCreateJournalEntriesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/journalentry": {
+      "post": {
+        "summary": "获取会计凭证",
+        "operationId": "FinancialService_GetJournalEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetJournalEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/journalentrywithtemplate": {
+      "post": {
+        "summary": "模板创建凭证",
+        "operationId": "FinancialService_CreateJournalEntryWithTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateJournalEntryWithTemplateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/openfiscalperiod": {
+      "post": {
+        "summary": "=== 期末处理 (Period-End Closing) ===\n开启会计期间",
+        "operationId": "FinancialService_OpenFiscalPeriod",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenFiscalPeriodResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postassetacquisition": {
+      "post": {
+        "summary": "资产采购",
+        "operationId": "FinancialService_PostAssetAcquisition",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostAssetAcquisitionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postassetdepreciation": {
+      "post": {
+        "summary": "资产折旧",
+        "operationId": "FinancialService_PostAssetDepreciation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostAssetDepreciationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postassetretirement": {
+      "post": {
+        "summary": "资产报废",
+        "operationId": "FinancialService_PostAssetRetirement",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostAssetRetirementResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postassettransfer": {
+      "post": {
+        "summary": "资产转移",
+        "operationId": "FinancialService_PostAssetTransfer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostAssetTransferResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postbankpayment": {
+      "post": {
+        "summary": "银行支付",
+        "operationId": "FinancialService_PostBankPayment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostBankPaymentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postbankreceipt": {
+      "post": {
+        "summary": "银行收款",
+        "operationId": "FinancialService_PostBankReceipt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostBankReceiptResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postbankreconciliation": {
+      "post": {
+        "summary": "银行对账",
+        "operationId": "FinancialService_PostBankReconciliation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostBankReconciliationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postincomingpayment": {
+      "post": {
+        "summary": "过账收款",
+        "operationId": "FinancialService_PostIncomingPayment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostIncomingPaymentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postjournalentry": {
+      "post": {
+        "summary": "过账会计凭证",
+        "operationId": "FinancialService_PostJournalEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostJournalEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postoutgoingpayment": {
+      "post": {
+        "summary": "过账付款",
+        "operationId": "FinancialService_PostOutgoingPayment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostOutgoingPaymentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postpayableentry": {
+      "post": {
+        "summary": "过账应付凭证",
+        "operationId": "FinancialService_PostPayableEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostPayableEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postperiodclosingentry": {
+      "post": {
+        "summary": "期末调整过账",
+        "operationId": "FinancialService_PostPeriodClosingEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostPeriodClosingEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/postreceivableentry": {
+      "post": {
+        "summary": "过账应收凭证",
+        "operationId": "FinancialService_PostReceivableEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostReceivableEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/reversejournalentry": {
+      "post": {
+        "summary": "冲销会计凭证",
+        "operationId": "FinancialService_ReverseJournalEntry",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReverseJournalEntryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/sendcustomerdunning": {
+      "post": {
+        "summary": "客户催收",
+        "operationId": "FinancialService_SendCustomerDunning",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SendCustomerDunningResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/setpaymentblock": {
+      "post": {
+        "summary": "供应商付款冻结",
+        "operationId": "FinancialService_SetPaymentBlock",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SetPaymentBlockResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/vendor": {
+      "post": {
+        "summary": "更新供应商",
+        "operationId": "FinancialService_UpdateVendor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateVendorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    },
+    "/v1-financial/vendors": {
+      "post": {
+        "summary": "查询供应商列表",
+        "operationId": "FinancialService_ListVendors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListVendorsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "FinancialService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AccountBalanceLine": {
+      "type": "object",
+      "properties": {
+        "SAKNR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "beginningBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "debitTurnover": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "creditTurnover": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "endingBalance": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "科目余额行"
+    },
+    "v1AssetStatus": {
+      "type": "string",
+      "enum": [
+        "ASSET_STATUS_UNSPECIFIED",
+        "ASSET_STATUS_CREATED",
+        "ASSET_STATUS_CAPITALIZED",
+        "ASSET_STATUS_BLOCKED",
+        "ASSET_STATUS_RETIRED"
+      ],
+      "default": "ASSET_STATUS_UNSPECIFIED",
+      "title": "资产状态枚举"
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1Bank": {
+      "type": "object",
+      "properties": {
+        "BANKS": {
+          "type": "string"
+        },
+        "BANKL": {
+          "type": "string"
+        },
+        "BANKA": {
+          "type": "string"
+        },
+        "STRAS": {
+          "type": "string"
+        },
+        "ORT01": {
+          "type": "string"
+        },
+        "PSTLZ": {
+          "type": "string"
+        },
+        "SWIFT": {
+          "type": "string"
+        },
+        "IBAN": {
+          "type": "string"
+        },
+        "BNOCK": {
+          "type": "string"
+        },
+        "BVTYP": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "银行主数据"
+    },
+    "v1BankStatementLine": {
+      "type": "object",
+      "properties": {
+        "TRANSACTIONDATE": {
+          "type": "string"
+        },
+        "TRANSACTIONTYPE": {
+          "type": "string"
+        },
+        "DESCRIPTION": {
+          "type": "string"
+        },
+        "AMOUNT": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "REFERENCE": {
+          "type": "string"
+        }
+      },
+      "title": "银行对账行"
+    },
+    "v1BatchCreateJournalEntriesResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "success": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CreateJournalEntryResponse"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "批量创建凭证响应"
+    },
+    "v1CalculateExchangeDifferenceResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "exchangeGain": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "exchangeLoss": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "DOCNO": {
+          "type": "string"
+        }
+      },
+      "title": "汇兑损益计算响应"
+    },
+    "v1ClearCustomerOpenItemResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "CLEARINGDOC": {
+          "type": "string"
+        },
+        "clearedItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ClearedItem"
+          }
+        }
+      },
+      "title": "客户清账响应"
+    },
+    "v1ClearVendorOpenItemResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "CLEARINGDOC": {
+          "type": "string"
+        },
+        "clearedItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ClearedItem"
+          }
+        }
+      },
+      "title": "供应商清账响应"
+    },
+    "v1ClearedItem": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "清账项目"
+    },
+    "v1CloseFiscalPeriodResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PeriodCloseResult"
+          }
+        }
+      },
+      "title": "关闭会计期间响应"
+    },
+    "v1CreateCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "KUNNR": {
+          "type": "string"
+        }
+      },
+      "title": "创建客户响应"
+    },
+    "v1CreateFixedAssetResponse": {
+      "type": "object",
+      "properties": {
+        "ANLN1": {
+          "type": "string"
+        },
+        "ANLN2": {
+          "type": "string"
+        }
+      },
+      "title": "创建资产响应"
+    },
+    "v1CreateJournalEntryRequest": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "BLART": {
+          "type": "string"
+        },
+        "BLDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "BUDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "XBLNR": {
+          "type": "string"
+        },
+        "BKTXT": {
+          "type": "string"
+        },
+        "SRCSYSTEM": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1JournalEntryItem"
+          }
+        }
+      },
+      "title": "创建会计凭证请求"
+    },
+    "v1CreateJournalEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "创建会计凭证响应"
+    },
+    "v1CreateJournalEntryWithTemplateResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        }
+      },
+      "title": "模板创建凭证响应"
+    },
+    "v1CreateVendorResponse": {
+      "type": "object",
+      "properties": {
+        "LIFNR": {
+          "type": "string"
+        }
+      },
+      "title": "创建供应商响应"
+    },
+    "v1Customer": {
+      "type": "object",
+      "properties": {
+        "KUNNR": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "STCD1": {
+          "type": "string"
+        },
+        "STCD2": {
+          "type": "string"
+        },
+        "KTOKD": {
+          "type": "string"
+        },
+        "KUNAG": {
+          "type": "string"
+        },
+        "KUNRG": {
+          "type": "string"
+        },
+        "KUNSA": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "AKONT": {
+          "type": "string"
+        },
+        "ZTERM": {
+          "type": "string"
+        },
+        "ZWELS": {
+          "type": "string"
+        },
+        "KULTG": {
+          "type": "string"
+        },
+        "VERAK": {
+          "type": "string"
+        },
+        "NAME1": {
+          "type": "string"
+        },
+        "NAME2": {
+          "type": "string"
+        },
+        "STRAS": {
+          "type": "string"
+        },
+        "ORT01": {
+          "type": "string"
+        },
+        "PSTLZ": {
+          "type": "string"
+        },
+        "LAND1": {
+          "type": "string"
+        },
+        "TELNUMBER": {
+          "type": "string"
+        },
+        "SMTPADDR": {
+          "type": "string"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1CustomerStatus"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "客户主数据"
+    },
+    "v1CustomerStatus": {
+      "type": "string",
+      "enum": [
+        "CUSTOMER_STATUS_UNSPECIFIED",
+        "CUSTOMER_STATUS_ACTIVE",
+        "CUSTOMER_STATUS_BLOCKED",
+        "CUSTOMER_STATUS_DELETED"
+      ],
+      "default": "CUSTOMER_STATUS_UNSPECIFIED",
+      "title": "客户状态枚举"
+    },
+    "v1FixedAsset": {
+      "type": "object",
+      "properties": {
+        "BUKRS": {
+          "type": "string"
+        },
+        "ANLN1": {
+          "type": "string"
+        },
+        "ANLN2": {
+          "type": "string"
+        },
+        "ANLKL": {
+          "type": "string"
+        },
+        "BKLAS": {
+          "type": "string"
+        },
+        "KOSTL": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "GSBER": {
+          "type": "string"
+        },
+        "STORT": {
+          "type": "string"
+        },
+        "INGPL": {
+          "type": "string"
+        },
+        "TXT50": {
+          "type": "string"
+        },
+        "TXA50": {
+          "type": "string"
+        },
+        "AKTIV": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ANBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "NABTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "KANSW": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "BWTTY": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1AssetStatus"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "固定资产主数据"
+    },
+    "v1GLAccount": {
+      "type": "object",
+      "properties": {
+        "KTOPL": {
+          "type": "string"
+        },
+        "SAKNR": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "KONTT": {
+          "type": "string"
+        },
+        "XBILK": {
+          "type": "string"
+        },
+        "KSTBS": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "BILKT": {
+          "type": "string"
+        },
+        "MITKZ": {
+          "type": "string"
+        },
+        "SAKNRGLV": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "MTXT1": {
+          "type": "string"
+        },
+        "MTXT2": {
+          "type": "string"
+        },
+        "XLOEB": {
+          "type": "boolean"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "总账科目主数据"
+    },
+    "v1GLAccountReportLine": {
+      "type": "object",
+      "properties": {
+        "SAKNR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "KONTT": {
+          "type": "string"
+        },
+        "totalBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "documentCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "财务主数据报表行"
+    },
+    "v1GenerateGLAccountReportResponse": {
+      "type": "object",
+      "properties": {
+        "reportName": {
+          "type": "string"
+        },
+        "generatedAt": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1GLAccountReportLine"
+          }
+        }
+      },
+      "title": "生成财务主数据报表响应"
+    },
+    "v1GenerateTrialBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1TrialBalanceLine"
+          }
+        },
+        "totalDebitBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalCreditBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "balanced": {
+          "type": "boolean"
+        }
+      },
+      "title": "生成试算平衡表响应"
+    },
+    "v1GetAccountBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "SAKNR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "beginningBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "debitTurnover": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "creditTurnover": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "endingBalance": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "获取科目余额响应"
+    },
+    "v1GetAccountBalancesResponse": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AccountBalanceLine"
+          }
+        },
+        "totalDebit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalCredit": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "获取科目余额清单响应"
+    },
+    "v1GetAssetValueResponse": {
+      "type": "object",
+      "properties": {
+        "ANLN1": {
+          "type": "string"
+        },
+        "ANLN2": {
+          "type": "string"
+        },
+        "acquisitionValue": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "accumulatedDep": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "plannedDep": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "unplannedDep": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "bookValue": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "salvageValue": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "资产价值响应"
+    },
+    "v1GetBankAccountBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "BANKACCOUNT": {
+          "type": "string"
+        },
+        "balance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "debitTurnover": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "creditTurnover": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "银行科目余额响应"
+    },
+    "v1GetBankResponse": {
+      "type": "object",
+      "properties": {
+        "bank": {
+          "$ref": "#/definitions/v1Bank"
+        }
+      },
+      "title": "获取银行响应"
+    },
+    "v1GetCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "$ref": "#/definitions/v1Customer"
+        }
+      },
+      "title": "获取客户响应"
+    },
+    "v1GetFixedAssetResponse": {
+      "type": "object",
+      "properties": {
+        "fixedAsset": {
+          "$ref": "#/definitions/v1FixedAsset"
+        }
+      },
+      "title": "获取资产响应"
+    },
+    "v1GetGLAccountResponse": {
+      "type": "object",
+      "properties": {
+        "glAccount": {
+          "$ref": "#/definitions/v1GLAccount"
+        }
+      },
+      "title": "获取总账科目响应"
+    },
+    "v1GetJournalEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "BLART": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "MONAT": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "BLDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "BUDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "XBLNR": {
+          "type": "string"
+        },
+        "BKTXT": {
+          "type": "string"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1JournalEntryStatus"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1JournalEntryItem"
+          }
+        },
+        "totalDebit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalCredit": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "获取会计凭证响应"
+    },
+    "v1GetVendorResponse": {
+      "type": "object",
+      "properties": {
+        "vendor": {
+          "$ref": "#/definitions/v1Vendor"
+        }
+      },
+      "title": "获取供应商响应"
+    },
+    "v1JournalEntryItem": {
+      "type": "object",
+      "properties": {
+        "BUZEI": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "SHKZG": {
+          "$ref": "#/definitions/v1SHKZG"
+        },
+        "WRBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "DMBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "KUNNR": {
+          "type": "string"
+        },
+        "LIFNR": {
+          "type": "string"
+        },
+        "KOSTL": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "GSBER": {
+          "type": "string"
+        },
+        "FKBER": {
+          "type": "string"
+        },
+        "MWSKZ": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        },
+        "ZUONR": {
+          "type": "string"
+        },
+        "AUFNR": {
+          "type": "string"
+        },
+        "WBSELEMENT": {
+          "type": "string"
+        },
+        "EBELN": {
+          "type": "string"
+        },
+        "EBELP": {
+          "type": "string"
+        }
+      },
+      "title": "会计凭证行项目"
+    },
+    "v1JournalEntryStatus": {
+      "type": "string",
+      "enum": [
+        "JOURNAL_ENTRY_STATUS_UNSPECIFIED",
+        "JOURNAL_ENTRY_STATUS_CREATED",
+        "JOURNAL_ENTRY_STATUS_POSTED",
+        "JOURNAL_ENTRY_STATUS_REVERSED",
+        "JOURNAL_ENTRY_STATUS_BLOCKED",
+        "JOURNAL_ENTRY_STATUS_DELETED"
+      ],
+      "default": "JOURNAL_ENTRY_STATUS_UNSPECIFIED",
+      "title": "凭证状态枚举"
+    },
+    "v1ListBanksResponse": {
+      "type": "object",
+      "properties": {
+        "banks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Bank"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询银行列表响应"
+    },
+    "v1ListCustomersResponse": {
+      "type": "object",
+      "properties": {
+        "customers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Customer"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询客户列表响应"
+    },
+    "v1ListFixedAssetsResponse": {
+      "type": "object",
+      "properties": {
+        "fixedAssets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1FixedAsset"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询资产列表响应"
+    },
+    "v1ListGLAccountsResponse": {
+      "type": "object",
+      "properties": {
+        "glAccounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1GLAccount"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询总账科目列表响应"
+    },
+    "v1ListJournalEntriesResponse": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1GetJournalEntryResponse"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询会计凭证列表响应"
+    },
+    "v1ListVendorsResponse": {
+      "type": "object",
+      "properties": {
+        "vendors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Vendor"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询供应商列表响应"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1OpenFiscalPeriodResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "开启会计期间响应"
+    },
+    "v1OutgoingPaymentItem": {
+      "type": "object",
+      "properties": {
+        "BUZEI": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "LIFNR": {
+          "type": "string"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "ZFBDT": {
+          "type": "string"
+        },
+        "WRBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "ZUONR": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        }
+      },
+      "title": "付款行项目"
+    },
+    "v1PayableEntryItem": {
+      "type": "object",
+      "properties": {
+        "BUZEI": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "SHKZG": {
+          "$ref": "#/definitions/v1SHKZG"
+        },
+        "WRBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "LIFNR": {
+          "type": "string"
+        },
+        "MWSKZ": {
+          "type": "string"
+        },
+        "ZUONR": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        },
+        "EBELN": {
+          "type": "string"
+        },
+        "EBELP": {
+          "type": "string"
+        }
+      },
+      "title": "应付凭证行项目"
+    },
+    "v1PaymentItem": {
+      "type": "object",
+      "properties": {
+        "BUZEI": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "KUNNR": {
+          "type": "string"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "ZFBDT": {
+          "type": "string"
+        },
+        "WRBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "ZUONR": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        }
+      },
+      "title": "收款行项目"
+    },
+    "v1PeriodCloseResult": {
+      "type": "object",
+      "properties": {
+        "activity": {
+          "type": "string"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "期间关闭结果"
+    },
+    "v1PostAssetAcquisitionResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "ANLN1": {
+          "type": "string"
+        },
+        "ANLN2": {
+          "type": "string"
+        }
+      },
+      "title": "资产采购响应"
+    },
+    "v1PostAssetDepreciationResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "DEPAMT": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "资产折旧响应"
+    },
+    "v1PostAssetRetirementResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "RETAMT": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "资产报废响应"
+    },
+    "v1PostAssetTransferResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        }
+      },
+      "title": "资产转移响应"
+    },
+    "v1PostBankPaymentResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "PAYMENTDOC": {
+          "type": "string"
+        }
+      },
+      "title": "银行支付响应"
+    },
+    "v1PostBankReceiptResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "RECEIPTDOC": {
+          "type": "string"
+        }
+      },
+      "title": "银行收款响应"
+    },
+    "v1PostBankReconciliationResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "bankBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "bookBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "difference": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "unmatchedItems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "银行对账响应"
+    },
+    "v1PostIncomingPaymentResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "过账收款响应"
+    },
+    "v1PostJournalEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "过账会计凭证响应"
+    },
+    "v1PostOutgoingPaymentResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "过账付款响应"
+    },
+    "v1PostPayableEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "过账应付凭证响应"
+    },
+    "v1PostPeriodClosingEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "期末调整过账响应"
+    },
+    "v1PostReceivableEntryResponse": {
+      "type": "object",
+      "properties": {
+        "BELNR": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "过账应收凭证响应"
+    },
+    "v1ReceivableEntryItem": {
+      "type": "object",
+      "properties": {
+        "BUZEI": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "SHKZG": {
+          "$ref": "#/definitions/v1SHKZG"
+        },
+        "WRBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "KUNNR": {
+          "type": "string"
+        },
+        "MWSKZ": {
+          "type": "string"
+        },
+        "ZUONR": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        },
+        "EBELN": {
+          "type": "string"
+        },
+        "EBELP": {
+          "type": "string"
+        }
+      },
+      "title": "应收凭证行项目"
+    },
+    "v1ReverseJournalEntryResponse": {
+      "type": "object",
+      "properties": {
+        "originalBelnr": {
+          "type": "string"
+        },
+        "reversalBelnr": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "string"
+        },
+        "reversedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "冲销会计凭证响应"
+    },
+    "v1SHKZG": {
+      "type": "string",
+      "enum": [
+        "SHKZG_UNSPECIFIED",
+        "SHKZG_DEBIT",
+        "SHKZG_CREDIT"
+      ],
+      "default": "SHKZG_UNSPECIFIED",
+      "title": "借贷标识枚举"
+    },
+    "v1SendCustomerDunningResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "DUNNDOC": {
+          "type": "string"
+        }
+      },
+      "title": "客户催收响应"
+    },
+    "v1SetPaymentBlockResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "title": "付款冻结响应"
+    },
+    "v1TrialBalanceLine": {
+      "type": "object",
+      "properties": {
+        "accountType": {
+          "type": "string"
+        },
+        "SAKNR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "debitBalance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "creditBalance": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "试算平衡表行"
+    },
+    "v1UpdateCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "title": "更新客户响应"
+    },
+    "v1UpdateVendorResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "title": "更新供应商响应"
+    },
+    "v1Vendor": {
+      "type": "object",
+      "properties": {
+        "LIFNR": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "STCD1": {
+          "type": "string"
+        },
+        "STCD2": {
+          "type": "string"
+        },
+        "KTOKK": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "AKONT": {
+          "type": "string"
+        },
+        "ZTERM": {
+          "type": "string"
+        },
+        "ZWELS": {
+          "type": "string"
+        },
+        "PAYER": {
+          "type": "string"
+        },
+        "LFBKZ": {
+          "type": "string"
+        },
+        "VERAK": {
+          "type": "string"
+        },
+        "NAME1": {
+          "type": "string"
+        },
+        "NAME2": {
+          "type": "string"
+        },
+        "STRAS": {
+          "type": "string"
+        },
+        "ORT01": {
+          "type": "string"
+        },
+        "PSTLZ": {
+          "type": "string"
+        },
+        "LAND1": {
+          "type": "string"
+        },
+        "TELNUMBER": {
+          "type": "string"
+        },
+        "SMTPADDR": {
+          "type": "string"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1VendorStatus"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "供应商主数据"
+    },
+    "v1VendorStatus": {
+      "type": "string",
+      "enum": [
+        "VENDOR_STATUS_UNSPECIFIED",
+        "VENDOR_STATUS_ACTIVE",
+        "VENDOR_STATUS_BLOCKED",
+        "VENDOR_STATUS_DELETED"
+      ],
+      "default": "VENDOR_STATUS_UNSPECIFIED",
+      "title": "供应商状态枚举"
+    }
+  }
+}

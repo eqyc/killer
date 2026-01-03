@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package procurement.purchasing.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/procurement.purchasing.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service PurchasingService {
   // 创建采购订单
-  rpc CreatePurchaseOrder(CreatePurchaseOrderRequest) returns (CreatePurchaseOrderResponse);
+  rpc CreatePurchaseOrder(CreatePurchaseOrderRequest) returns (CreatePurchaseOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-purchasing/purchaseorder"
+    };
+  }
   // 获取采购订单
-  rpc GetPurchaseOrder(GetPurchaseOrderRequest) returns (GetPurchaseOrderResponse);
+  rpc GetPurchaseOrder(GetPurchaseOrderRequest) returns (GetPurchaseOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-purchasing/purchaseorder"
+    };
+  }
   // 查询采购订单列表
-  rpc ListPurchaseOrders(ListPurchaseOrdersRequest) returns (ListPurchaseOrdersResponse);
+  rpc ListPurchaseOrders(ListPurchaseOrdersRequest) returns (ListPurchaseOrdersResponse) {
+    option (google.api.http) = {
+        post: "/v1-purchasing/purchaseorders"
+    };
+  }
   // 确认采购订单
-  rpc ConfirmPurchaseOrder(ConfirmPurchaseOrderRequest) returns (ConfirmPurchaseOrderResponse);
+  rpc ConfirmPurchaseOrder(ConfirmPurchaseOrderRequest) returns (ConfirmPurchaseOrderResponse) {
+    option (google.api.http) = {
+        post: "/v1-purchasing/confirmpurchaseorder"
+    };
+  }
 }
 
 // =============================================================================

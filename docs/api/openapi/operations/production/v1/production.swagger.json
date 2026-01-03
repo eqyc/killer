@@ -1,0 +1,435 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "operations/production/v1/production.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProductionService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-production/confirmproductionorder": {
+      "post": {
+        "summary": "确认生产订单",
+        "operationId": "ProductionService_ConfirmProductionOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConfirmProductionOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProductionService"
+        ]
+      }
+    },
+    "/v1-production/productionorder": {
+      "post": {
+        "summary": "获取生产订单",
+        "operationId": "ProductionService_GetProductionOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductionOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProductionService"
+        ]
+      }
+    },
+    "/v1-production/productionorders": {
+      "post": {
+        "summary": "查询生产订单列表",
+        "operationId": "ProductionService_ListProductionOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListProductionOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProductionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1ConfirmProductionOrderResponse": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string",
+          "title": "生产订单号"
+        },
+        "RUESSION": {
+          "type": "string",
+          "title": "确认凭证号"
+        },
+        "confirmedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "确认时间"
+        }
+      },
+      "title": "确认生产订单响应"
+    },
+    "v1CreateProductionOrderResponse": {
+      "type": "object",
+      "properties": {
+        "productionOrder": {
+          "$ref": "#/definitions/v1ProductionOrder",
+          "title": "创建的生产订单"
+        }
+      },
+      "title": "创建生产订单响应"
+    },
+    "v1GetProductionOrderResponse": {
+      "type": "object",
+      "properties": {
+        "productionOrder": {
+          "$ref": "#/definitions/v1ProductionOrder",
+          "title": "生产订单"
+        }
+      },
+      "title": "获取生产订单响应"
+    },
+    "v1ListProductionOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "productionOrders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProductionOrder"
+          },
+          "title": "生产订单列表"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "title": "分页信息"
+        }
+      },
+      "title": "查询生产订单列表响应"
+    },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总页数"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "hasNext": {
+          "type": "boolean",
+          "title": "是否有下一页"
+        },
+        "hasPrevious": {
+          "type": "boolean",
+          "title": "是否有上一页"
+        }
+      },
+      "title": "=============================================================================\nPageInfo - 分页信息\n============================================================================="
+    },
+    "v1PageRequest": {
+      "type": "object",
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32",
+          "title": "页码（从1开始）"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小（默认20，最大100）"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "排序字段名"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/v1SortOrder",
+          "title": "排序方向"
+        }
+      },
+      "title": "=============================================================================\nPageRequest - 分页请求（偏移量方式）\n============================================================================="
+    },
+    "v1ProductionOrder": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string",
+          "title": "生产订单号，对应AUFNR"
+        },
+        "AUART": {
+          "type": "string",
+          "title": "订单类型，对应AUART"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "产品物料号，对应MATNR"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "VERID": {
+          "type": "string",
+          "title": "生产版本，对应VERID"
+        },
+        "GAMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "计划数量，对应GAMNG"
+        },
+        "GMEIN": {
+          "type": "string",
+          "title": "基本计量单位，对应GMEIN"
+        },
+        "GSTRP": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划开始日期，对应GSTRP"
+        },
+        "GLTRP": {
+          "type": "string",
+          "format": "date-time",
+          "title": "计划完成日期，对应GLTRP"
+        },
+        "GSTRS": {
+          "type": "string",
+          "format": "date-time",
+          "title": "实际开始日期，对应GSTRS"
+        },
+        "GLTRS": {
+          "type": "string",
+          "format": "date-time",
+          "title": "实际完成日期，对应GLTRS"
+        },
+        "RSNUM": {
+          "type": "string",
+          "title": "预留号，对应RSNUM"
+        },
+        "PLNNR": {
+          "type": "string",
+          "title": "工艺路线号，对应PLNNR"
+        },
+        "SUSTA": {
+          "type": "string",
+          "title": "订单状态，对应SUSTA"
+        },
+        "IGMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "已确认数量，对应IGMNG"
+        },
+        "IAMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "已报废数量，对应IAMNG"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo",
+          "title": "审计信息"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProductionOrderItem"
+          },
+          "title": "订单项目列表"
+        }
+      },
+      "title": "=============================================================================\nProductionOrder - 生产订单（聚合根）\n=============================================================================\n对应ERP系统核心表AFKO（订单头数据）"
+    },
+    "v1ProductionOrderItem": {
+      "type": "object",
+      "properties": {
+        "POSNR": {
+          "type": "integer",
+          "format": "int32",
+          "title": "订单项目号，对应POSNR"
+        },
+        "MATNR": {
+          "type": "string",
+          "title": "物料号，对应MATNR"
+        },
+        "PSMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "需求数量，对应PSMNG"
+        },
+        "MEINS": {
+          "type": "string",
+          "title": "基本计量单位，对应MEINS"
+        },
+        "WERKS": {
+          "type": "string",
+          "title": "工厂，对应WERKS"
+        },
+        "LGORT": {
+          "type": "string",
+          "title": "库存地点，对应LGORT"
+        },
+        "LTRMP": {
+          "type": "string",
+          "format": "date-time",
+          "title": "需求日期，对应LTRMP"
+        },
+        "WEMNG": {
+          "$ref": "#/definitions/v1Quantity",
+          "title": "已收货数量，对应WEMNG"
+        },
+        "KDAUF": {
+          "type": "string",
+          "title": "销售订单号，对应KDAUF"
+        },
+        "KDPOS": {
+          "type": "integer",
+          "format": "int32",
+          "title": "销售订单项目号，对应KDPOS"
+        },
+        "CHARG": {
+          "type": "string",
+          "title": "批次号，对应CHARG"
+        },
+        "POSAR": {
+          "type": "string",
+          "title": "项目类型，对应POSAR"
+        },
+        "LOEKZ": {
+          "type": "string",
+          "title": "删除标识，对应LOEKZ"
+        },
+        "POTXT": {
+          "type": "string",
+          "title": "行项目文本"
+        }
+      },
+      "title": "=============================================================================\nProductionOrderItem - 生产订单行项目\n=============================================================================\n对应ERP系统核心表AFPO（订单项目数据）"
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1SortOrder": {
+      "type": "string",
+      "enum": [
+        "SORT_ORDER_UNSPECIFIED",
+        "SORT_ORDER_ASC",
+        "SORT_ORDER_DESC"
+      ],
+      "default": "SORT_ORDER_UNSPECIFIED",
+      "description": "- SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+      "title": "=============================================================================\nSortOrder - 排序方向\n============================================================================="
+    }
+  }
+}

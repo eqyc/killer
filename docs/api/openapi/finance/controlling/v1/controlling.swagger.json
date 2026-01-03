@@ -1,0 +1,2298 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "finance/controlling/v1/controlling.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ControllingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1-controlling/activitytype": {
+      "post": {
+        "summary": "=== 作业会计 ===\n获取作业类型",
+        "operationId": "ControllingService_GetActivityType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetActivityTypeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/activitytypes": {
+      "post": {
+        "summary": "查询作业类型",
+        "operationId": "ControllingService_ListActivityTypes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListActivityTypesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/allocationcycle": {
+      "post": {
+        "summary": "=== 分摊/分配 ===\n获取分摊周期",
+        "operationId": "ControllingService_GetAllocationCycle",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllocationCycleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/calculateactivityprice": {
+      "post": {
+        "summary": "作业价格计算",
+        "operationId": "ControllingService_CalculateActivityPrice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CalculateActivityPriceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/closeinternalorder": {
+      "post": {
+        "summary": "关闭内部订单",
+        "operationId": "ControllingService_CloseInternalOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CloseInternalOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costcenter": {
+      "post": {
+        "summary": "=== 成本中心 ===\n获取成本中心主数据",
+        "operationId": "ControllingService_GetCostCenter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCostCenterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costcenterplanactual": {
+      "post": {
+        "summary": "计划/实际对比",
+        "operationId": "ControllingService_GetCostCenterPlanActual",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCostCenterPlanActualResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costcenterreport": {
+      "post": {
+        "summary": "成本中心报表",
+        "operationId": "ControllingService_GetCostCenterReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCostCenterReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costcenters": {
+      "post": {
+        "summary": "查询成本中心列表",
+        "operationId": "ControllingService_ListCostCenters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCostCentersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costdocument": {
+      "post": {
+        "summary": "获取成本凭证",
+        "operationId": "ControllingService_GetCostDocument",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetCostDocumentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/costdocuments": {
+      "post": {
+        "summary": "批量创建凭证",
+        "operationId": "ControllingService_BatchCreateCostDocuments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BatchCreateCostDocumentsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executeactualcostsplit": {
+      "post": {
+        "summary": "实际成本拆分",
+        "operationId": "ControllingService_ExecuteActualCostSplit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteActualCostSplitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executeassessment": {
+      "post": {
+        "summary": "执行分摊",
+        "operationId": "ControllingService_ExecuteAssessment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteAssessmentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executedistribution": {
+      "post": {
+        "summary": "执行分配",
+        "operationId": "ControllingService_ExecuteDistribution",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteDistributionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executeperiodclose": {
+      "post": {
+        "summary": "=== 期末处理 ===\n期末关账",
+        "operationId": "ControllingService_ExecutePeriodClose",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecutePeriodCloseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executeperiodicreposting": {
+      "post": {
+        "summary": "执行周期性重过账",
+        "operationId": "ControllingService_ExecutePeriodicReposting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecutePeriodicRepostingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executevariancecalculation": {
+      "post": {
+        "summary": "差异计算",
+        "operationId": "ControllingService_ExecuteVarianceCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteVarianceCalculationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/executewipcalculation": {
+      "post": {
+        "summary": "在制品计算",
+        "operationId": "ControllingService_ExecuteWIPCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ExecuteWIPCalculationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/internalorder": {
+      "post": {
+        "summary": "获取内部订单",
+        "operationId": "ControllingService_GetInternalOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetInternalOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/internalorderreport": {
+      "post": {
+        "summary": "内部订单报表",
+        "operationId": "ControllingService_GetInternalOrderReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetInternalOrderReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/internalorders": {
+      "post": {
+        "summary": "查询内部订单",
+        "operationId": "ControllingService_ListInternalOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListInternalOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postactivityallocation": {
+      "post": {
+        "summary": "作业分配过账",
+        "operationId": "ControllingService_PostActivityAllocation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostActivityAllocationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postcostcenterposting": {
+      "post": {
+        "summary": "成本中心初始过账",
+        "operationId": "ControllingService_PostCostCenterPosting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostCostCenterPostingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postcostcenterreposting": {
+      "post": {
+        "summary": "成本中心重过账",
+        "operationId": "ControllingService_PostCostCenterReposting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostCostCenterRepostingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postcostcentertransfer": {
+      "post": {
+        "summary": "成本中心转移过账",
+        "operationId": "ControllingService_PostCostCenterTransfer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostCostCenterTransferResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postinternalorderposting": {
+      "post": {
+        "summary": "内部订单过账",
+        "operationId": "ControllingService_PostInternalOrderPosting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostInternalOrderPostingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/postprofitabilitydocument": {
+      "post": {
+        "summary": "=== 获利能力分析 ===\nPA凭证过账",
+        "operationId": "ControllingService_PostProfitabilityDocument",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostProfitabilityDocumentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/poststatisticalkeyfigure": {
+      "post": {
+        "summary": "统计指标过账",
+        "operationId": "ControllingService_PostStatisticalKeyFigure",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PostStatisticalKeyFigureResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/profitabilityreport": {
+      "post": {
+        "summary": "获利分析报表",
+        "operationId": "ControllingService_GetProfitabilityReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProfitabilityReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/profitcenter": {
+      "post": {
+        "summary": "=== 利润中心 ===\n获取利润中心",
+        "operationId": "ControllingService_GetProfitCenter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProfitCenterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/profitcenterreport": {
+      "post": {
+        "summary": "利润中心报表",
+        "operationId": "ControllingService_GetProfitCenterReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProfitCenterReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/profitcenters": {
+      "post": {
+        "summary": "查询利润中心",
+        "operationId": "ControllingService_ListProfitCenters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListProfitCentersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/releaseinternalorder": {
+      "post": {
+        "summary": "下达内部订单",
+        "operationId": "ControllingService_ReleaseInternalOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReleaseInternalOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/reversecostdocument": {
+      "post": {
+        "summary": "冲销成本凭证",
+        "operationId": "ControllingService_ReverseCostDocument",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReverseCostDocumentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    },
+    "/v1-controlling/settleinternalorder": {
+      "post": {
+        "summary": "内部订单结算",
+        "operationId": "ControllingService_SettleInternalOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SettleInternalOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ControllingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1ActivityPriceResult": {
+      "type": "object",
+      "properties": {
+        "KOSTL": {
+          "type": "string"
+        },
+        "LSTAR": {
+          "type": "string"
+        },
+        "PERIO": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fixedPrice": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variablePrice": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalPrice": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "plannedQty": {
+          "$ref": "#/definitions/v1Quantity"
+        },
+        "plannedCost": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "作业价格结果"
+    },
+    "v1ActivityType": {
+      "type": "object",
+      "properties": {
+        "KOKRS": {
+          "type": "string"
+        },
+        "LSTAR": {
+          "type": "string"
+        },
+        "DATAB": {
+          "type": "string"
+        },
+        "DATBI": {
+          "type": "string"
+        },
+        "MEINH": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "LSTARVAR": {
+          "type": "string"
+        },
+        "SPERK": {
+          "type": "boolean"
+        },
+        "LOEKZ": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "作业类型主数据"
+    },
+    "v1AllocationCycle": {
+      "type": "object",
+      "properties": {
+        "KOKRS": {
+          "type": "string"
+        },
+        "CYCLE": {
+          "type": "string"
+        },
+        "CTYPE": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "DATAB": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "DATBI": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AKTIV": {
+          "type": "boolean"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AllocationSegment"
+          }
+        }
+      },
+      "title": "分摊/分配周期"
+    },
+    "v1AllocationResult": {
+      "type": "object",
+      "properties": {
+        "senderKostl": {
+          "type": "string"
+        },
+        "receiverKostl": {
+          "type": "string"
+        },
+        "kstar": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "分摊结果"
+    },
+    "v1AllocationSegment": {
+      "type": "object",
+      "properties": {
+        "SESSION": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "SENDER": {
+          "type": "string"
+        },
+        "RECEIVER": {
+          "type": "string"
+        },
+        "TRATY": {
+          "type": "string"
+        },
+        "PROZS": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "分摊段"
+    },
+    "v1AuditInfo": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string",
+          "title": "创建人，对应ERNAM/USNAM"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "创建时间，对应ERDAT/ERTIM"
+        },
+        "updatedBy": {
+          "type": "string",
+          "title": "最后修改人，对应AENAM"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "最后修改时间，对应AEDAT/AETIM"
+        }
+      },
+      "title": "=============================================================================\nAuditInfo - 审计信息\n=============================================================================\n对应ERP变更文档表CDHDR/CDPOS相关字段"
+    },
+    "v1BatchCreateCostDocumentsResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "success": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CreateCostDocumentResponse"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "批量创建凭证响应"
+    },
+    "v1CalculateActivityPriceResponse": {
+      "type": "object",
+      "properties": {
+        "prices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ActivityPriceResult"
+          }
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "作业价格计算响应"
+    },
+    "v1CloseInternalOrderResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "关闭内部订单响应"
+    },
+    "v1CostCenter": {
+      "type": "object",
+      "properties": {
+        "KOKRS": {
+          "type": "string"
+        },
+        "KOSTL": {
+          "type": "string"
+        },
+        "DATAB": {
+          "type": "string"
+        },
+        "DATBI": {
+          "type": "string"
+        },
+        "KOSAR": {
+          "type": "string"
+        },
+        "VERAK": {
+          "type": "string"
+        },
+        "VERAKUSER": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "GSBER": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "KHINR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "LTEXT": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "BKZKP": {
+          "type": "boolean"
+        },
+        "BKZKS": {
+          "type": "boolean"
+        },
+        "LOEKZ": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "成本中心主数据"
+    },
+    "v1CostCenterReportLine": {
+      "type": "object",
+      "properties": {
+        "KSTAR": {
+          "type": "string"
+        },
+        "KSTARTEXT": {
+          "type": "string"
+        },
+        "planAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "actualAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variancePct": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "成本中心报表行"
+    },
+    "v1CostDocumentLine": {
+      "type": "object",
+      "properties": {
+        "ZEARNR": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "KOSTL": {
+          "type": "string"
+        },
+        "AUFNR": {
+          "type": "string"
+        },
+        "KSTAR": {
+          "type": "string"
+        },
+        "WBSELEMENT": {
+          "type": "string"
+        },
+        "VRGNG": {
+          "type": "string"
+        },
+        "WKGBTR": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "MBGBTR": {
+          "$ref": "#/definitions/v1Quantity"
+        },
+        "MEINH": {
+          "type": "string"
+        },
+        "SGTXT": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "SHKZG": {
+          "type": "string"
+        }
+      },
+      "title": "成本凭证行项目"
+    },
+    "v1CostElementLine": {
+      "type": "object",
+      "properties": {
+        "KSTAR": {
+          "type": "string"
+        },
+        "KSTARTEXT": {
+          "type": "string"
+        },
+        "planAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "actualAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variancePct": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "成本要素行"
+    },
+    "v1CostSplitResult": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "type": "string"
+        },
+        "costElement": {
+          "type": "string"
+        },
+        "fixedAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variableAmount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "成本拆分结果"
+    },
+    "v1CreateCostDocumentRequest": {
+      "type": "object",
+      "properties": {
+        "KOKRS": {
+          "type": "string"
+        },
+        "BLART": {
+          "type": "string"
+        },
+        "BUDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "BLDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostDocumentLine"
+          }
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "XBLNR": {
+          "type": "string"
+        },
+        "BKTXT": {
+          "type": "string"
+        }
+      },
+      "title": "创建成本凭证请求"
+    },
+    "v1CreateCostDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "OBJNR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "创建成本凭证响应"
+    },
+    "v1CreateInternalOrderResponse": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string"
+        },
+        "OBJNR": {
+          "type": "string"
+        }
+      },
+      "title": "创建内部订单响应"
+    },
+    "v1ExecuteActualCostSplitResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostSplitResult"
+          }
+        }
+      },
+      "title": "实际成本拆分响应"
+    },
+    "v1ExecuteAssessmentResponse": {
+      "type": "object",
+      "properties": {
+        "RUNID": {
+          "type": "string"
+        },
+        "documentsCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AllocationResult"
+          }
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "执行分摊响应"
+    },
+    "v1ExecuteDistributionResponse": {
+      "type": "object",
+      "properties": {
+        "RUNID": {
+          "type": "string"
+        },
+        "documentsCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AllocationResult"
+          }
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "执行分配响应"
+    },
+    "v1ExecutePeriodCloseResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "taskResults": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PeriodCloseTaskResult"
+          }
+        }
+      },
+      "title": "期末关账响应"
+    },
+    "v1ExecutePeriodicRepostingResponse": {
+      "type": "object",
+      "properties": {
+        "RUNID": {
+          "type": "string"
+        },
+        "documentsCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "执行周期性重过账响应"
+    },
+    "v1ExecuteVarianceCalculationResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1VarianceResult"
+          }
+        }
+      },
+      "title": "差异计算响应"
+    },
+    "v1ExecuteWIPCalculationResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1WIPResult"
+          }
+        }
+      },
+      "title": "在制品计算响应"
+    },
+    "v1GetActivityTypeResponse": {
+      "type": "object",
+      "properties": {
+        "activityType": {
+          "$ref": "#/definitions/v1ActivityType"
+        }
+      },
+      "title": "获取作业类型响应"
+    },
+    "v1GetAllocationCycleResponse": {
+      "type": "object",
+      "properties": {
+        "allocationCycle": {
+          "$ref": "#/definitions/v1AllocationCycle"
+        }
+      },
+      "title": "获取分摊周期响应"
+    },
+    "v1GetCostCenterPlanActualResponse": {
+      "type": "object",
+      "properties": {
+        "KOSTL": {
+          "type": "string"
+        },
+        "GJAHR": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostElementLine"
+          }
+        },
+        "totalPlan": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalActual": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalVariance": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variancePercentage": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "成本中心计划/实际对比响应"
+    },
+    "v1GetCostCenterReportResponse": {
+      "type": "object",
+      "properties": {
+        "KOSTL": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostCenterReportLine"
+          }
+        },
+        "totalPlan": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalActual": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalVariance": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "成本中心报表响应"
+    },
+    "v1GetCostCenterResponse": {
+      "type": "object",
+      "properties": {
+        "costCenter": {
+          "$ref": "#/definitions/v1CostCenter"
+        }
+      },
+      "title": "获取成本中心响应"
+    },
+    "v1GetCostDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "KOKRS": {
+          "type": "string"
+        },
+        "BLART": {
+          "type": "string"
+        },
+        "BUDAT": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostDocumentLine"
+          }
+        },
+        "totalDebit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalCredit": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "获取成本凭证响应"
+    },
+    "v1GetInternalOrderReportResponse": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "$ref": "#/definitions/v1InternalOrder"
+        },
+        "budget": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "plan": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "committed": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "actual": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "available": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "costLines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderCostLine"
+          }
+        }
+      },
+      "title": "内部订单报表响应"
+    },
+    "v1GetInternalOrderResponse": {
+      "type": "object",
+      "properties": {
+        "internalOrder": {
+          "$ref": "#/definitions/v1InternalOrder"
+        }
+      },
+      "title": "获取内部订单响应"
+    },
+    "v1GetProfitCenterReportResponse": {
+      "type": "object",
+      "properties": {
+        "PRCTR": {
+          "type": "string"
+        },
+        "revenue": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "cost": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "profit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "margin": {
+          "type": "number",
+          "format": "double"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProfitCenterLine"
+          }
+        }
+      },
+      "title": "利润中心报表响应"
+    },
+    "v1GetProfitCenterResponse": {
+      "type": "object",
+      "properties": {
+        "profitCenter": {
+          "$ref": "#/definitions/v1ProfitCenter"
+        }
+      },
+      "title": "获取利润中心响应"
+    },
+    "v1GetProfitabilityReportResponse": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProfitabilityLine"
+          }
+        },
+        "totalRevenue": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalCost": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "totalProfit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "profitMargin": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "获利分析报表响应"
+    },
+    "v1InternalOrder": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string"
+        },
+        "AUART": {
+          "type": "string"
+        },
+        "AUTYP": {
+          "type": "string"
+        },
+        "KOKRS": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "WERKS": {
+          "type": "string"
+        },
+        "GSBER": {
+          "type": "string"
+        },
+        "KOSTV": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "LTEXT": {
+          "type": "string"
+        },
+        "ASTNR": {
+          "type": "string"
+        },
+        "WAERS": {
+          "type": "string"
+        },
+        "PDAT1": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "PDAT2": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "IDAT1": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "IDAT2": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "BUDGET": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "OBLIGO": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "ACTUAL": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "OBJNR": {
+          "type": "string"
+        },
+        "STATUS": {
+          "$ref": "#/definitions/v1OrderStatus"
+        },
+        "LOEKZ": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        },
+        "settlementRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InternalOrderSettlementRule"
+          }
+        }
+      },
+      "title": "内部订单主数据"
+    },
+    "v1InternalOrderSettlementRule": {
+      "type": "object",
+      "properties": {
+        "SESSION": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "KONTY": {
+          "type": "string"
+        },
+        "KOSTL": {
+          "type": "string"
+        },
+        "AUFNR": {
+          "type": "string"
+        },
+        "PSPNR": {
+          "type": "string"
+        },
+        "HKONT": {
+          "type": "string"
+        },
+        "ANLN1": {
+          "type": "string"
+        },
+        "PROZS": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "AUBER": {
+          "type": "string"
+        }
+      },
+      "title": "内部订单结算规则"
+    },
+    "v1ListActivityTypesResponse": {
+      "type": "object",
+      "properties": {
+        "activityTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ActivityType"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询作业类型列表响应"
+    },
+    "v1ListCostCentersResponse": {
+      "type": "object",
+      "properties": {
+        "costCenters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1CostCenter"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询成本中心列表响应"
+    },
+    "v1ListCostDocumentsResponse": {
+      "type": "object",
+      "properties": {
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1GetCostDocumentResponse"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询成本凭证列表响应"
+    },
+    "v1ListInternalOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "internalOrders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InternalOrder"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询内部订单列表响应"
+    },
+    "v1ListProfitCentersResponse": {
+      "type": "object",
+      "properties": {
+        "profitCenters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProfitCenter"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "查询利润中心列表响应"
+    },
+    "v1Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额值，使用字符串表示以保持精度"
+        },
+        "scale": {
+          "type": "integer",
+          "format": "int32",
+          "title": "小数位数"
+        }
+      },
+      "title": "=============================================================================\nMoney - 货币金额\n=============================================================================\n对应ERP字段: WRBTR/DMBTR/NETWR等金额字段\n使用string避免浮点精度问题，符合财务计算要求"
+    },
+    "v1OrderCostLine": {
+      "type": "object",
+      "properties": {
+        "KSTAR": {
+          "type": "string"
+        },
+        "KSTARTEXT": {
+          "type": "string"
+        },
+        "plan": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "actual": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "lastPosting": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "订单成本行"
+    },
+    "v1OrderStatus": {
+      "type": "string",
+      "enum": [
+        "ORDER_STATUS_UNSPECIFIED",
+        "ORDER_STATUS_CREATED",
+        "ORDER_STATUS_RELEASED",
+        "ORDER_STATUS_PARTIALLY_COMPLETED",
+        "ORDER_STATUS_COMPLETED",
+        "ORDER_STATUS_CLOSED",
+        "ORDER_STATUS_SETTLED"
+      ],
+      "default": "ORDER_STATUS_UNSPECIFIED",
+      "title": "订单状态枚举"
+    },
+    "v1PALineItem": {
+      "type": "object",
+      "properties": {
+        "KNDNR": {
+          "type": "string"
+        },
+        "MATNR": {
+          "type": "string"
+        },
+        "VKORG": {
+          "type": "string"
+        },
+        "VTWEG": {
+          "type": "string"
+        },
+        "SPART": {
+          "type": "string"
+        },
+        "ABSMG": {
+          "$ref": "#/definitions/v1Quantity"
+        },
+        "VV001": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "VV010": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "VV020": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "PA行项目"
+    },
+    "v1PeriodCloseTaskResult": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "type": "string"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "关账任务结果"
+    },
+    "v1PostActivityAllocationResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "calculatedAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "作业分配过账响应"
+    },
+    "v1PostCostCenterPostingResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "OBJNR": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "成本中心初始过账响应"
+    },
+    "v1PostCostCenterRepostingResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "成本中心重过账响应"
+    },
+    "v1PostCostCenterTransferResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "成本中心转移过账响应"
+    },
+    "v1PostInternalOrderPostingResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "内部订单过账响应"
+    },
+    "v1PostProfitabilityDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "PA凭证过账响应"
+    },
+    "v1PostStatisticalKeyFigureResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "统计指标过账响应"
+    },
+    "v1ProfitCenter": {
+      "type": "object",
+      "properties": {
+        "KOKRS": {
+          "type": "string"
+        },
+        "PRCTR": {
+          "type": "string"
+        },
+        "DATAB": {
+          "type": "string"
+        },
+        "DATBI": {
+          "type": "string"
+        },
+        "BUKRS": {
+          "type": "string"
+        },
+        "SEGMENT": {
+          "type": "string"
+        },
+        "VERAK": {
+          "type": "string"
+        },
+        "KTEXT": {
+          "type": "string"
+        },
+        "LTEXT": {
+          "type": "string"
+        },
+        "PKHINR": {
+          "type": "string"
+        },
+        "LOEKZ": {
+          "type": "string"
+        },
+        "auditInfo": {
+          "$ref": "#/definitions/v1AuditInfo"
+        }
+      },
+      "title": "利润中心主数据"
+    },
+    "v1ProfitCenterLine": {
+      "type": "object",
+      "properties": {
+        "accountType": {
+          "type": "string"
+        },
+        "account": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "利润中心报表行"
+    },
+    "v1ProfitabilityLine": {
+      "type": "object",
+      "properties": {
+        "segment": {
+          "type": "string"
+        },
+        "revenue": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "cost": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "profit": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "margin": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "获利分析报表行"
+    },
+    "v1Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "数量值"
+        },
+        "unit": {
+          "type": "string",
+          "title": "计量单位，对应MEINS/VRKME等单位字段"
+        }
+      },
+      "title": "=============================================================================\nQuantity - 数量\n=============================================================================\n对应ERP字段: MENGE/GAMNG/LFIMG等数量字段"
+    },
+    "v1ReleaseInternalOrderResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "下达内部订单响应"
+    },
+    "v1ReverseCostDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "originalDocNo": {
+          "type": "string"
+        },
+        "reversalDocNo": {
+          "type": "string"
+        },
+        "postedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "冲销成本凭证响应"
+    },
+    "v1SettleInternalOrderResponse": {
+      "type": "object",
+      "properties": {
+        "DOCNO": {
+          "type": "string"
+        },
+        "settledAmount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1SettlementLine"
+          }
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "内部订单结算响应"
+    },
+    "v1SettlementLine": {
+      "type": "object",
+      "properties": {
+        "receiverType": {
+          "type": "string"
+        },
+        "receiver": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "percentage": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "结算行"
+    },
+    "v1VarianceResult": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string"
+        },
+        "varianceCategory": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "差异结果"
+    },
+    "v1WIPResult": {
+      "type": "object",
+      "properties": {
+        "AUFNR": {
+          "type": "string"
+        },
+        "WIP": {
+          "$ref": "#/definitions/v1Money"
+        },
+        "variances": {
+          "$ref": "#/definitions/v1Money"
+        }
+      },
+      "title": "在制品结果"
+    }
+  }
+}

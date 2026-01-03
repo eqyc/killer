@@ -10,7 +10,11 @@
 
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package human_capital.payroll.v1;
+
+option go_package = "github.com/killer-erp/api-contracts/gen/human_capital.payroll.v1";
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -21,13 +25,29 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service PayrollService {
   // 创建薪资记录
-  rpc CreatePayrollRecord(CreatePayrollRecordRequest) returns (CreatePayrollRecordResponse);
+  rpc CreatePayrollRecord(CreatePayrollRecordRequest) returns (CreatePayrollRecordResponse) {
+    option (google.api.http) = {
+        post: "/v1-payroll/payrollrecord"
+    };
+  }
   // 获取薪资记录
-  rpc GetPayrollRecord(GetPayrollRecordRequest) returns (GetPayrollRecordResponse);
+  rpc GetPayrollRecord(GetPayrollRecordRequest) returns (GetPayrollRecordResponse) {
+    option (google.api.http) = {
+        post: "/v1-payroll/payrollrecord"
+    };
+  }
   // 查询薪资记录列表
-  rpc ListPayrollRecords(ListPayrollRecordsRequest) returns (ListPayrollRecordsResponse);
+  rpc ListPayrollRecords(ListPayrollRecordsRequest) returns (ListPayrollRecordsResponse) {
+    option (google.api.http) = {
+        post: "/v1-payroll/payrollrecords"
+    };
+  }
   // 执行薪资计算
-  rpc RunPayroll(RunPayrollRequest) returns (RunPayrollResponse);
+  rpc RunPayroll(RunPayrollRequest) returns (RunPayrollResponse) {
+    option (google.api.http) = {
+        post: "/v1-payroll/runpayroll"
+    };
+  }
 }
 
 // =============================================================================
