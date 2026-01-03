@@ -43,6 +43,10 @@ pub struct FixedAsset {
     unplanned_depreciation: Money,
     /// 资产类型（用于重估）
     asset_type: Option<Money>,
+    /// 报废价值
+    retirement_value: Option<Money>,
+    /// 报废日期
+    decommissioning_date: Option<chrono::NaiveDate>,
     /// 状态
     status: AssetStatus,
     /// 审计信息
@@ -76,6 +80,8 @@ impl FixedAsset {
             accumulated_depreciation: Money::zero(),
             unplanned_depreciation: Money::zero(),
             asset_type: None,
+            retirement_value: None,
+            decommissioning_date: None,
             status: AssetStatus::Created,
             audit_info: AuditInfo::new("SYSTEM".to_string(), now),
         }
@@ -130,27 +136,43 @@ impl FixedAsset {
         self.capitalization_date
     }
 
-    pub fn acquisition_value(&self) -> Money {
-        self.acquisition_value
+    pub fn acquisition_value(&self) -> &Money {
+        &self.acquisition_value
     }
 
-    pub fn accumulated_depreciation(&self) -> Money {
-        self.accumulated_depreciation
+    pub fn accumulated_depreciation(&self) -> &Money {
+        &self.accumulated_depreciation
     }
 
-    pub fn unplanned_depreciation(&self) -> Money {
-        self.unplanned_depreciation
+    pub fn unplanned_depreciation(&self) -> &Money {
+        &self.unplanned_depreciation
+    }
+
+    pub fn current_depreciation(&self) -> Money {
+        self.accumulated_depreciation.clone()
     }
 
     /// 计算账面价值
     pub fn book_value(&self) -> Money {
         self.acquisition_value
-            .sub(self.accumulated_depreciation)
-            .sub(self.unplanned_depreciation)
+            .sub(self.accumulated_depreciation.clone())
+            .sub(self.unplanned_depreciation.clone())
+    }
+
+    pub fn net_book_value(&self) -> Money {
+        self.book_value()
     }
 
     pub fn status(&self) -> AssetStatus {
         self.status
+    }
+
+    pub fn retirement_value(&self) -> Option<&Money> {
+        self.retirement_value.as_ref()
+    }
+
+    pub fn decommissioning_date(&self) -> Option<chrono::NaiveDate> {
+        self.decommissioning_date
     }
 
     pub fn is_capitalized(&self) -> bool {
@@ -233,6 +255,8 @@ impl FixedAsset {
             return Err("资产已报废".to_string());
         }
         // 报废金额应该等于账面价值
+        self.retirement_value = Some(retirement_value);
+        self.decommissioning_date = Some(chrono::Utc::now().date_naive());
         self.status = AssetStatus::Retired;
         Ok(())
     }
@@ -266,11 +290,11 @@ impl FixedAsset {
         }
     }
 
-    pub fn into_retired_event(self) -> FixedAssetRetired {
+    pub fn into_retired_event(self, retirement_value: Money) -> FixedAssetRetired {
         FixedAssetRetired {
             company_code: self.company_code,
             asset_number: self.asset_number,
-            retirement_value: self.book_value(),
+            retirement_value,
             retired_at: Utc::now(),
         }
     }
@@ -279,10 +303,10 @@ impl FixedAsset {
 /// 资产状态
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AssetStatus {
-    Created = 1,      // 已创建
+    New = 1,          // 新建
     Capitalized = 2,  // 已资本化
-    Blocked = 3,      // 已冻结
-    Retired = 4,      // 已报废
+    Retired = 3,      // 已报废
+    Blocked = 4,      // 已冻结
 }
 
 impl TryFrom<i32> for AssetStatus {
@@ -290,10 +314,10 @@ impl TryFrom<i32> for AssetStatus {
 
     fn try_from(value: i32) -> Result<Self, Self::Error> {
         match value {
-            1 => Ok(Self::Created),
+            1 => Ok(Self::New),
             2 => Ok(Self::Capitalized),
-            3 => Ok(Self::Blocked),
-            4 => Ok(Self::Retired),
+            3 => Ok(Self::Retired),
+            4 => Ok(Self::Blocked),
             _ => Err(()),
         }
     }

@@ -9,6 +9,9 @@ pub mod vendor;
 pub mod fixed_asset;
 pub mod bank_account;
 
+#[cfg(test)]
+mod tests;
+
 // Re-exports for easier access
 pub use gl_account::GLAccount;
 pub use journal_entry::{JournalEntry, JournalEntryItem, DocumentStatus};
