@@ -2,7 +2,6 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{FixedAssetAcquired, FixedAssetDepreciated, FixedAssetRetired};
-use crate::domain::aggregates::fixed_asset::AssetStatus;
 use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
 
 /// 固定资产聚合根

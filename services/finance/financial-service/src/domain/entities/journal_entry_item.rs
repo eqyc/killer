@@ -2,7 +2,6 @@
 
 use std::collections::HashMap;
 use crate::domain::value_objects::{account_code::AccountCode, posting_date::PostingDate};
-use crate::domain::entities::journal_entry_item::{JournalEntryItemError, DebitCreditIndicator};
 
 /// 会计凭证行项目
 ///

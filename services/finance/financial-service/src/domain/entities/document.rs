@@ -1,7 +1,6 @@
 //! 文档实体
 
 use chrono::{DateTime, Utc};
-use crate::domain::entities::document::{DocumentType, DocumentStatus};
 
 /// 通用文档实体
 ///

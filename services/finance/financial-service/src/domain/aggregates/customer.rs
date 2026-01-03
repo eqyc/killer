@@ -2,7 +2,6 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{CustomerCreated, CustomerPaymentReceived};
-use crate::domain::aggregates::customer::CustomerStatus;
 use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
 
 /// 客户主数据聚合根

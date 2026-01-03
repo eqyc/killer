@@ -30,9 +30,9 @@ use tower_http::cors::{CorsLayer, Any};
 use std::sync::Arc;
 use tracing_subscriber::{fmt, EnvFilter};
 
-mod domain;
-mod application;
-mod infrastructure;
+pub mod domain;
+pub mod application;
+pub mod infrastructure;
 
 // 加载配置
 fn load_config() -> Result<AppConfig, config::ConfigError> {

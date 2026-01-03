@@ -2,7 +2,6 @@
 
 use std::fmt;
 use std::str::FromStr;
-use crate::domain::value_objects::document_number::DocumentNumberError;
 
 /// 会计凭证号
 ///

@@ -2,7 +2,6 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{VendorCreated, VendorPaymentMade};
-use crate::domain::aggregates::vendor::VendorStatus;
 use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
 
 /// 供应商主数据聚合根

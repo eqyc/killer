@@ -1,7 +1,6 @@
 //! 银行账户聚合根
 
 use chrono::{DateTime, Utc};
-use crate::domain::aggregates::bank_account::BankAccount;
 use killer_domain_primitives::{Money, AuditInfo};
 
 /// 银行账户聚合根

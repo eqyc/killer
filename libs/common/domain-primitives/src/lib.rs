@@ -66,6 +66,7 @@
 
 // 模块声明
 mod account_code;
+mod audit_info;
 mod company_code;
 mod cost_center;
 mod currency_code;
@@ -81,6 +82,7 @@ mod unit_of_measure;
 
 // 公开导出
 pub use account_code::{AccountCode, AccountType, ACCOUNT_CODE_MAX_LENGTH, CHART_OF_ACCOUNTS_LENGTH};
+pub use audit_info::AuditInfo;
 pub use company_code::{CompanyCode, COMPANY_CODE_LENGTH};
 pub use cost_center::{CostCenter, CONTROLLING_AREA_LENGTH, COST_CENTER_MAX_LENGTH};
 pub use currency_code::CurrencyCode;

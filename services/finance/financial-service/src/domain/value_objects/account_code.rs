@@ -2,7 +2,6 @@
 
 use std::fmt;
 use std::str::FromStr;
-use crate::domain::value_objects::account_code::AccountCodeError;
 
 /// 总账科目代码
 ///

@@ -8,3 +8,10 @@ pub mod value_objects;
 pub mod repositories;
 pub mod events;
 pub mod services;
+
+// Re-exports for easier access
+pub use aggregates::*;
+pub use entities::*;
+pub use value_objects::*;
+pub use repositories::*;
+pub use events::*;
