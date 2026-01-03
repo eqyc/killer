@@ -26,5 +26,25 @@ plugins:
       - compile_well_known_types
       - extern_path=.google.protobuf=::prost_types
 
+  # ==========================================================================
+  # OpenAPI (Swagger) 文档生成
+  # ==========================================================================
+
+  # gRPC-Gateway - REST API 文档生成
+  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.1-1
+    out: ../docs/api/openapi
+    opt:
+      - generate_unbound_methods
+      - allow_merge
+      - merge_file_name=killer-erp-finance
+
+  # OpenAPI v3 JSON 生成
+  - remote: buf.build/bufbuild/plugins/openapi:v0.3.0-1
+    out: ../docs/api/openapi/v3
+    opt:
+      - title=KILLER ERP Finance API
+      - version=1.0.0
+      - description=财务管理服务 API 文档
+
 inputs:
   - directory: .
