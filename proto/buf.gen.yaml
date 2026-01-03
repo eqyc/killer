@@ -5,26 +5,34 @@
 
 version: v2
 
-clean: true
-
 plugins:
   # ==========================================================================
   # Rust 代码生成 (Tonic + Prost)
   # ==========================================================================
 
-  # Prost - Protocol Buffers 消息类型生成
   - local: protoc-gen-prost
     out: ../libs/integration/api-contracts/src/gen
-    opt:
-      - compile_well_known_types
-      - extern_path=.google.protobuf=::prost_types
+    opt: compile_well_known_types,extern_path=.google.protobuf=::prost_types
 
-  # Tonic - gRPC 服务代码生成
   - local: protoc-gen-tonic
     out: ../libs/integration/api-contracts/src/gen
-    opt:
-      - compile_well_known_types
-      - extern_path=.google.protobuf=::prost_types
+    opt: compile_well_known_types,extern_path=.google.protobuf=::prost_types
+
+  # ==========================================================================
+  # OpenAPI (Swagger) 文档生成
+  # ==========================================================================
+  # 注意: OpenAPI 插件需要网络访问 buf.build远程服务器
+  # 如需启用，请确保网络连接正常，并取消下面的注释:
+  #
+  # gRPC-Gateway (OpenAPI v2 / Swagger)
+  # - remote: buf.build/grpc-ecosystem/grpc-gateway:v2.6.1
+  #   out: ../docs/api/openapi
+  #   opt: generate_unbound_methods,allow_merge,merge_file_name=killer-erp-finance
+  #
+  # OpenAPI v3
+  # - remote: buf.build/bufbuild/openapi:v0.3.0
+  #   out: ../docs/api/openapi/v3
+  #   opt: title=KILLER ERP Finance API,version=1.0.0,description=财务管理服务 API 文档
 
 inputs:
   - directory: .
