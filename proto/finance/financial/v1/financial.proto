@@ -1,29 +1,20 @@
-// 文件路径: finance/financial/v1/financial.proto
-// =============================================================================
-// KILLER ERP - 财务会计服务 (FI)
-// =============================================================================
-//
-// 基于ERP系统核心表ACDOCA（通用日记账）设计
-// 提供总账、应收、应付、资产会计等功能
-//
-// =============================================================================
-
 syntax = "proto3";
 
-package killer.finance.financial.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.finance.financial.v1";
+package finance.financial.v1;
 
 import "common/v1/types.proto";
-import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 // =============================================================================
-// FinancialService - 财务会计服务
+// 财务会计服务 (Financial Service)
+// 提供总账、应收、应付、资产、银行会计等财务会计功能
 // =============================================================================
 service FinancialService {
+  // === 总账会计 (General Ledger) ===
+  // 获取总账科目
+  rpc GetGLAccount(GetGLAccountRequest) returns (GetGLAccountResponse);
+  // 查询总账科目列表
+  rpc ListGLAccounts(ListGLAccountsRequest) returns (ListGLAccountsResponse);
   // 创建会计凭证
   rpc CreateJournalEntry(CreateJournalEntryRequest) returns (CreateJournalEntryResponse);
   // 获取会计凭证
@@ -34,201 +25,1201 @@ service FinancialService {
   rpc PostJournalEntry(PostJournalEntryRequest) returns (PostJournalEntryResponse);
   // 冲销会计凭证
   rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (ReverseJournalEntryResponse);
+  // 批量创建凭证
+  rpc BatchCreateJournalEntries(BatchCreateJournalEntriesRequest) returns (BatchCreateJournalEntriesResponse);
+  // 模板创建凭证
+  rpc CreateJournalEntryWithTemplate(CreateJournalEntryWithTemplateRequest) returns (CreateJournalEntryWithTemplateResponse);
+  // 获取科目余额
+  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse);
+  // 获取科目余额清单
+  rpc GetAccountBalances(GetAccountBalancesRequest) returns (GetAccountBalancesResponse);
+  // 生成试算平衡表
+  rpc GenerateTrialBalance(GenerateTrialBalanceRequest) returns (GenerateTrialBalanceResponse);
+
+  // === 应收账款 (Accounts Receivable) ===
+  // 获取客户主数据
+  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+  // 查询客户列表
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+  // 创建客户
+  rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
+  // 更新客户
+  rpc UpdateCustomer(UpdateCustomerRequest) returns (UpdateCustomerResponse);
+  // 过账应收凭证
+  rpc PostReceivableEntry(PostReceivableEntryRequest) returns (PostReceivableEntryResponse);
+  // 过账收款
+  rpc PostIncomingPayment(PostIncomingPaymentRequest) returns (PostIncomingPaymentResponse);
+  // 客户清账
+  rpc ClearCustomerOpenItem(ClearCustomerOpenItemRequest) returns (ClearCustomerOpenItemResponse);
+  // 客户催收
+  rpc SendCustomerDunning(SendCustomerDunningRequest) returns (SendCustomerDunningResponse);
+  // 汇兑损益计算
+  rpc CalculateExchangeDifference(CalculateExchangeDifferenceRequest) returns (CalculateExchangeDifferenceResponse);
+
+  // === 应付账款 (Accounts Payable) ===
+  // 获取供应商主数据
+  rpc GetVendor(GetVendorRequest) returns (GetVendorResponse);
+  // 查询供应商列表
+  rpc ListVendors(ListVendorsRequest) returns (ListVendorsResponse);
+  // 创建供应商
+  rpc CreateVendor(CreateVendorRequest) returns (CreateVendorResponse);
+  // 更新供应商
+  rpc UpdateVendor(UpdateVendorRequest) returns (UpdateVendorResponse);
+  // 过账应付凭证
+  rpc PostPayableEntry(PostPayableEntryRequest) returns (PostPayableEntryResponse);
+  // 过账付款
+  rpc PostOutgoingPayment(PostOutgoingPaymentRequest) returns (PostOutgoingPaymentResponse);
+  // 供应商清账
+  rpc ClearVendorOpenItem(ClearVendorOpenItemRequest) returns (ClearVendorOpenItemResponse);
+  // 供应商付款冻结
+  rpc SetPaymentBlock(SetPaymentBlockRequest) returns (SetPaymentBlockResponse);
+
+  // === 固定资产 (Fixed Assets) ===
+  // 获取资产主数据
+  rpc GetFixedAsset(GetFixedAssetRequest) returns (GetFixedAssetResponse);
+  // 查询资产列表
+  rpc ListFixedAssets(ListFixedAssetsRequest) returns (ListFixedAssetsResponse);
+  // 创建资产
+  rpc CreateFixedAsset(CreateFixedAssetRequest) returns (CreateFixedAssetResponse);
+  // 资产采购
+  rpc PostAssetAcquisition(PostAssetAcquisitionRequest) returns (PostAssetAcquisitionResponse);
+  // 资产折旧
+  rpc PostAssetDepreciation(PostAssetDepreciationRequest) returns (PostAssetDepreciationResponse);
+  // 资产转移
+  rpc PostAssetTransfer(PostAssetTransferRequest) returns (PostAssetTransferResponse);
+  // 资产报废
+  rpc PostAssetRetirement(PostAssetRetirementRequest) returns (PostAssetRetirementResponse);
+  // 资产价值查询
+  rpc GetAssetValue(GetAssetValueRequest) returns (GetAssetValueResponse);
+
+  // === 银行会计 (Bank Accounting) ===
+  // 获取银行主数据
+  rpc GetBank(GetBankRequest) returns (GetBankResponse);
+  // 查询银行列表
+  rpc ListBanks(ListBanksRequest) returns (ListBanksResponse);
+  // 银行支付
+  rpc PostBankPayment(PostBankPaymentRequest) returns (PostBankPaymentResponse);
+  // 银行收款
+  rpc PostBankReceipt(PostBankReceiptRequest) returns (PostBankReceiptResponse);
+  // 银行对账
+  rpc PostBankReconciliation(PostBankReconciliationRequest) returns (PostBankReconciliationResponse);
+  // 银行科目余额
+  rpc GetBankAccountBalance(GetBankAccountBalanceRequest) returns (GetBankAccountBalanceResponse);
+
+  // === 期末处理 (Period-End Closing) ===
+  // 开启会计期间
+  rpc OpenFiscalPeriod(OpenFiscalPeriodRequest) returns (OpenFiscalPeriodResponse);
+  // 关闭会计期间
+  rpc CloseFiscalPeriod(CloseFiscalPeriodRequest) returns (CloseFiscalPeriodResponse);
+  // 期末调整过账
+  rpc PostPeriodClosingEntry(PostPeriodClosingEntryRequest) returns (PostPeriodClosingEntryResponse);
+  // 生成财务主数据报表
+  rpc GenerateGLAccountReport(GenerateGLAccountReportRequest) returns (GenerateGLAccountReportResponse);
 }
 
 // =============================================================================
-// SHKZG - 借贷标识枚举
+// 通用类型定义
 // =============================================================================
-// 对应ACDOCA-SHKZG字段
+
+// 借贷标识枚举
 enum SHKZG {
-  // 未指定
   SHKZG_UNSPECIFIED = 0;
-  // S = 借方
-  SHKZG_S = 1;
-  // H = 贷方
-  SHKZG_H = 2;
+  SHKZG_DEBIT = 1;     // 借方 S
+  SHKZG_CREDIT = 2;    // 贷方 H
+}
+
+// 凭证状态枚举
+enum JournalEntryStatus {
+  JOURNAL_ENTRY_STATUS_UNSPECIFIED = 0;
+  JOURNAL_ENTRY_STATUS_CREATED = 1;      // 已创建
+  JOURNAL_ENTRY_STATUS_POSTED = 2;       // 已过账
+  JOURNAL_ENTRY_STATUS_REVERSED = 3;     // 已冲销
+  JOURNAL_ENTRY_STATUS_BLOCKED = 4;      // 已冻结
+  JOURNAL_ENTRY_STATUS_DELETED = 5;      // 已删除
+}
+
+// 客户状态枚举
+enum CustomerStatus {
+  CUSTOMER_STATUS_UNSPECIFIED = 0;
+  CUSTOMER_STATUS_ACTIVE = 1;            // 激活
+  CUSTOMER_STATUS_BLOCKED = 2;           // 冻结
+  CUSTOMER_STATUS_DELETED = 3;           // 删除
+}
+
+// 供应商状态枚举
+enum VendorStatus {
+  VENDOR_STATUS_UNSPECIFIED = 0;
+  VENDOR_STATUS_ACTIVE = 1;              // 激活
+  VENDOR_STATUS_BLOCKED = 2;             // 冻结
+  VENDOR_STATUS_DELETED = 3;             // 删除
+}
+
+// 资产状态枚举
+enum AssetStatus {
+  ASSET_STATUS_UNSPECIFIED = 0;
+  ASSET_STATUS_CREATED = 1;              // 已创建
+  ASSET_STATUS_CAPITALIZED = 2;          // 已资本化
+  ASSET_STATUS_BLOCKED = 3;              // 已冻结
+  ASSET_STATUS_RETIRED = 4;              // 已报废
+}
+
+// 资产事务类型
+enum AssetTransactionType {
+  ASSET_TRANSACTION_TYPE_UNSPECIFIED = 0;
+  ASSET_TRANSACTION_TYPE_ACQUISITION = 1;   // 采购
+  ASSET_TRANSACTION_TYPE_DEPRECATION = 2;   // 折旧
+  ASSET_TRANSACTION_TYPE_TRANSFER = 3;      // 转移
+  ASSET_TRANSACTION_TYPE_RETIREMENT = 4;    // 报废
+  ASSET_TRANSACTION_TYPE_REVALUATION = 5;   // 重估
 }
 
 // =============================================================================
-// JournalEntry - 会计凭证（聚合根）
+// 主数据实体
 // =============================================================================
-// 对应ERP系统核心表ACDOCA
-message JournalEntry {
-  // 会计凭证号，对应BELNR
-  string BELNR = 1;
-  // 会计年度，对应GJAHR
-  int32 GJAHR = 2;
-  // 公司代码，对应BUKRS
-  string BUKRS = 3;
-  // 凭证类型，对应BLART
-  string BLART = 4;
-  // 凭证日期，对应BLDAT
-  google.protobuf.Timestamp BLDAT = 5;
-  // 过账日期，对应BUDAT
-  google.protobuf.Timestamp BUDAT = 6;
-  // 会计期间，对应MONAT
-  int32 MONAT = 7;
-  // 货币代码，对应WAERS
-  string WAERS = 8;
-  // 参考凭证号，对应XBLNR
-  string XBLNR = 9;
-  // 凭证抬头文本，对应BKTXT
-  string BKTXT = 10;
-  // 删除标识，对应LOEKZ
-  string LOEKZ = 11;
-  // 冲正标识
-  bool REVERSED = 12;
-  // 来源系统标识
-  string SRC_SYSTEM = 13;
-  // 审计信息
-  killer.common.v1.AuditInfo audit_info = 14;
-  // 行项目列表
-  repeated JournalEntryItem items = 15;
+
+// 总账科目主数据
+message GLAccount {
+  string KTOPL = 1;           // 科目表
+  string SAKNR = 2;           // 科目号
+  string BUKRS = 3;           // 公司代码
+  string KONTT = 4;           // 科目类型
+  string XBILK = 5;           // 资产负债表标识
+  string KSTBS = 6;           // 成本控制范围
+  string WAERS = 7;           // 货币
+  string BILKT = 8;           // 科目组
+  string MITKZ = 9;           // 科目标识组
+  string SAKNR_GLV = 10;      // 合并科目
+  string KTEXT = 11;          // 描述
+  string MTXT1 = 12;          // 短文本
+  string MTXT2 = 13;          // 长文本
+  bool XLOEB = 14;            // 删除标识
+  common.v1.AuditInfo audit_info = 15;
+}
+
+// 客户主数据
+message Customer {
+  string KUNNR = 1;           // 客户编号
+  string BUKRS = 2;           // 公司代码
+  string STCD1 = 3;           // 税号
+  string STCD2 = 4;           // 税号2
+  string KTOKD = 5;           // 客户账户组
+  string KUNAG = 6;           // 售达方
+  string KUNRG = 7;           // 收票方
+  string KUNSA = 8;           // 送达方
+  string WAERS = 9;           // 货币
+  string AKONT = 10;          // 统驭科目
+  string ZTERM = 11;          // 付款条件
+  string ZWELS = 12;          // 付款方式
+  string KULTG = 13;          // 催收代码
+  string VERAK = 14;          // 客户代表
+  string NAME1 = 15;          // 名称
+  string NAME2 = 16;          // 名称2
+  string STRAS = 17;          // 街道
+  string ORT01 = 18;          // 城市
+  string PSTLZ = 19;          // 邮编
+  string LAND1 = 20;          // 国家
+  string TEL_NUMBER = 21;     // 电话
+  string SMTP_ADDR = 22;      // 邮箱
+  CustomerStatus STATUS = 23;
+  common.v1.AuditInfo audit_info = 24;
+}
+
+// 供应商主数据
+message Vendor {
+  string LIFNR = 1;           // 供应商编号
+  string BUKRS = 2;           // 公司代码
+  string STCD1 = 3;           // 税号
+  string STCD2 = 4;           // 税号2
+  string KTOKK = 5;           // 供应商账户组
+  string WAERS = 6;           // 货币
+  string AKONT = 7;           // 统驭科目
+  string ZTERM = 8;           // 付款条件
+  string ZWELS = 9;           // 付款方式
+  string PAYER = 10;          // 付款方
+  string LFBKZ = 11;          // 供应商角色
+  string VERAK = 12;          // 供应商代表
+  string NAME1 = 13;          // 名称
+  string NAME2 = 14;          // 名称2
+  string STRAS = 15;          // 街道
+  string ORT01 = 16;          // 城市
+  string PSTLZ = 17;          // 邮编
+  string LAND1 = 18;          // 国家
+  string TEL_NUMBER = 19;     // 电话
+  string SMTP_ADDR = 20;      // 邮箱
+  VendorStatus STATUS = 21;
+  common.v1.AuditInfo audit_info = 22;
+}
+
+// 银行主数据
+message Bank {
+  string BANKS = 1;           // 银行国家代码
+  string BANKL = 2;           // 银行代码
+  string BANKA = 3;           // 银行名称
+  string STRAS = 4;           // 街道地址
+  string ORT01 = 5;           // 城市
+  string PSTLZ = 6;           // 邮编
+  string SWIFT = 7;           // SWIFT代码
+  string IBAN = 8;            // IBAN
+  string BNOCK = 9;           // 银行账户号
+  string BVTYP = 10;          // 银行类型
+  common.v1.AuditInfo audit_info = 11;
+}
+
+// 固定资产主数据
+message FixedAsset {
+  string BUKRS = 1;           // 公司代码
+  string ANLN1 = 2;           // 资产编号
+  string ANLN2 = 3;           // 资产子编号
+  string ANLKL = 4;           // 资产类别
+  string BKLAS = 5;           // 评估类
+  string KOSTL = 6;           // 成本中心
+  string PRCTR = 7;           // 利润中心
+  string GSBER = 8;           // 业务范围
+  string STORT = 9;           // 位置
+  string INGPL = 10;          // 投资订单
+  string TXT50 = 11;          // 描述
+  string TXA50 = 12;          // 描述长文本
+  google.protobuf.Timestamp AKTIV = 13;      // 资本化日期
+  common.v1.Money ANBTR = 14;          // 资产原值
+  common.v1.Money NABTR = 15;          // 累计折旧
+  common.v1.Money KANSW = 16;          // 计划外折旧
+  common.v1.Money BWTTY = 17;          // 资产类型
+  AssetStatus STATUS = 18;
+  common.v1.AuditInfo audit_info = 19;
 }
 
 // =============================================================================
-// JournalEntryItem - 会计凭证行项目
+// 总账会计
 // =============================================================================
-// 对应ERP系统核心表ACDOCA行级字段
+
+// 获取总账科目请求
+message GetGLAccountRequest {
+  string KTOPL = 1;           // 科目表
+  string SAKNR = 2;           // 科目号
+  string BUKRS = 3;           // 公司代码（可选）
+}
+
+// 获取总账科目响应
+message GetGLAccountResponse {
+  GLAccount gl_account = 1;
+}
+
+// 查询总账科目列表请求
+message ListGLAccountsRequest {
+  string KTOPL = 1;           // 科目表
+  string BUKRS = 2;           // 公司代码（可选）
+  string KONTT = 3;           // 科目类型（可选）
+  string XBILK = 4;           // 资产负债表科目（可选）
+  int32 page_size = 5;
+  string page_token = 6;
+}
+
+// 查询总账科目列表响应
+message ListGLAccountsResponse {
+  repeated GLAccount gl_accounts = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 会计凭证行项目
 message JournalEntryItem {
-  // 行项目号，对应BUZEI
-  int32 BUZEI = 1;
-  // 总账科目，对应HKONT
-  string HKONT = 2;
-  // 借贷标识，对应SHKZG
-  SHKZG SHKZG = 3;
-  // 凭证货币金额，对应WRBTR
-  killer.common.v1.Money WRBTR = 4;
-  // 本位币金额，对应DMBTR
-  killer.common.v1.Money DMBTR = 5;
-  // 成本中心，对应KOSTL
-  string KOSTL = 6;
-  // 利润中心，对应PRCTR
-  string PRCTR = 7;
-  // 业务范围，对应GSBER
-  string GSBER = 8;
-  // 功能范围，对应FKBER
-  string FKBER = 9;
-  // 客户编号，对应KUNNR
-  string KUNNR = 10;
-  // 供应商编号，对应LIFNR
-  string LIFNR = 11;
-  // 税码，对应MWSKZ
-  string MWSKZ = 12;
-  // 行项目文本，对应SGTXT
-  string SGTXT = 13;
-  // 分配字段，对应ZUONR
-  string ZUONR = 14;
-  // 内部订单，对应AUFNR
-  string AUFNR = 15;
+  int32 BUZEI = 1;            // 行项目号
+  string HKONT = 2;           // 总账科目
+  SHKZG SHKZG = 3;            // 借贷标识
+  common.v1.Money WRBTR = 4;           // 凭证货币金额
+  common.v1.Money DMBTR = 5;           // 本位币金额
+  string KUNNR = 6;           // 客户
+  string LIFNR = 7;           // 供应商
+  string KOSTL = 8;           // 成本中心
+  string PRCTR = 9;           // 利润中心
+  string GSBER = 10;          // 业务范围
+  string FKBER = 11;          // 功能范围
+  string MWSKZ = 12;          // 税码
+  string SGTXT = 13;          // 行项目文本
+  string ZUONR = 14;          // 分配字段
+  string AUFNR = 15;          // 内部订单
+  string WBS_ELEMENT = 16;    // WBS元素
+  string EBELN = 17;          // 采购订单
+  string EBELP = 18;          // 采购订单行项目
 }
 
-// =============================================================================
-// 请求/响应消息定义
-// =============================================================================
-
-// 创建凭证请求
+// 创建会计凭证请求
 message CreateJournalEntryRequest {
-  // 公司代码
-  string BUKRS = 1;
-  // 凭证类型
-  string BLART = 2;
-  // 凭证日期
-  google.protobuf.Timestamp BLDAT = 3;
-  // 过账日期
-  google.protobuf.Timestamp BUDAT = 4;
-  // 货币代码
-  string WAERS = 5;
-  // 参考凭证号
-  string XBLNR = 6;
-  // 凭证抬头文本
-  string BKTXT = 7;
-  // 来源系统
-  string SRC_SYSTEM = 8;
-  // 行项目列表
-  repeated JournalEntryItem items = 9;
+  string BUKRS = 1;           // 公司代码
+  string BLART = 2;           // 凭证类型
+  google.protobuf.Timestamp BLDAT = 3;        // 凭证日期
+  google.protobuf.Timestamp BUDAT = 4;        // 过账日期
+  string WAERS = 5;           // 货币
+  string XBLNR = 6;           // 参考凭证号
+  string BKTXT = 7;           // 凭证抬头文本
+  string SRC_SYSTEM = 8;      // 来源系统
+  repeated JournalEntryItem items = 9;        // 行项目
 }
 
-// 创建凭证响应
+// 创建会计凭证响应
 message CreateJournalEntryResponse {
-  // 创建的凭证
-  JournalEntry journal_entry = 1;
+  string BELNR = 1;           // 凭证号
+  string GJAHR = 2;           // 会计年度
+  google.protobuf.Timestamp created_at = 3;
 }
 
-// 获取凭证请求
+// 获取会计凭证请求
 message GetJournalEntryRequest {
-  // 公司代码
-  string BUKRS = 1;
-  // 会计凭证号
-  string BELNR = 2;
-  // 会计年度
-  int32 GJAHR = 3;
+  string BUKRS = 1;           // 公司代码
+  string BELNR = 2;           // 凭证号
+  string GJAHR = 3;           // 会计年度
 }
 
-// 获取凭证响应
+// 获取会计凭证响应
 message GetJournalEntryResponse {
-  // 凭证信息
-  JournalEntry journal_entry = 1;
-}
-
-// 查询凭证列表请求
-message ListJournalEntriesRequest {
-  // 公司代码
-  string BUKRS = 1;
-  // 会计年度
-  int32 GJAHR = 2;
-  // 会计期间
-  int32 MONAT = 3;
-  // 凭证类型
-  string BLART = 4;
-  // 分页请求
-  killer.common.v1.PageRequest page_request = 5;
-}
-
-// 查询凭证列表响应
-message ListJournalEntriesResponse {
-  // 凭证列表
-  repeated JournalEntry journal_entries = 1;
-  // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
-}
-
-// 过账凭证请求
-message PostJournalEntryRequest {
-  // 公司代码
-  string BUKRS = 1;
-  // 会计凭证号
-  string BELNR = 2;
-  // 会计年度
-  int32 GJAHR = 3;
-}
-
-// 过账凭证响应
-message PostJournalEntryResponse {
-  // 过账后的凭证号
   string BELNR = 1;
-  // 过账时间
-  google.protobuf.Timestamp posted_at = 2;
+  string BUKRS = 2;
+  string BLART = 3;
+  string GJAHR = 4;
+  int32 MONAT = 5;
+  google.protobuf.Timestamp BLDAT = 6;
+  google.protobuf.Timestamp BUDAT = 7;
+  string WAERS = 8;
+  string XBLNR = 9;
+  string BKTXT = 10;
+  JournalEntryStatus STATUS = 11;
+  repeated JournalEntryItem items = 12;
+  common.v1.Money total_debit = 13;
+  common.v1.Money total_credit = 14;
 }
 
-// 冲销凭证请求
+// 查询会计凭证列表请求
+message ListJournalEntriesRequest {
+  string BUKRS = 1;           // 公司代码
+  string GJAHR = 2;           // 会计年度
+  int32 MONAT_FROM = 3;       // 起始期间
+  int32 MONAT_TO = 4;         // 结束期间
+  string BLART = 5;           // 凭证类型（可选）
+  string HKONT = 6;           // 科目（可选）
+  string KUNNR = 7;           // 客户（可选）
+  string LIFNR = 8;           // 供应商（可选）
+  google.protobuf.Timestamp BUDAT_FROM = 9;    // 过账日期从
+  google.protobuf.Timestamp BUDAT_TO = 10;     // 过账日期至
+  int32 page_size = 11;
+  string page_token = 12;
+}
+
+// 查询会计凭证列表响应
+message ListJournalEntriesResponse {
+  repeated GetJournalEntryResponse entries = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 过账会计凭证请求
+message PostJournalEntryRequest {
+  string BUKRS = 1;           // 公司代码
+  string BELNR = 2;           // 凭证号
+  string GJAHR = 3;           // 会计年度
+}
+
+// 过账会计凭证响应
+message PostJournalEntryResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 冲销会计凭证请求
 message ReverseJournalEntryRequest {
-  // 公司代码
-  string BUKRS = 1;
-  // 原会计凭证号
-  string BELNR = 2;
-  // 原会计年度
-  int32 GJAHR = 3;
-  // 冲销日期
-  google.protobuf.Timestamp reverse_date = 4;
-  // 冲销原因
-  string reverse_reason = 5;
+  string BUKRS = 1;           // 公司代码
+  string BELNR = 2;           // 凭证号
+  string GJAHR = 3;           // 会计年度
+  google.protobuf.Timestamp REVDT = 4;         // 冲销日期
+  string REASON = 5;          // 冲销原因
 }
 
-// 冲销凭证响应
+// 冲销会计凭证响应
 message ReverseJournalEntryResponse {
-  // 冲销凭证号
-  string STBLG = 1;
-  // 冲销时间
-  google.protobuf.Timestamp reversed_at = 2;
+  string original_belnr = 1;  // 原始凭证号
+  string reversal_belnr = 2;  // 冲销凭证号
+  string GJAHR = 3;
+  google.protobuf.Timestamp reversed_at = 4;
+}
+
+// 批量创建凭证请求
+message BatchCreateJournalEntriesRequest {
+  repeated CreateJournalEntryRequest entries = 1;
+  bool fail_on_error = 2;     // 遇错终止
+}
+
+// 批量创建凭证响应
+message BatchCreateJournalEntriesResponse {
+  int32 total = 1;
+  int32 success = 2;
+  int32 failed = 3;
+  repeated CreateJournalEntryResponse results = 4;
+  repeated string errors = 5;
+}
+
+// 模板创建凭证请求
+message CreateJournalEntryWithTemplateRequest {
+  string TEMPLATE_ID = 1;     // 模板ID
+  map<string, string> parameters = 2;  // 参数
+  google.protobuf.Timestamp BUDAT = 3;        // 过账日期
+}
+
+// 模板创建凭证响应
+message CreateJournalEntryWithTemplateResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+}
+
+// 获取科目余额请求
+message GetAccountBalanceRequest {
+  string BUKRS = 1;           // 公司代码
+  string SAKNR = 2;           // 科目号
+  string GJAHR = 3;           // 会计年度
+  int32 MONAT = 4;            // 期间
+}
+
+// 获取科目余额响应
+message GetAccountBalanceResponse {
+  string SAKNR = 1;
+  string KTEXT = 2;
+  common.v1.Money beginning_balance = 3; // 期初余额
+  common.v1.Money debit_turnover = 4;    // 借方发生额
+  common.v1.Money credit_turnover = 5;   // 贷方发生额
+  common.v1.Money ending_balance = 6;    // 期末余额
+}
+
+// 获取科目余额清单请求
+message GetAccountBalancesRequest {
+  string BUKRS = 1;           // 公司代码
+  string GJAHR = 2;           // 会计年度
+  int32 MONAT = 3;            // 期间
+  string SAKNR_FROM = 4;      // 科目号从
+  string SAKNR_TO = 5;        // 科目号至
+}
+
+// 获取科目余额清单响应
+message GetAccountBalancesResponse {
+  repeated AccountBalanceLine lines = 1;
+  common.v1.Money total_debit = 2;
+  common.v1.Money total_credit = 3;
+}
+
+// 科目余额行
+message AccountBalanceLine {
+  string SAKNR = 1;
+  string KTEXT = 2;
+  common.v1.Money beginning_balance = 3;
+  common.v1.Money debit_turnover = 4;
+  common.v1.Money credit_turnover = 5;
+  common.v1.Money ending_balance = 6;
+}
+
+// 生成试算平衡表请求
+message GenerateTrialBalanceRequest {
+  string BUKRS = 1;           // 公司代码
+  string GJAHR = 2;           // 会计年度
+  int32 MONAT = 3;            // 期间
+  bool include_zero_balance = 4;  // 包含零余额科目
+}
+
+// 生成试算平衡表响应
+message GenerateTrialBalanceResponse {
+  repeated TrialBalanceLine lines = 1;
+  common.v1.Money total_debit_balance = 2;
+  common.v1.Money total_credit_balance = 3;
+  bool balanced = 4;
+}
+
+// 试算平衡表行
+message TrialBalanceLine {
+  string account_type = 1;    // 科目类型
+  string SAKNR = 2;
+  string KTEXT = 3;
+  common.v1.Money debit_balance = 4;
+  common.v1.Money credit_balance = 5;
+}
+
+// =============================================================================
+// 应收账款
+// =============================================================================
+
+// 获取客户请求
+message GetCustomerRequest {
+  string KUNNR = 1;           // 客户编号
+  string BUKRS = 2;           // 公司代码
+}
+
+// 获取客户响应
+message GetCustomerResponse {
+  Customer customer = 1;
+}
+
+// 查询客户列表请求
+message ListCustomersRequest {
+  string BUKRS = 1;           // 公司代码
+  string KTOKD = 2;           // 客户账户组（可选）
+  string LAND1 = 3;           // 国家（可选）
+  string ORT01 = 4;           // 城市（可选）
+  CustomerStatus STATUS = 5;  // 状态（可选）
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+// 查询客户列表响应
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 创建客户请求
+message CreateCustomerRequest {
+  string BUKRS = 1;           // 公司代码
+  string KTOKD = 2;           // 客户账户组
+  string NAME1 = 3;           // 名称
+  string STRAS = 4;           // 街道
+  string ORT01 = 5;           // 城市
+  string PSTLZ = 6;           // 邮编
+  string LAND1 = 7;           // 国家
+  string STCD1 = 8;           // 税号
+  string WAERS = 9;           // 货币
+  string AKONT = 10;          // 统驭科目
+  string ZTERM = 11;          // 付款条件
+}
+
+// 创建客户响应
+message CreateCustomerResponse {
+  string KUNNR = 1;
+}
+
+// 更新客户请求
+message UpdateCustomerRequest {
+  string KUNNR = 1;
+  string BUKRS = 2;
+  string NAME1 = 3;
+  string STRAS = 4;
+  string ORT01 = 5;
+  string PSTLZ = 6;
+  string LAND1 = 7;
+  string ZTERM = 8;
+}
+
+// 更新客户响应
+message UpdateCustomerResponse {
+  bool success = 1;
+}
+
+// 应收凭证行项目
+message ReceivableEntryItem {
+  int32 BUZEI = 1;
+  string HKONT = 2;           // 科目
+  SHKZG SHKZG = 3;
+  common.v1.Money WRBTR = 4;
+  string KUNNR = 5;
+  string MWSKZ = 6;
+  string ZUONR = 7;
+  string SGTXT = 8;
+  string EBELN = 9;
+  string EBELP = 10;
+}
+
+// 过账应收凭证请求
+message PostReceivableEntryRequest {
+  string BUKRS = 1;
+  string BLART = 2;
+  google.protobuf.Timestamp BLDAT = 3;
+  google.protobuf.Timestamp BUDAT = 4;
+  string KUNNR = 5;
+  string WAERS = 6;
+  string XBLNR = 7;
+  string BKTXT = 8;
+  repeated ReceivableEntryItem items = 9;
+}
+
+// 过账应收凭证响应
+message PostReceivableEntryResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 收款行项目
+message PaymentItem {
+  int32 BUZEI = 1;
+  string KUNNR = 2;           // 客户
+  string HKONT = 3;           // 银行科目
+  string ZFBDT = 4;           // 基准日期
+  common.v1.Money WRBTR = 5;
+  string ZUONR = 6;
+  string SGTXT = 7;
+}
+
+// 过账收款请求
+message PostIncomingPaymentRequest {
+  string BUKRS = 1;
+  google.protobuf.Timestamp BUDAT = 2;
+  string WAERS = 3;
+  string KUNNR = 4;
+  common.v1.Money TOTAL_AMOUNT = 5;
+  string BANK_ACCOUNT = 6;    // 银行账户
+  repeated PaymentItem items = 7;
+}
+
+// 过账收款响应
+message PostIncomingPaymentResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 客户清账请求
+message ClearCustomerOpenItemRequest {
+  string BUKRS = 1;
+  string KUNNR = 2;
+  repeated string BELNR_LIST = 3;  // 待清账凭证列表
+  google.protobuf.Timestamp BUDAT = 4;
+}
+
+// 客户清账响应
+message ClearCustomerOpenItemResponse {
+  bool success = 1;
+  string CLEARING_DOC = 2;    // 清账凭证号
+  repeated ClearedItem cleared_items = 3;
+}
+
+// 清账项目
+message ClearedItem {
+  string BELNR = 1;
+  string GJAHR = 2;
+  common.v1.Money amount = 3;
+}
+
+// 客户催收请求
+message SendCustomerDunningRequest {
+  string BUKRS = 1;
+  string KUNNR = 2;
+  string DUNN_AREA = 3;       // 催收区域
+  string DUNN_BLOCK = 4;      // 催收级别
+}
+
+// 客户催收响应
+message SendCustomerDunningResponse {
+  bool success = 1;
+  string DUNN_DOC = 2;        // 催收凭证号
+}
+
+// 汇兑损益计算请求
+message CalculateExchangeDifferenceRequest {
+  string BUKRS = 1;
+  string KUNNR = 2;
+  string GJAHR = 3;
+  int32 MONAT = 4;
+  string EXCH_RATE = 5;       // 汇率
+}
+
+// 汇兑损益计算响应
+message CalculateExchangeDifferenceResponse {
+  bool success = 1;
+  common.v1.Money exchange_gain = 2;
+  common.v1.Money exchange_loss = 3;
+  string DOC_NO = 4;
+}
+
+// =============================================================================
+// 应付账款
+// =============================================================================
+
+// 获取供应商请求
+message GetVendorRequest {
+  string LIFNR = 1;
+  string BUKRS = 2;
+}
+
+// 获取供应商响应
+message GetVendorResponse {
+  Vendor vendor = 1;
+}
+
+// 查询供应商列表请求
+message ListVendorsRequest {
+  string BUKRS = 1;
+  string KTOKK = 2;
+  string LAND1 = 3;
+  string ORT01 = 4;
+  VendorStatus STATUS = 5;
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+// 查询供应商列表响应
+message ListVendorsResponse {
+  repeated Vendor vendors = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 创建供应商请求
+message CreateVendorRequest {
+  string BUKRS = 1;
+  string KTOKK = 2;
+  string NAME1 = 3;
+  string STRAS = 4;
+  string ORT01 = 5;
+  string PSTLZ = 6;
+  string LAND1 = 7;
+  string STCD1 = 8;
+  string WAERS = 9;
+  string AKONT = 10;
+  string ZTERM = 11;
+}
+
+// 创建供应商响应
+message CreateVendorResponse {
+  string LIFNR = 1;
+}
+
+// 更新供应商请求
+message UpdateVendorRequest {
+  string LIFNR = 1;
+  string BUKRS = 2;
+  string NAME1 = 3;
+  string STRAS = 4;
+  string ORT01 = 5;
+  string PSTLZ = 6;
+  string LAND1 = 7;
+  string ZTERM = 8;
+}
+
+// 更新供应商响应
+message UpdateVendorResponse {
+  bool success = 1;
+}
+
+// 应付凭证行项目
+message PayableEntryItem {
+  int32 BUZEI = 1;
+  string HKONT = 2;
+  SHKZG SHKZG = 3;
+  common.v1.Money WRBTR = 4;
+  string LIFNR = 5;
+  string MWSKZ = 6;
+  string ZUONR = 7;
+  string SGTXT = 8;
+  string EBELN = 9;
+  string EBELP = 10;
+}
+
+// 过账应付凭证请求
+message PostPayableEntryRequest {
+  string BUKRS = 1;
+  string BLART = 2;
+  google.protobuf.Timestamp BLDAT = 3;
+  google.protobuf.Timestamp BUDAT = 4;
+  string LIFNR = 5;
+  string WAERS = 6;
+  string XBLNR = 7;
+  string BKTXT = 8;
+  repeated PayableEntryItem items = 9;
+}
+
+// 过账应付凭证响应
+message PostPayableEntryResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 付款行项目
+message OutgoingPaymentItem {
+  int32 BUZEI = 1;
+  string LIFNR = 2;
+  string HKONT = 3;
+  string ZFBDT = 4;
+  common.v1.Money WRBTR = 5;
+  string ZUONR = 6;
+  string SGTXT = 7;
+}
+
+// 过账付款请求
+message PostOutgoingPaymentRequest {
+  string BUKRS = 1;
+  google.protobuf.Timestamp BUDAT = 2;
+  string WAERS = 3;
+  string LIFNR = 4;
+  common.v1.Money TOTAL_AMOUNT = 5;
+  string BANK_ACCOUNT = 6;
+  repeated OutgoingPaymentItem items = 7;
+}
+
+// 过账付款响应
+message PostOutgoingPaymentResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 供应商清账请求
+message ClearVendorOpenItemRequest {
+  string BUKRS = 1;
+  string LIFNR = 2;
+  repeated string BELNR_LIST = 3;
+  google.protobuf.Timestamp BUDAT = 4;
+}
+
+// 供应商清账响应
+message ClearVendorOpenItemResponse {
+  bool success = 1;
+  string CLEARING_DOC = 2;
+  repeated ClearedItem cleared_items = 3;
+}
+
+// 付款冻结请求
+message SetPaymentBlockRequest {
+  string BUKRS = 1;
+  string LIFNR = 2;
+  string BELNR = 3;
+  string BLOCK_CODE = 4;
+}
+
+// 付款冻结响应
+message SetPaymentBlockResponse {
+  bool success = 1;
+}
+
+// =============================================================================
+// 固定资产
+// =============================================================================
+
+// 获取资产请求
+message GetFixedAssetRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+}
+
+// 获取资产响应
+message GetFixedAssetResponse {
+  FixedAsset fixed_asset = 1;
+}
+
+// 查询资产列表请求
+message ListFixedAssetsRequest {
+  string BUKRS = 1;
+  string ANLKL = 2;           // 资产类别
+  string KOSTL = 3;           // 成本中心
+  AssetStatus STATUS = 4;
+  int32 page_size = 5;
+  string page_token = 6;
+}
+
+// 查询资产列表响应
+message ListFixedAssetsResponse {
+  repeated FixedAsset fixed_assets = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 创建资产请求
+message CreateFixedAssetRequest {
+  string BUKRS = 1;
+  string ANLKL = 2;           // 资产类别
+  string BKLAS = 3;           // 评估类
+  string KOSTL = 4;
+  string PRCTR = 5;
+  string GSBER = 6;
+  string STORT = 7;
+  string TXT50 = 8;
+  string TXA50 = 9;
+  google.protobuf.Timestamp AKTIV = 10;
+  common.v1.Money ANBTR = 11;
+}
+
+// 创建资产响应
+message CreateFixedAssetResponse {
+  string ANLN1 = 1;
+  string ANLN2 = 2;
+}
+
+// 资产采购请求
+message PostAssetAcquisitionRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+  string LIFNR = 4;           // 供应商
+  common.v1.Money ANBTR = 5;
+  google.protobuf.Timestamp BUDAT = 6;
+  string SGTXT = 7;
+}
+
+// 资产采购响应
+message PostAssetAcquisitionResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  string ANLN1 = 3;
+  string ANLN2 = 4;
+}
+
+// 资产折旧请求
+message PostAssetDepreciationRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+  string GJAHR = 4;
+  int32 MONAT = 5;
+  common.v1.Money DEP_AMT = 6;
+  string DEP_KEY = 7;         // 折旧码
+}
+
+// 资产折旧响应
+message PostAssetDepreciationResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  common.v1.Money DEP_AMT = 3;
+}
+
+// 资产转移请求
+message PostAssetTransferRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+  string KOSTL_TO = 4;        // 目标成本中心
+  string PRCTR_TO = 5;        // 目标利润中心
+  string GSBER_TO = 6;        // 目标业务范围
+  google.protobuf.Timestamp BUDAT = 7;
+  string SGTXT = 8;
+}
+
+// 资产转移响应
+message PostAssetTransferResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+}
+
+// 资产报废请求
+message PostAssetRetirementRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+  common.v1.Money RET_AMT = 4;   // 报废金额
+  google.protobuf.Timestamp BUDAT = 5;
+  string SGTXT = 6;
+}
+
+// 资产报废响应
+message PostAssetRetirementResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  common.v1.Money RET_AMT = 3;
+}
+
+// 资产价值请求
+message GetAssetValueRequest {
+  string BUKRS = 1;
+  string ANLN1 = 2;
+  string ANLN2 = 3;
+  string GJAHR = 4;
+  int32 MONAT = 5;
+}
+
+// 资产价值响应
+message GetAssetValueResponse {
+  string ANLN1 = 1;
+  string ANLN2 = 2;
+  common.v1.Money acquisition_value = 3;   // 资产原值
+  common.v1.Money accumulated_dep = 4;     // 累计折旧
+  common.v1.Money planned_dep = 5;         // 计划折旧
+  common.v1.Money unplanned_dep = 6;       // 计划外折旧
+  common.v1.Money book_value = 7;          // 账面价值
+  common.v1.Money salvage_value = 8;       // 残值
+}
+
+// =============================================================================
+// 银行会计
+// =============================================================================
+
+// 获取银行请求
+message GetBankRequest {
+  string BANKS = 1;
+  string BANKL = 2;
+}
+
+// 获取银行响应
+message GetBankResponse {
+  Bank bank = 1;
+}
+
+// 查询银行列表请求
+message ListBanksRequest {
+  string BANKS = 1;           // 国家（可选）
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+// 查询银行列表响应
+message ListBanksResponse {
+  repeated Bank banks = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 银行支付请求
+message PostBankPaymentRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;    // 银行账户
+  string LIFNR = 3;           // 供应商
+  common.v1.Money AMOUNT = 4;
+  string WAERS = 5;
+  google.protobuf.Timestamp BUDAT = 6;
+  string PAYMENT_METHOD = 7;  // 付款方式
+  string SGTXT = 8;
+}
+
+// 银行支付响应
+message PostBankPaymentResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  string PAYMENT_DOC = 3;
+}
+
+// 银行收款请求
+message PostBankReceiptRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  string KUNNR = 3;           // 客户
+  common.v1.Money AMOUNT = 4;
+  string WAERS = 5;
+  google.protobuf.Timestamp BUDAT = 6;
+  string RECEIPT_TYPE = 7;    // 收款类型
+  string SGTXT = 8;
+}
+
+// 银行收款响应
+message PostBankReceiptResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  string RECEIPT_DOC = 3;
+}
+
+// 银行对账请求
+message PostBankReconciliationRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  google.protobuf.Timestamp STATEMENT_DATE = 3;  // 对账单日期
+  common.v1.Money STATEMENT_BALANCE = 4;  // 对账单余额
+  repeated BankStatementLine statement_lines = 5;
+}
+
+// 银行对账行
+message BankStatementLine {
+  string TRANSACTION_DATE = 1;
+  string TRANSACTION_TYPE = 2;
+  string DESCRIPTION = 3;
+  common.v1.Money AMOUNT = 4;
+  string REFERENCE = 5;
+}
+
+// 银行对账响应
+message PostBankReconciliationResponse {
+  bool success = 1;
+  common.v1.Money bank_balance = 2;
+  common.v1.Money book_balance = 3;
+  common.v1.Money difference = 4;
+  repeated string unmatched_items = 5;
+}
+
+// 银行科目余额请求
+message GetBankAccountBalanceRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  string GJAHR = 3;
+  int32 MONAT = 4;
+}
+
+// 银行科目余额响应
+message GetBankAccountBalanceResponse {
+  string BANK_ACCOUNT = 1;
+  common.v1.Money balance = 2;
+  common.v1.Money debit_turnover = 3;
+  common.v1.Money credit_turnover = 4;
+}
+
+// =============================================================================
+// 期末处理
+// =============================================================================
+
+// 开启会计期间请求
+message OpenFiscalPeriodRequest {
+  string BUKRS = 1;
+  string GJAHR = 2;
+  int32 MONAT = 3;
+}
+
+// 开启会计期间响应
+message OpenFiscalPeriodResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// 关闭会计期间请求
+message CloseFiscalPeriodRequest {
+  string BUKRS = 1;
+  string GJAHR = 2;
+  int32 MONAT = 3;
+  repeated string CLOSE_ACTIVITIES = 4;  // 关闭活动
+}
+
+// 关闭会计期间响应
+message CloseFiscalPeriodResponse {
+  bool success = 1;
+  string message = 2;
+  repeated PeriodCloseResult results = 3;
+}
+
+// 期间关闭结果
+message PeriodCloseResult {
+  string activity = 1;
+  bool completed = 2;
+  string message = 3;
+}
+
+// 期末调整过账请求
+message PostPeriodClosingEntryRequest {
+  string BUKRS = 1;
+  string GJAHR = 2;
+  int32 MONAT = 3;
+  string ADJUSTMENT_TYPE = 4;  // 调整类型
+  repeated JournalEntryItem items = 5;
+  string SGTXT = 6;
+}
+
+// 期末调整过账响应
+message PostPeriodClosingEntryResponse {
+  string BELNR = 1;
+  string GJAHR = 2;
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 生成财务主数据报表请求
+message GenerateGLAccountReportRequest {
+  string KTOPL = 1;           // 科目表
+  string BUKRS = 2;           // 公司代码
+  string GJAHR = 3;
+  int32 MONAT = 4;
+  string REPORT_TYPE = 5;     // 报表类型
+}
+
+// 生成财务主数据报表响应
+message GenerateGLAccountReportResponse {
+  string report_name = 1;
+  string generated_at = 2;
+  repeated GLAccountReportLine lines = 3;
+}
+
+// 财务主数据报表行
+message GLAccountReportLine {
+  string SAKNR = 1;
+  string KTEXT = 2;
+  string KONTT = 3;
+  common.v1.Money total_balance = 4;
+  int32 document_count = 5;
 }
