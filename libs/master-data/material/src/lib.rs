@@ -35,9 +35,9 @@
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
 use chrono::{DateTime, Utc};
-use derive_more::{Display, Error, From};
+use derive_more::{Display, From};
 use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
+use killer_organizational_units::StorageLocationValue;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::{self, Debug};
@@ -45,37 +45,33 @@ use thiserror::Error;
 use uuid::Uuid;
 use validator::Validate;
 
+/// 验证结果类型
+pub type ValidationResult<T> = Result<T, validator::ValidationErrors>;
+
 // =============================================================================
 // 错误类型
 // =============================================================================
 
 /// 物料域错误
-#[derive(Debug, Error, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Error, Clone, PartialEq, Serialize, Deserialize)]
 pub enum MaterialError {
-    #[error("物料不存在: {material_number}")]
-    MaterialNotFound { material_number: String },
+    #[error("物料不存在: {0}")]
+    MaterialNotFound(String),
 
-    #[error("物料工厂数据不存在: {material_number}/{plant_code}")]
-    PlantDataNotFound {
-        material_number: String,
-        plant_code: String,
-    },
+    #[error("物料工厂数据不存在: {0}/{1}")]
+    PlantDataNotFound(String, String),
 
-    #[error("物料库存地点数据不存在: {material_number}/{plant_code}/{storage_location}")]
-    StorageDataNotFound {
-        material_number: String,
-        plant_code: String,
-        storage_location: String,
-    },
+    #[error("物料库存地点数据不存在: {0}/{1}/{2}")]
+    StorageDataNotFound(String, String, String),
 
-    #[error("无效的物料编号: {material_number}")]
-    InvalidMaterialNumber { material_number: String },
+    #[error("无效的物料编号: {0}")]
+    InvalidMaterialNumber(String),
 
-    #[error("验证失败: {message}")]
-    ValidationFailed { message: String },
+    #[error("验证失败: {0}")]
+    ValidationFailed(String),
 
-    #[error("库存不足: 可用 {available}, 需要 {required}")]
-    InsufficientStock { available: f64, required: f64 },
+    #[error("库存不足: 可用 {0}, 需要 {1}")]
+    InsufficientStock(rust_decimal::Decimal, rust_decimal::Decimal),
 }
 
 /// 物料结果类型
@@ -208,14 +204,12 @@ impl Default for SpecialProcurementType {
 ///
 /// SAP 表 MARA，代表物料的基本信息。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
 pub struct Material {
     /// 物料编号
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 物料描述
@@ -226,7 +220,6 @@ pub struct Material {
     pub material_type: MaterialType,
 
     /// 基本计量单位
-    #[validate(non_empty)]
     pub base_unit: UnitOfMeasure,
 
     /// 物料组
@@ -340,18 +333,15 @@ impl Material {
 ///
 /// SAP 表 MARC，代表物料在特定工厂的数据。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
 pub struct MaterialPlantData {
     /// 物料编号 (引用)
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 工厂代码 (引用)
-    #[validate(non_empty)]
     pub plant_code: Plant,
 
     /// MRP 类型
@@ -484,22 +474,18 @@ impl MaterialPlantData {
 ///
 /// SAP 表 MARD，代表物料在特定库存地点的数据。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
 pub struct MaterialStorageData {
     /// 物料编号 (引用)
-    #[validate(non_empty)]
     pub material_number: MaterialNumber,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 工厂代码 (引用)
-    #[validate(non_empty)]
     pub plant_code: Plant,
 
     /// 库存地点代码 (引用)
-    #[validate(non_empty)]
     pub storage_location: StorageLocationValue,
 
     /// 非限制使用库存
@@ -605,9 +591,7 @@ impl MaterialStorageData {
             self.unrestricted_stock.value() + quantity.value(),
             self.unrestricted_stock.unit().clone(),
         )
-        .map_err(|e| MaterialError::ValidationFailed {
-            message: format!("Failed to increase stock: {}", e),
-        })?;
+        .map_err(|e| MaterialError::ValidationFailed(format!("Failed to increase stock: {}", e)))?;
 
         self.updated_at = Utc::now();
         Ok(())
@@ -621,19 +605,17 @@ impl MaterialStorageData {
             // Need to convert Decimal to f64 for error reporting if error expects f64
             // Or better, update Error definition. For now, assuming error variants expect f64:
             use rust_decimal::prelude::ToPrimitive;
-            return Err(MaterialError::InsufficientStock {
-                available: self.unrestricted_stock.value().to_f64().unwrap_or_default(),
-                required: quantity.value().to_f64().unwrap_or_default(),
-            });
+            return Err(MaterialError::InsufficientStock(
+                self.unrestricted_stock.value(),
+                quantity.value(),
+            ));
         }
 
         self.unrestricted_stock = Quantity::new(
             new_value,
             self.unrestricted_stock.unit().clone(),
         )
-        .map_err(|e| MaterialError::ValidationFailed {
-            message: format!("Failed to decrease stock: {}", e),
-        })?;
+        .map_err(|e| MaterialError::ValidationFailed(format!("Failed to decrease stock: {}", e)))?;
 
         self.updated_at = Utc::now();
         Ok(())
@@ -651,9 +633,7 @@ impl MaterialStorageData {
             qi_stock.value() + quantity.value(),
             qi_stock.unit().clone(),
         )
-        .map_err(|e| MaterialError::ValidationFailed {
-            message: format!("Failed to move to QI: {}", e), // Fixed variable usage
-        })?;
+        .map_err(|e| MaterialError::ValidationFailed(format!("Failed to move to QI: {}", e)))?;
 
         self.updated_at = Utc::now();
         Ok(())
@@ -662,25 +642,20 @@ impl MaterialStorageData {
     /// 从质检库存释放
     pub fn release_from_quality_inspection(&mut self, quantity: Quantity) -> MaterialResult<()> {
         use rust_decimal::prelude::ToPrimitive;
-        
+
         let qi_stock = self.quality_inspection_stock.as_mut()
-            .ok_or_else(|| MaterialError::InsufficientStock {
-                available: 0.0,
-                required: quantity.value().to_f64().unwrap_or_default(),
-            })?;
+            .ok_or_else(|| MaterialError::InsufficientStock(rust_decimal::Decimal::ZERO, quantity.value()))?;
 
         let new_qi_value = qi_stock.value() - quantity.value();
         if new_qi_value < rust_decimal::Decimal::ZERO {
-            return Err(MaterialError::InsufficientStock {
-                available: qi_stock.value().to_f64().unwrap_or_default(),
-                required: quantity.value().to_f64().unwrap_or_default(),
-            });
+            return Err(MaterialError::InsufficientStock(
+                qi_stock.value(),
+                quantity.value(),
+            ));
         }
 
         *qi_stock = Quantity::new(new_qi_value, qi_stock.unit().clone())
-            .map_err(|e| MaterialError::ValidationFailed {
-                message: format!("Failed to release from QI: {}", e),
-            })?;
+            .map_err(|e| MaterialError::ValidationFailed(format!("Failed to release from QI: {}", e)))?;
 
         self.increase_stock(quantity)?;
         Ok(())
@@ -820,10 +795,4 @@ pub mod proto {
 // Re-exports
 // =============================================================================
 
-pub use self::material_error::MaterialError;
-
-mod material_error {
-    use super::*;
-
-    // 错误类型已在上面定义
-}
+// MaterialError is already defined at the top of the file

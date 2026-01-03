@@ -25,7 +25,4 @@
 //! };
 //! ```
 
-pub mod gen;
-
-/// 重导出 prelude 模块
-pub use gen::prelude;
+pub mod r#gen;

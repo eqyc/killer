@@ -137,6 +137,9 @@ tonic = { version = "0.14.2", features = ["gzip", "zstd"] }
 # 正确：使用 tonic-prost-build 而不是 tonic-build
 tonic-prost-build = { version = "0.14.2" }
 
+# Tonic-prost: Tonic 的 Prost 编解码支持
+tonic-prost = { version = "0.14.2" }
+
 # Tonic-reflection: gRPC 服务反射，用于调试和服务发现
 tonic-reflection = { version = "0.14.2" }
 

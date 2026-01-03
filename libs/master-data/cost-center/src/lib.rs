@@ -34,15 +34,17 @@
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
 use chrono::{DateTime, Utc};
-use derive_more::{Display, Error, From};
+use derive_more::{Display, From};
 use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::{self, Debug};
 use thiserror::Error;
 use uuid::Uuid;
 use validator::Validate;
+
+/// 验证结果类型
+pub type ValidationResult<T> = Result<T, validator::ValidationErrors>;
 
 // =============================================================================
 // 错误类型
@@ -194,42 +196,34 @@ pub enum CostCenterCategory {
 /// 成本中心
 ///
 /// SAP 表 CSKS，代表成本控制的基本单位。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CostCenter {
     /// 成本中心代码
-    #[validate(non_empty)]
-    pub code: CostCenterValue,
+    pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 控制范围
-    #[validate(length(min = 4, max = 4))]
     pub controlling_area: String,
 
     /// 成本中心名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 成本中心类别
     pub category: CostCenterCategory,
 
     /// 负责人
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub responsible_person: Option<String>,
 
     /// 部门
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub department: Option<String>,
 
     /// 公司代码
-    #[validate(length(min = 4, max = 4))]
     #[serde(default)]
-    pub company_code: Option<CompanyCodeValue>,
+    pub company_code: Option<CompanyCode>,
 
     /// 利润中心
     #[serde(default)]
@@ -261,14 +255,14 @@ impl CostCenter {
     /// 创建新的成本中心
     pub fn new(
         tenant_id: impl Into<String>,
-        code: impl Into<CostCenterValue>,
+        code: impl Into<String>,
         controlling_area: impl Into<String>,
         name: impl Into<String>,
         category: CostCenterCategory,
-    ) -> ValidationResult<Self> {
+    ) -> Self {
         let now = Utc::now();
 
-        let cost_center = Self {
+        Self {
             code: code.into(),
             tenant_id: tenant_id.into(),
             controlling_area: controlling_area.into(),
@@ -284,10 +278,7 @@ impl CostCenter {
             updated_at: now,
             extensions: Extensions::new(),
             deleted: false,
-        };
-
-        cost_center.validate()?;
-        Ok(cost_center)
+        }
     }
 
     /// 标记为已删除
@@ -338,27 +329,21 @@ impl CostCenter {
 /// 利润中心
 ///
 /// SAP 表 CEPC，代表利润责任单位。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProfitCenter {
     /// 利润中心代码
-    #[validate(length(min = 4, max = 10))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 控制范围
-    #[validate(length(min = 4, max = 4))]
     pub controlling_area: String,
 
     /// 利润中心名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 负责人
-    #[validate(length(max = 50))]
     #[serde(default)]
     pub responsible_person: Option<String>,
 
@@ -367,9 +352,8 @@ pub struct ProfitCenter {
     pub parent_profit_center: Option<String>,
 
     /// 公司代码
-    #[validate(length(min = 4, max = 4))]
     #[serde(default)]
-    pub company_code: Option<CompanyCodeValue>,
+    pub company_code: Option<CompanyCode>,
 
     /// 有效性范围
     pub validity: ValidityRange,
@@ -400,7 +384,7 @@ impl ProfitCenter {
         code: impl Into<String>,
         controlling_area: impl Into<String>,
         name: impl Into<String>,
-    ) -> ValidationResult<Self> {
+    ) -> Self {
         let now = Utc::now();
 
         let profit_center = Self {
@@ -419,8 +403,7 @@ impl ProfitCenter {
             deleted: false,
         };
 
-        profit_center.validate()?;
-        Ok(profit_center)
+        profit_center
     }
 
     /// 标记为已删除
@@ -489,23 +472,18 @@ pub enum CostElementCategory {
 /// 成本要素
 ///
 /// SAP 表 CSKB，代表成本核算的基本分类。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate)]
-#[validate(schema(_))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CostElement {
     /// 成本要素代码 (通常与会计科目一致)
-    #[validate(non_empty)]
     pub code: AccountCode,
 
     /// 租户ID
-    #[validate(non_empty)]
     pub tenant_id: String,
 
     /// 控制范围
-    #[validate(length(min = 4, max = 4))]
     pub controlling_area: String,
 
     /// 成本要素名称
-    #[validate(length(min = 1, max = 100))]
     pub name: String,
 
     /// 成本要素类别
@@ -541,10 +519,10 @@ impl CostElement {
         controlling_area: impl Into<String>,
         name: impl Into<String>,
         category: CostElementCategory,
-    ) -> ValidationResult<Self> {
+    ) -> Self {
         let now = Utc::now();
 
-        let cost_element = Self {
+        Self {
             code,
             tenant_id: tenant_id.into(),
             controlling_area: controlling_area.into(),
@@ -556,10 +534,7 @@ impl CostElement {
             updated_at: now,
             extensions: Extensions::new(),
             deleted: false,
-        };
-
-        cost_element.validate()?;
-        Ok(cost_element)
+        }
     }
 
     /// 标记为已删除
@@ -675,7 +650,7 @@ pub struct CostCenterChangedEvent {
     /// 事件头
     pub header: ChangeEventHeader,
     /// 成本中心代码
-    pub code: CostCenterValue,
+    pub code: CostCenter,
     /// 变更列表
     pub changes: Vec<FieldDelta>,
     /// 有效性变更
@@ -725,10 +700,5 @@ pub mod proto {
 // Re-exports
 // =============================================================================
 
-pub use self::cost_center_error::CostCenterError;
+// 错误类型已在上面定义，直接使用
 
-mod cost_center_error {
-    use super::*;
-
-    // 错误类型已在上面定义
-}

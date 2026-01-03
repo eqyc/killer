@@ -9,9 +9,9 @@ repository.workspace = true
 
 [features]
 prost = ["dep:prost", "dep:prost-types"]
-serde = ["dep:serde", "dep:serde_json", "dep:serde_with"]
+serde = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:chrono"]
 validator = ["validator/derive"]
-default = ["prost", "validator"]
+default = ["serde", "validator"]
 
 [dependencies]
 # Workspace
@@ -23,6 +23,7 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 validator = { version = "0.16", features = ["derive"] }
 serde_with = { version = "3.0", optional = true }
+chrono = { version = "0.4", features = ["serde"], optional = true }
 
 # Protobuf & gRPC
 prost = { version = "0.12", optional = true }
@@ -32,7 +33,6 @@ tonic-build = { version = "0.10", optional = true }
 
 # Utilities
 uuid = { version = "1.0", features = ["v4", "serde"] }
-chrono = { version = "0.4", features = ["serde"] }
 derive_more = "0.99"
 strum = { version = "0.25", features = ["derive"] }
 thiserror = "1.0"
@@ -45,4 +45,4 @@ serde_test = "1.0"
 workspace = true
 
 [build-dependencies]
-tonic-build = { version = "0.10", optional = true }
+tonic-build = "0.10"

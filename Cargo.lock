@@ -2766,6 +2766,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tonic 0.14.2",
+ "tonic-prost",
  "tonic-prost-build",
  "validator 0.20.0",
 ]
@@ -2869,14 +2870,19 @@ dependencies = [
 name = "killer-business-partner"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "derive_more 2.1.1",
  "fake",
  "killer-domain-primitives",
  "killer-types",
  "proptest",
+ "prost 0.12.6",
+ "prost-types 0.12.6",
  "serde",
  "serde_json",
  "strum 0.27.2",
+ "thiserror 1.0.69",
+ "uuid",
  "validator 0.20.0",
 ]
 
@@ -2942,9 +2948,13 @@ dependencies = [
  "fake",
  "killer-domain-primitives",
  "killer-types",
+ "prost 0.12.6",
+ "prost-types 0.12.6",
  "serde",
  "serde_json",
  "strum 0.27.2",
+ "thiserror 1.0.69",
+ "uuid",
  "validator 0.20.0",
 ]
 
@@ -3329,14 +3339,19 @@ dependencies = [
 name = "killer-material"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "derive_more 2.1.1",
  "fake",
  "killer-domain-primitives",
+ "killer-organizational-units",
  "killer-types",
  "proptest",
+ "rust_decimal",
  "serde",
  "serde_json",
  "strum 0.27.2",
+ "thiserror 2.0.17",
+ "uuid",
  "validator 0.20.0",
 ]
 

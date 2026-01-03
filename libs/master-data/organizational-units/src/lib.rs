@@ -50,10 +50,9 @@
 #![warn(missing_docs, unreachable_pub)]
 #![cfg_attr(feature = "prost", allow(dead_code))]
 
-use chrono::{Date, DateTime, NaiveDate, Utc};
-use derive_more::{Display, Error, From};
+use chrono::{DateTime, Utc};
+use derive_more::{Display, From};
 use killer_domain_primitives::*;
-use killer_types::{CurrencyCode, ValidationResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::{self, Debug};
@@ -61,6 +60,9 @@ use std::hash::Hash;
 use thiserror::Error;
 use uuid::Uuid;
 use validator::Validate;
+
+/// 验证结果类型
+pub type ValidationResult<T> = Result<T, validator::ValidationErrors>;
 
 // =============================================================================
 // 有效性时间范围
@@ -70,29 +72,24 @@ use validator::Validate;
 ///
 /// 用于支持时间依赖的主数据，如工厂的有效期、成本中心的分配有效期等。
 #[derive(
-    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Display, From,
-)]
-#[display(
-    fmt = "valid from {} to {}",
-    "valid_from",
-    "valid_to.as_ref().map_or(\"unlimited\", |d| d.format(\"%Y-%m-%d\").to_string())"
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, From, Validate,
 )]
 pub struct ValidityRange {
     /// 生效日期
-    pub valid_from: Date<Utc>,
+    pub valid_from: DateTime<Utc>,
     /// 失效日期 (None 表示无结束日期)
     #[serde(default)]
-    pub valid_to: Option<Date<Utc>>,
+    pub valid_to: Option<DateTime<Utc>>,
 }
 
 impl ValidityRange {
     /// 创建新的有效性范围
-    pub fn new(valid_from: Date<Utc>, valid_to: Option<Date<Utc>>) -> Self {
+    pub fn new(valid_from: DateTime<Utc>, valid_to: Option<DateTime<Utc>>) -> Self {
         Self { valid_from, valid_to }
     }
 
     /// 检查在指定日期是否有效
-    pub fn is_valid_at(&self, date: Date<Utc>) -> bool {
+    pub fn is_valid_at(&self, date: DateTime<Utc>) -> bool {
         if date < self.valid_from {
             return false;
         }
@@ -106,7 +103,7 @@ impl ValidityRange {
 
     /// 检查当前是否有效
     pub fn is_currently_valid(&self) -> bool {
-        self.is_valid_at(Utc::now().date())
+        self.is_valid_at(Utc::now())
     }
 
     /// 获取与另一个范围的交集
@@ -128,10 +125,22 @@ impl ValidityRange {
     }
 }
 
+impl std::fmt::Display for ValidityRange {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "valid from {}", self.valid_from)?;
+        if let Some(valid_to) = &self.valid_to {
+            write!(f, " to {}", valid_to.format("%Y-%m-%d"))?;
+        } else {
+            write!(f, " to unlimited")?;
+        }
+        Ok(())
+    }
+}
+
 impl Default for ValidityRange {
     fn default() -> Self {
         Self {
-            valid_from: Utc::now().date(),
+            valid_from: Utc::now(),
             valid_to: None,
         }
     }
@@ -241,14 +250,12 @@ impl From<HashMap<String, serde_json::Value>> for Extensions {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct CompanyCode {
     /// 公司代码 (4位)
-    #[validate(length(min = 4, max = 4, message = "公司代码必须为4位"))]
     pub code: CompanyCodeValue,
 
     /// 租户ID (多租户支持)
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 公司名称
@@ -271,7 +278,6 @@ pub struct CompanyCode {
     pub postal_code: Option<String>,
 
     /// 国家代码 (ISO 3166)
-    #[validate(length(min = 2, max = 3))]
     pub country: CountryCodeValue,
 
     /// 本位币代码 (ISO 4217)
@@ -337,12 +343,9 @@ impl CompanyCode {
     }
 
     /// 更新公司名称
-    pub fn update_name(&mut self, name: impl Into<String>) -> ValidationResult<()> {
-        let name = name.into();
-        validator::ValidateVal::validate_val(&name)?;
-        self.name = name;
+    pub fn update_name(&mut self, name: impl Into<String>) {
+        self.name = name.into();
         self.updated_at = Utc::now();
-        Ok(())
     }
 }
 
@@ -356,18 +359,15 @@ impl CompanyCode {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct Plant {
     /// 工厂代码 (4位)
-    #[validate(length(min = 4, max = 4, message = "工厂代码必须为4位"))]
     pub code: PlantValue,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 所属公司代码 (引用)
-    #[validate(non_empty)]
     pub company_code: CompanyCodeValue,
 
     /// 工厂名称
@@ -380,7 +380,6 @@ pub struct Plant {
     pub city: Option<String>,
 
     /// 国家代码
-    #[validate(length(min = 2, max = 3))]
     pub country: CountryCodeValue,
 
     /// 地区/州
@@ -415,8 +414,8 @@ impl Plant {
         name: impl Into<String>,
         city: impl Into<String>,
         country: impl Into<CountryCodeValue>,
-        valid_from: Option<Date<Utc>>,
-        valid_to: Option<Date<Utc>>,
+        valid_from: Option<DateTime<Utc>>,
+        valid_to: Option<DateTime<Utc>>,
     ) -> ValidationResult<Self> {
         let now = Utc::now();
         let code = code.into();
@@ -431,7 +430,7 @@ impl Plant {
             country,
             region: None,
             validity: ValidityRange::new(
-                valid_from.unwrap_or(now.date()),
+                valid_from.unwrap_or(now),
                 valid_to,
             ),
             created_at: now,
@@ -445,7 +444,7 @@ impl Plant {
     }
 
     /// 检查在指定日期是否有效
-    pub fn is_valid_at(&self, date: Date<Utc>) -> bool {
+    pub fn is_valid_at(&self, date: DateTime<Utc>) -> bool {
         self.validity.is_valid_at(date)
     }
 
@@ -463,8 +462,8 @@ impl Plant {
     /// 更新有效期
     pub fn update_validity(
         &mut self,
-        valid_from: Date<Utc>,
-        valid_to: Option<Date<Utc>>,
+        valid_from: DateTime<Utc>,
+        valid_to: Option<DateTime<Utc>>,
     ) {
         self.validity = ValidityRange::new(valid_from, valid_to);
         self.updated_at = Utc::now();
@@ -481,18 +480,15 @@ impl Plant {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct StorageLocation {
     /// 库存地点代码 (4位)
-    #[validate(length(min = 4, max = 4))]
     pub code: StorageLocationValue,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 所属工厂 (引用)
-    #[validate(non_empty)]
     pub plant_code: PlantValue,
 
     /// 库存地点名称
@@ -561,18 +557,16 @@ impl StorageLocation {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct PurchasingOrganization {
     /// 采购组织代码 (4位)
     #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 所属公司代码
-    #[validate(non_empty)]
     pub company_code: CompanyCodeValue,
 
     /// 采购组织名称
@@ -641,18 +635,16 @@ impl PurchasingOrganization {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct SalesOrganization {
     /// 销售组织代码 (4位)
     #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 所属公司代码
-    #[validate(non_empty)]
     pub company_code: CompanyCodeValue,
 
     /// 销售组织名称
@@ -721,14 +713,13 @@ impl SalesOrganization {
 #[derive(
     Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Validate,
 )]
-#[validate(schema(_))]
 pub struct ControllingArea {
     /// 控制范围代码 (4位)
     #[validate(length(min = 4, max = 4))]
     pub code: String,
 
     /// 租户ID
-    #[validate(non_empty)]
+    #[validate(length(min = 1))]
     pub tenant_id: String,
 
     /// 控制范围名称
@@ -917,22 +908,202 @@ pub struct StorageLocationChangedEvent {
 }
 
 // =============================================================================
-// Protobuf 导出 (条件编译)
+// 值类型定义
 // =============================================================================
 
-#[cfg(feature = "prost")]
-pub mod proto {
-    include!("organizational_units_prost.rs");
+/// 公司代码值对象
+#[derive(
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash,
+)]
+#[serde(transparent)]
+pub struct CompanyCodeValue(String);
+
+impl CompanyCodeValue {
+    /// 创建新的公司代码值
+    pub fn new(code: impl Into<String>) -> Result<Self, OrganizationalUnitsError> {
+        let code = code.into();
+        if code.len() != 4 || !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+            return Err(OrganizationalUnitsError::InvalidCompanyCodeFormat { code });
+        }
+        Ok(Self(code))
+    }
+
+    /// 获取内部字符串
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
-// =============================================================================
-// Re-exports
-// =============================================================================
+impl From<String> for CompanyCodeValue {
+    fn from(s: String) -> Self {
+        Self(s)
+    }
+}
 
-pub use self::organizational_units_error::OrganizationalUnitsError;
+impl From<&str> for CompanyCodeValue {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
+}
 
-mod organizational_units_error {
-    use super::*;
+impl std::fmt::Display for CompanyCodeValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
-    // 错误类型已在上面定义
+/// 工厂代码值对象
+#[derive(
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash,
+)]
+#[serde(transparent)]
+pub struct PlantValue(String);
+
+impl PlantValue {
+    /// 创建新的工厂代码值
+    pub fn new(code: impl Into<String>) -> Result<Self, OrganizationalUnitsError> {
+        let code = code.into();
+        if code.len() != 4 || !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+            return Err(OrganizationalUnitsError::InvalidPlantFormat { code });
+        }
+        Ok(Self(code))
+    }
+
+    /// 获取内部字符串
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl From<String> for PlantValue {
+    fn from(s: String) -> Self {
+        Self(s)
+    }
+}
+
+impl From<&str> for PlantValue {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
+}
+
+impl std::fmt::Display for PlantValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+/// 库存地点代码值对象
+#[derive(
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash,
+)]
+#[serde(transparent)]
+pub struct StorageLocationValue(String);
+
+impl StorageLocationValue {
+    /// 创建新的库存地点代码值
+    pub fn new(code: impl Into<String>) -> Result<Self, OrganizationalUnitsError> {
+        let code = code.into();
+        if code.len() != 4 || !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+            return Err(OrganizationalUnitsError::InvalidStorageLocationFormat { code });
+        }
+        Ok(Self(code))
+    }
+
+    /// 获取内部字符串
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl From<String> for StorageLocationValue {
+    fn from(s: String) -> Self {
+        Self(s)
+    }
+}
+
+impl From<&str> for StorageLocationValue {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
+}
+
+impl std::fmt::Display for StorageLocationValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+/// 国家代码值对象
+#[derive(
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash,
+)]
+#[serde(transparent)]
+pub struct CountryCodeValue(String);
+
+impl CountryCodeValue {
+    /// 创建新的国家代码值
+    pub fn new(code: impl Into<String>) -> Self {
+        Self(code.into().to_uppercase())
+    }
+
+    /// 获取内部字符串
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl From<String> for CountryCodeValue {
+    fn from(s: String) -> Self {
+        Self(s.to_uppercase())
+    }
+}
+
+impl From<&str> for CountryCodeValue {
+    fn from(s: &str) -> Self {
+        Self(s.to_uppercase())
+    }
+}
+
+impl std::fmt::Display for CountryCodeValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+/// 货币代码值对象
+#[derive(
+    Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash,
+)]
+#[serde(transparent)]
+pub struct CurrencyCodeValue(String);
+
+impl CurrencyCodeValue {
+    /// 创建新的货币代码值
+    pub fn new(code: impl Into<String>) -> Self {
+        Self(code.into().to_uppercase())
+    }
+
+    /// 获取内部字符串
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl From<String> for CurrencyCodeValue {
+    fn from(s: String) -> Self {
+        Self(s.to_uppercase())
+    }
+}
+
+impl From<&str> for CurrencyCodeValue {
+    fn from(s: &str) -> Self {
+        Self(s.to_uppercase())
+    }
+}
+
+impl std::fmt::Display for CurrencyCodeValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
 }
