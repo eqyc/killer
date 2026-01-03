@@ -9,10 +9,7 @@
 
 syntax = "proto3";
 
-package killer.common.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.common.v1";
+package common.v1;
 
 import "google/protobuf/timestamp.proto";
 
@@ -21,15 +18,15 @@ import "google/protobuf/timestamp.proto";
 // =============================================================================
 service APIGatewayService {
   // 代理请求
-  rpc ProxyRequest(ProxyRequestMessage) returns (ProxyResponseMessage);
+  rpc ProxyRequest(ProxyRequestRequest) returns (ProxyRequestResponse);
   // 健康检查
   rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
 }
 
 // =============================================================================
-// ProxyRequestMessage - 代理请求消息
+// ProxyRequestRequest - 代理请求消息
 // =============================================================================
-message ProxyRequestMessage {
+message ProxyRequestRequest {
   // HTTP方法（GET/POST/PUT/DELETE等）
   string METHOD = 1;
   // 请求路径
@@ -55,9 +52,9 @@ message ProxyRequestMessage {
 }
 
 // =============================================================================
-// ProxyResponseMessage - 代理响应消息
+// ProxyRequestResponse - 代理响应消息
 // =============================================================================
-message ProxyResponseMessage {
+message ProxyRequestResponse {
   // HTTP状态码
   int32 STATUS_CODE = 1;
   // 响应头

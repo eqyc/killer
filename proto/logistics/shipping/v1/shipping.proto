@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.logistics.shipping.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.logistics.shipping.v1";
+package logistics.shipping.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -78,7 +75,7 @@ message Delivery {
   // 承运商，对应TDLNR
   string TDLNR = 11;
   // 总毛重，对应BTGEW
-  killer.common.v1.Quantity BTGEW = 12;
+  common.v1.Quantity BTGEW = 12;
   // 重量单位，对应GEWEI
   string GEWEI = 13;
   // 删除标识，对应LOEKZ
@@ -88,7 +85,7 @@ message Delivery {
   // 来源系统标识
   string SRC_SYSTEM = 16;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 17;
+  common.v1.AuditInfo audit_info = 17;
   // 行项目列表
   repeated DeliveryItem items = 18;
 }
@@ -107,7 +104,7 @@ message DeliveryItem {
   // 库存地点，对应LGORT
   string LGORT = 4;
   // 交货数量，对应LFIMG
-  killer.common.v1.Quantity LFIMG = 5;
+  common.v1.Quantity LFIMG = 5;
   // 销售单位，对应VRKME
   string VRKME = 6;
   // 基本计量单位，对应MEINS
@@ -119,11 +116,11 @@ message DeliveryItem {
   // 参考销售订单行号，对应VGPOS
   int32 VGPOS = 10;
   // 毛重，对应BRGEW
-  killer.common.v1.Quantity BRGEW = 11;
+  common.v1.Quantity BRGEW = 11;
   // 净重，对应NTGEW
-  killer.common.v1.Quantity NTGEW = 12;
+  common.v1.Quantity NTGEW = 12;
   // 体积，对应VOLUM
-  killer.common.v1.Quantity VOLUM = 13;
+  common.v1.Quantity VOLUM = 13;
   // 发货状态，对应WBSTA
   string WBSTA = 14;
   // 删除标识，对应LOEKZ
@@ -191,7 +188,7 @@ message ListDeliveriesRequest {
   // 发货状态
   string WBSTK = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询交货单列表响应
@@ -199,7 +196,7 @@ message ListDeliveriesResponse {
   // 交货单列表
   repeated Delivery deliveries = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 过账发货请求

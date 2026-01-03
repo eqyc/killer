@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.common.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.common.v1";
+package common.v1;
 
 // =============================================================================
 // SortOrder - 排序方向

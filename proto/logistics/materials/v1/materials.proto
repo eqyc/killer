@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.logistics.materials.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.logistics.materials.v1";
+package logistics.materials.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -76,7 +73,7 @@ message MaterialDocument {
   // 来源系统标识
   string SRC_SYSTEM = 12;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 13;
+  common.v1.AuditInfo audit_info = 13;
   // 行项目列表
   repeated MaterialDocumentItem items = 14;
 }
@@ -97,7 +94,7 @@ message MaterialDocumentItem {
   // 库存地点，对应LGORT
   string LGORT = 5;
   // 数量，对应MENGE
-  killer.common.v1.Quantity MENGE = 6;
+  common.v1.Quantity MENGE = 6;
   // 基本计量单位，对应MEINS
   string MEINS = 7;
   // 借贷标识，对应SHKZG
@@ -119,7 +116,7 @@ message MaterialDocumentItem {
   // 行项目文本，对应SGTXT
   string SGTXT = 16;
   // 本位币金额，对应DMBTR
-  killer.common.v1.Money DMBTR = 17;
+  common.v1.Money DMBTR = 17;
 }
 
 // =============================================================================
@@ -177,7 +174,7 @@ message ListMaterialDocumentsRequest {
   // 过账日期止
   google.protobuf.Timestamp BUDAT_TO = 5;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 6;
+  common.v1.PageRequest page_request = 6;
 }
 
 // 查询物料凭证列表响应
@@ -185,7 +182,7 @@ message ListMaterialDocumentsResponse {
   // 物料凭证列表
   repeated MaterialDocument material_documents = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 冲销物料凭证请求

@@ -1,4 +1,4 @@
-// 文件路径: project-rd/project/v1/project.proto
+// 文件路径: project_rd/project/v1/project.proto
 // =============================================================================
 // KILLER ERP - 项目管理服务 (PS)
 // =============================================================================
@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.project_rd.project.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.project_rd.project.v1";
+package project_rd.project.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -75,7 +72,7 @@ message Project {
   // 删除标识，对应LOEKZ
   string LOEKZ = 18;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 19;
+  common.v1.AuditInfo audit_info = 19;
   // WBS元素列表
   repeated WBSElement items = 20;
 }
@@ -112,13 +109,13 @@ message WBSElement {
   // 计划完成日期，对应PLSEZ
   google.protobuf.Timestamp PLSEZ = 13;
   // 计划工时
-  killer.common.v1.Quantity PLAN_HOURS = 14;
+  common.v1.Quantity PLAN_HOURS = 14;
   // 实际工时
-  killer.common.v1.Quantity ACTUAL_HOURS = 15;
+  common.v1.Quantity ACTUAL_HOURS = 15;
   // 计划成本
-  killer.common.v1.Money PLAN_COST = 16;
+  common.v1.Money PLAN_COST = 16;
   // 实际成本
-  killer.common.v1.Money ACTUAL_COST = 17;
+  common.v1.Money ACTUAL_COST = 17;
   // 系统状态
   string SYSST = 18;
   // 用户状态
@@ -184,7 +181,7 @@ message ListProjectsRequest {
   // 计划开始日期止
   google.protobuf.Timestamp PLFAZ_TO = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询项目列表响应
@@ -192,7 +189,7 @@ message ListProjectsResponse {
   // 项目列表
   repeated Project projects = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 创建WBS元素请求

@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.commercial.crm.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.commercial.crm.v1";
+package commercial.crm.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -67,9 +64,9 @@ message CRMOrder {
   // 货币代码
   string CURRENCY = 14;
   // 预期金额
-  killer.common.v1.Money EXPECTED_VALUE = 15;
+  common.v1.Money EXPECTED_VALUE = 15;
   // 实际金额
-  killer.common.v1.Money ACTUAL_VALUE = 16;
+  common.v1.Money ACTUAL_VALUE = 16;
   // 成功概率（百分比）
   int32 PROBABILITY = 17;
   // 预计成交日期
@@ -77,7 +74,7 @@ message CRMOrder {
   // 删除标识，对应LOEKZ
   string LOEKZ = 19;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 20;
+  common.v1.AuditInfo audit_info = 20;
   // 行项目列表
   repeated CRMOrderItem items = 21;
 }
@@ -94,11 +91,11 @@ message CRMOrderItem {
   // 产品描述
   string PRODUCT_DESC = 3;
   // 数量
-  killer.common.v1.Quantity QUANTITY = 4;
+  common.v1.Quantity QUANTITY = 4;
   // 单位
   string UOM = 5;
   // 净价
-  killer.common.v1.Money NET_VALUE = 6;
+  common.v1.Money NET_VALUE = 6;
   // 货币代码
   string CURRENCY = 7;
   // 状态
@@ -134,7 +131,7 @@ message CreateCRMOrderRequest {
   // 货币代码
   string CURRENCY = 9;
   // 预期金额
-  killer.common.v1.Money EXPECTED_VALUE = 10;
+  common.v1.Money EXPECTED_VALUE = 10;
   // 预计成交日期
   google.protobuf.Timestamp EXPECTED_CLOSE_DATE = 11;
   // 行项目列表
@@ -174,7 +171,7 @@ message ListCRMOrdersRequest {
   // 创建日期止
   google.protobuf.Timestamp CREATED_TO = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询CRM订单列表响应
@@ -182,7 +179,7 @@ message ListCRMOrdersResponse {
   // CRM订单列表
   repeated CRMOrder crm_orders = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 更新CRM订单状态请求

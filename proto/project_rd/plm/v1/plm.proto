@@ -1,4 +1,4 @@
-// 文件路径: project-rd/plm/v1/plm.proto
+// 文件路径: project_rd/plm/v1/plm.proto
 // =============================================================================
 // KILLER ERP - 产品生命周期管理服务 (PLM)
 // =============================================================================
@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.project_rd.plm.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.project_rd.plm.v1";
+package project_rd.plm.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -51,7 +48,7 @@ message BillOfMaterial {
   // 工厂，对应WERKS
   string WERKS = 6;
   // 基本数量，对应BMENG
-  killer.common.v1.Quantity BMENG = 7;
+  common.v1.Quantity BMENG = 7;
   // 基本计量单位，对应BMEIN
   string BMEIN = 8;
   // 有效起始日期，对应DATEFR
@@ -65,7 +62,7 @@ message BillOfMaterial {
   // 删除标识，对应LOEKZ
   string LOEKZ = 13;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 14;
+  common.v1.AuditInfo audit_info = 14;
   // BOM项目列表
   repeated BOMItem items = 15;
 }
@@ -84,7 +81,7 @@ message BOMItem {
   // 项目类别，对应POSTP
   string POSTP = 4;
   // 组件数量，对应MENGE
-  killer.common.v1.Quantity MENGE = 5;
+  common.v1.Quantity MENGE = 5;
   // 组件单位，对应MEINS
   string MEINS = 6;
   // 有效起始日期，对应DATEFR
@@ -132,7 +129,7 @@ message ChangeOrder {
   // 删除标识
   string LOEKZ = 10;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 11;
+  common.v1.AuditInfo audit_info = 11;
 }
 
 // =============================================================================
@@ -150,7 +147,7 @@ message CreateBOMRequest {
   // 工厂
   string WERKS = 4;
   // 基本数量
-  killer.common.v1.Quantity BMENG = 5;
+  common.v1.Quantity BMENG = 5;
   // 有效起始日期
   google.protobuf.Timestamp DATEFR = 6;
   // BOM文本
@@ -193,7 +190,7 @@ message ListBOMsRequest {
   // BOM状态
   string STLST = 4;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 5;
+  common.v1.PageRequest page_request = 5;
 }
 
 // 查询BOM列表响应
@@ -201,7 +198,7 @@ message ListBOMsResponse {
   // BOM列表
   repeated BillOfMaterial boms = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 创建工程变更单请求

@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.procurement.purchasing.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.procurement.purchasing.v1";
+package procurement.purchasing.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -78,7 +75,7 @@ message PurchaseOrder {
   // 采购合同号，对应KDATB
   string KONNR = 11;
   // 总净值，对应RLWRT
-  killer.common.v1.Money RLWRT = 12;
+  common.v1.Money RLWRT = 12;
   // 状态，对应STATU
   string STATU = 13;
   // 删除标识，对应LOEKZ
@@ -86,7 +83,7 @@ message PurchaseOrder {
   // 来源系统标识
   string SRC_SYSTEM = 15;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 16;
+  common.v1.AuditInfo audit_info = 16;
   // 行项目列表
   repeated PurchaseOrderItem items = 17;
 }
@@ -107,15 +104,15 @@ message PurchaseOrderItem {
   // 库存地点，对应LGORT
   string LGORT = 5;
   // 采购订单数量，对应MENGE
-  killer.common.v1.Quantity MENGE = 6;
+  common.v1.Quantity MENGE = 6;
   // 订单单位，对应MEINS
   string MEINS = 7;
   // 净价，对应NETPR
-  killer.common.v1.Money NETPR = 8;
+  common.v1.Money NETPR = 8;
   // 价格单位，对应PEINH
   int32 PEINH = 9;
   // 净值，对应NETWR
-  killer.common.v1.Money NETWR = 10;
+  common.v1.Money NETWR = 10;
   // 税码，对应MWSKZ
   string MWSKZ = 11;
   // 交货日期，对应EINDT
@@ -125,9 +122,9 @@ message PurchaseOrderItem {
   // 成本中心，对应KOSTL
   string KOSTL = 14;
   // 已收货数量，对应WEMNG
-  killer.common.v1.Quantity WEMNG = 15;
+  common.v1.Quantity WEMNG = 15;
   // 已开票数量，对应REMNG
-  killer.common.v1.Quantity REMNG = 16;
+  common.v1.Quantity REMNG = 16;
   // 删除标识，对应LOEKZ
   string LOEKZ = 17;
   // 采购申请号，对应BANFN
@@ -201,7 +198,7 @@ message ListPurchaseOrdersRequest {
   // 状态
   string STATU = 7;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 8;
+  common.v1.PageRequest page_request = 8;
 }
 
 // 查询采购订单列表响应
@@ -209,7 +206,7 @@ message ListPurchaseOrdersResponse {
   // 采购订单列表
   repeated PurchaseOrder purchase_orders = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 确认采购订单请求

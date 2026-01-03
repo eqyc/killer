@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.logistics.warehouse.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.logistics.warehouse.v1";
+package logistics.warehouse.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -49,9 +46,9 @@ message StorageBinStock {
   // 仓储类型，对应LGTYP
   string LGTYP = 5;
   // 总库存量，对应GESME
-  killer.common.v1.Quantity GESME = 6;
+  common.v1.Quantity GESME = 6;
   // 可用库存量，对应VERME
-  killer.common.v1.Quantity VERME = 7;
+  common.v1.Quantity VERME = 7;
   // 基本计量单位，对应MEINS
   string MEINS = 8;
   // 批次号，对应CHARG
@@ -67,7 +64,7 @@ message StorageBinStock {
   // 删除标识，对应LOEKZ
   string LOEKZ = 14;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 15;
+  common.v1.AuditInfo audit_info = 15;
 }
 
 // =============================================================================
@@ -94,9 +91,9 @@ message WarehouseTask {
   // 目标仓位，对应NLPLA
   string NLPLA = 9;
   // 数量，对应VSOLA
-  killer.common.v1.Quantity VSOLA = 10;
+  common.v1.Quantity VSOLA = 10;
   // 已确认数量，对应NISTA
-  killer.common.v1.Quantity NISTA = 11;
+  common.v1.Quantity NISTA = 11;
   // 基本计量单位，对应MEINS
   string MEINS = 12;
   // 批次号，对应CHARG
@@ -110,7 +107,7 @@ message WarehouseTask {
   // 删除标识，对应LOEKZ
   string LOEKZ = 17;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 18;
+  common.v1.AuditInfo audit_info = 18;
   // 任务行项目
   repeated WarehouseTaskItem items = 19;
 }
@@ -128,9 +125,9 @@ message WarehouseTaskItem {
   // 目标仓位
   string NLPLA = 4;
   // 计划数量
-  killer.common.v1.Quantity VSOLA = 5;
+  common.v1.Quantity VSOLA = 5;
   // 确认数量
-  killer.common.v1.Quantity NISTA = 6;
+  common.v1.Quantity NISTA = 6;
   // 批次号
   string CHARG = 7;
   // 处理单元
@@ -162,7 +159,7 @@ message CreateWarehouseTaskRequest {
   // 目标仓位
   string NLPLA = 7;
   // 数量
-  killer.common.v1.Quantity VSOLA = 8;
+  common.v1.Quantity VSOLA = 8;
   // 批次号
   string CHARG = 9;
   // 参考凭证号
@@ -202,7 +199,7 @@ message ListWarehouseTasksRequest {
   // 任务状态
   string PTEFB = 4;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 5;
+  common.v1.PageRequest page_request = 5;
 }
 
 // 查询仓库任务列表响应
@@ -210,7 +207,7 @@ message ListWarehouseTasksResponse {
   // 仓库任务列表
   repeated WarehouseTask warehouse_tasks = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 获取仓位库存请求

@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.commercial.sales.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.commercial.sales.v1";
+package commercial.sales.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -76,7 +73,7 @@ message SalesOrder {
   // 货币代码，对应WAERK
   string WAERK = 9;
   // 净值，对应NETWR
-  killer.common.v1.Money NETWR = 10;
+  common.v1.Money NETWR = 10;
   // 付款条款，对应ZTERM
   string ZTERM = 11;
   // 国际贸易条款，对应INCO1
@@ -92,7 +89,7 @@ message SalesOrder {
   // 来源系统标识
   string SRC_SYSTEM = 17;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 18;
+  common.v1.AuditInfo audit_info = 18;
   // 行项目列表
   repeated SalesOrderItem items = 19;
 }
@@ -109,7 +106,7 @@ message SalesOrderItem {
   // 物料描述，对应ARKTX
   string ARKTX = 3;
   // 订单数量，对应KWMENG
-  killer.common.v1.Quantity KWMENG = 4;
+  common.v1.Quantity KWMENG = 4;
   // 销售单位，对应VRKME
   string VRKME = 5;
   // 基本计量单位，对应MEINS
@@ -119,17 +116,17 @@ message SalesOrderItem {
   // 库存地点，对应LGORT
   string LGORT = 8;
   // 净价，对应NETPR
-  killer.common.v1.Money NETPR = 9;
+  common.v1.Money NETPR = 9;
   // 净值，对应NETWR
-  killer.common.v1.Money NETWR = 10;
+  common.v1.Money NETWR = 10;
   // 税码，对应MWSKZ
   string MWSKZ = 11;
   // 请求交货日期，对应EDATU
   google.protobuf.Timestamp EDATU = 12;
   // 已交货数量，对应KZMNGA（待确认）
-  killer.common.v1.Quantity LFMNG = 13;
+  common.v1.Quantity LFMNG = 13;
   // 已开票数量，对应FKIMG（待确认）
-  killer.common.v1.Quantity FKIMG = 14;
+  common.v1.Quantity FKIMG = 14;
   // 参考凭证号（报价单等），对应VGBEL
   string VGBEL = 15;
   // 参考凭证行号，对应VGPOS
@@ -201,7 +198,7 @@ message ListSalesOrdersRequest {
   // 凭证状态
   string GBSTK = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询销售订单列表响应
@@ -209,7 +206,7 @@ message ListSalesOrdersResponse {
   // 销售订单列表
   repeated SalesOrder sales_orders = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 确认销售订单请求

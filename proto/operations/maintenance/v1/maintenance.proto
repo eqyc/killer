@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.operations.maintenance.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.operations.maintenance.v1";
+package operations.maintenance.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -90,7 +87,7 @@ message MaintenanceOrder {
   // 删除标识，对应LOEKZ
   string LOEKZ = 17;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 18;
+  common.v1.AuditInfo audit_info = 18;
   // 订单行项目（工序）
   repeated MaintenanceOrderItem items = 19;
 }
@@ -108,9 +105,9 @@ message MaintenanceOrderItem {
   // 描述，对应LTXA1
   string LTXA1 = 4;
   // 计划工时，对应ARBEI
-  killer.common.v1.Quantity ARBEI = 5;
+  common.v1.Quantity ARBEI = 5;
   // 实际工时，对应ISMNW
-  killer.common.v1.Quantity ISMNW = 6;
+  common.v1.Quantity ISMNW = 6;
   // 计划开始日期，对应SSEDD
   google.protobuf.Timestamp SSEDD = 7;
   // 计划完成日期，对应SSEDA
@@ -153,7 +150,7 @@ message MaintenanceNotification {
   // 删除标识，对应LOEKZ
   string LOEKZ = 13;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 14;
+  common.v1.AuditInfo audit_info = 14;
 }
 
 // =============================================================================
@@ -217,7 +214,7 @@ message ListMaintenanceOrdersRequest {
   // 计划开始日期止
   google.protobuf.Timestamp GSTRP_TO = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询维护订单列表响应
@@ -225,7 +222,7 @@ message ListMaintenanceOrdersResponse {
   // 维护订单列表
   repeated MaintenanceOrder maintenance_orders = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 创建维护通知请求

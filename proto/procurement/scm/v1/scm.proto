@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.procurement.scm.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.procurement.scm.v1";
+package procurement.scm.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -47,15 +44,15 @@ message SupplyPlan {
   // 计划日期，对应PLAN_DATE
   google.protobuf.Timestamp PLAN_DATE = 4;
   // 需求数量
-  killer.common.v1.Quantity DEMAND_QTY = 5;
+  common.v1.Quantity DEMAND_QTY = 5;
   // 供应数量
-  killer.common.v1.Quantity SUPPLY_QTY = 6;
+  common.v1.Quantity SUPPLY_QTY = 6;
   // 预计库存
-  killer.common.v1.Quantity PROJECTED_STOCK = 7;
+  common.v1.Quantity PROJECTED_STOCK = 7;
   // 安全库存
-  killer.common.v1.Quantity SAFETY_STOCK = 8;
+  common.v1.Quantity SAFETY_STOCK = 8;
   // 再订货点
-  killer.common.v1.Quantity REORDER_POINT = 9;
+  common.v1.Quantity REORDER_POINT = 9;
   // 计划版本
   string VERSION = 10;
   // 计划类型（需求计划/供应计划）
@@ -71,7 +68,7 @@ message SupplyPlan {
   // 删除标识，对应LOEKZ
   string LOEKZ = 16;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 17;
+  common.v1.AuditInfo audit_info = 17;
   // 计划行项目
   repeated SupplyPlanItem items = 18;
 }
@@ -91,15 +88,15 @@ message SupplyPlanItem {
   // 需求来源凭证号
   string SOURCE_DOC = 5;
   // 需求数量
-  killer.common.v1.Quantity DEMAND_QTY = 6;
+  common.v1.Quantity DEMAND_QTY = 6;
   // 供应类型（采购订单/生产订单等）
   string SUPPLY_TYPE = 7;
   // 供应来源凭证号
   string SUPPLY_DOC = 8;
   // 供应数量
-  killer.common.v1.Quantity SUPPLY_QTY = 9;
+  common.v1.Quantity SUPPLY_QTY = 9;
   // 可用库存
-  killer.common.v1.Quantity AVAIL_QTY = 10;
+  common.v1.Quantity AVAIL_QTY = 10;
   // 缺料标识
   bool SHORTAGE = 11;
   // 备注
@@ -159,7 +156,7 @@ message ListSupplyPlansRequest {
   // 状态
   string STATUS = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询供应链计划列表响应
@@ -167,7 +164,7 @@ message ListSupplyPlansResponse {
   // 供应链计划列表
   repeated SupplyPlan supply_plans = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 执行MRP运行请求

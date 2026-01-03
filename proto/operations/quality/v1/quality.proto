@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.operations.quality.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.operations.quality.v1";
+package operations.quality.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -51,7 +48,7 @@ message InspectionLot {
   // 批次号，对应CHARG
   string CHARG = 6;
   // 检验批数量，对应LOSMENGE
-  killer.common.v1.Quantity LOSMENGE = 7;
+  common.v1.Quantity LOSMENGE = 7;
   // 基本计量单位，对应MENGENEINH
   string MENGENEINH = 8;
   // 供应商，对应LIFNR
@@ -69,9 +66,9 @@ message InspectionLot {
   // 使用决策，对应VCODE
   string VCODE = 15;
   // 接受数量，对应MGVGBZ
-  killer.common.v1.Quantity MGVGBZ = 16;
+  common.v1.Quantity MGVGBZ = 16;
   // 拒收数量，对应MGVGBX
-  killer.common.v1.Quantity MGVGBX = 17;
+  common.v1.Quantity MGVGBX = 17;
   // 检验开始日期，对应PASTRTERM
   google.protobuf.Timestamp PASTRTERM = 18;
   // 检验结束日期，对应PAENDTERM
@@ -79,7 +76,7 @@ message InspectionLot {
   // 删除标识，对应LOEKZ
   string LOEKZ = 20;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 21;
+  common.v1.AuditInfo audit_info = 21;
   // 检验项目列表
   repeated InspectionLotItem items = 22;
 }
@@ -95,11 +92,11 @@ message InspectionLotItem {
   // 检验特性描述
   string MERKTXT = 3;
   // 抽样数量
-  killer.common.v1.Quantity STICHPROBE = 4;
+  common.v1.Quantity STICHPROBE = 4;
   // 合格数量
-  killer.common.v1.Quantity PASS_QTY = 5;
+  common.v1.Quantity PASS_QTY = 5;
   // 不合格数量
-  killer.common.v1.Quantity FAIL_QTY = 6;
+  common.v1.Quantity FAIL_QTY = 6;
   // 检验方法，对应PMETHODE
   string PMETHODE = 7;
   // 目标值
@@ -133,7 +130,7 @@ message CreateInspectionLotRequest {
   // 批次号
   string CHARG = 5;
   // 检验批数量
-  killer.common.v1.Quantity LOSMENGE = 6;
+  common.v1.Quantity LOSMENGE = 6;
   // 供应商
   string LIFNR = 7;
   // 采购订单号
@@ -177,7 +174,7 @@ message ListInspectionLotsRequest {
   // 检验开始日期止
   google.protobuf.Timestamp PASTRTERM_TO = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询质检批列表响应
@@ -185,7 +182,7 @@ message ListInspectionLotsResponse {
   // 质检批列表
   repeated InspectionLot inspection_lots = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 记录检验结果请求
@@ -195,9 +192,9 @@ message RecordInspectionResultRequest {
   // 使用决策代码
   string VCODE = 2;
   // 接受数量
-  killer.common.v1.Quantity MGVGBZ = 3;
+  common.v1.Quantity MGVGBZ = 3;
   // 拒收数量
-  killer.common.v1.Quantity MGVGBX = 4;
+  common.v1.Quantity MGVGBX = 4;
   // 检验项目结果
   repeated InspectionLotItem results = 5;
 }

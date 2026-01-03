@@ -1,4 +1,4 @@
-// 文件路径: commercial/field-service/v1/field_service.proto
+// 文件路径: commercial/field_service/v1/field_service.proto
 // =============================================================================
 // KILLER ERP - 现场服务管理 (FSM)
 // =============================================================================
@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.commercial.field_service.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.commercial.field_service.v1";
+package commercial.field_service.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -73,7 +70,7 @@ message ServiceOrder {
   // 联系电话
   string CONTACT_PHONE = 9;
   // 服务地点
-  killer.common.v1.Address SERVICE_ADDRESS = 10;
+  common.v1.Address SERVICE_ADDRESS = 10;
   // 计划服务日期
   google.protobuf.Timestamp SCHEDULED_DATE = 11;
   // 预计开始时间
@@ -89,15 +86,15 @@ message ServiceOrder {
   // 技术人员姓名
   string TECHNICIAN_NAME = 17;
   // 预估费用
-  killer.common.v1.Money ESTIMATED_COST = 18;
+  common.v1.Money ESTIMATED_COST = 18;
   // 实际费用
-  killer.common.v1.Money ACTUAL_COST = 19;
+  common.v1.Money ACTUAL_COST = 19;
   // 状态
   string STATUS = 20;
   // 删除标识
   string LOEKZ = 21;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 22;
+  common.v1.AuditInfo audit_info = 22;
   // 服务项目列表
   repeated ServiceOrderItem items = 23;
 }
@@ -115,17 +112,17 @@ message ServiceOrderItem {
   // 描述
   string DESCRIPTION = 4;
   // 数量
-  killer.common.v1.Quantity QUANTITY = 5;
+  common.v1.Quantity QUANTITY = 5;
   // 单位
   string UOM = 6;
   // 单价
-  killer.common.v1.Money UNIT_PRICE = 7;
+  common.v1.Money UNIT_PRICE = 7;
   // 总价
-  killer.common.v1.Money TOTAL_PRICE = 8;
+  common.v1.Money TOTAL_PRICE = 8;
   // 货币代码
   string CURRENCY = 9;
   // 工时（小时）
-  killer.common.v1.Quantity DURATION = 10;
+  common.v1.Quantity DURATION = 10;
   // 状态
   string STATUS = 11;
   // 备注
@@ -153,7 +150,7 @@ message CreateServiceOrderRequest {
   // 联系电话
   string CONTACT_PHONE = 7;
   // 服务地点
-  killer.common.v1.Address SERVICE_ADDRESS = 8;
+  common.v1.Address SERVICE_ADDRESS = 8;
   // 计划服务日期
   google.protobuf.Timestamp SCHEDULED_DATE = 9;
   // 服务项目列表
@@ -195,7 +192,7 @@ message ListServiceOrdersRequest {
   // 计划服务日期止
   google.protobuf.Timestamp SCHEDULED_TO = 7;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 8;
+  common.v1.PageRequest page_request = 8;
 }
 
 // 查询服务订单列表响应
@@ -203,7 +200,7 @@ message ListServiceOrdersResponse {
   // 服务订单列表
   repeated ServiceOrder service_orders = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 分配技术人员请求

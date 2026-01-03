@@ -1,4 +1,4 @@
-// 文件路径: human-capital/hr/v1/hr.proto
+// 文件路径: human_capital/hr/v1/hr.proto
 // =============================================================================
 // KILLER ERP - 人力资源管理服务 (HCM-PA)
 // =============================================================================
@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.human_capital.hr.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.human_capital.hr.v1";
+package human_capital.hr.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -83,7 +80,7 @@ message Employee {
   // 删除标识，对应LOEKZ
   string LOEKZ = 22;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 23;
+  common.v1.AuditInfo audit_info = 23;
   // 信息类型记录列表
   repeated EmployeeInfoRecord records = 24;
 }
@@ -176,7 +173,7 @@ message ListEmployeesRequest {
   // 在职状态（在职/离职）
   string STATUS = 6;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 7;
+  common.v1.PageRequest page_request = 7;
 }
 
 // 查询员工列表响应
@@ -184,7 +181,7 @@ message ListEmployeesResponse {
   // 员工列表
   repeated Employee employees = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 更新组织分配请求

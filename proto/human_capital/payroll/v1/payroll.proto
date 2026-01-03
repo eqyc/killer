@@ -1,4 +1,4 @@
-// 文件路径: human-capital/payroll/v1/payroll.proto
+// 文件路径: human_capital/payroll/v1/payroll.proto
 // =============================================================================
 // KILLER ERP - 薪酬管理服务 (HCM-PY)
 // =============================================================================
@@ -10,10 +10,7 @@
 
 syntax = "proto3";
 
-package killer.human_capital.payroll.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.human_capital.payroll.v1";
+package human_capital.payroll.v1;
 
 import "common/v1/types.proto";
 import "common/v1/pagination.proto";
@@ -57,13 +54,13 @@ message PayrollRecord {
   // 工资级别，对应TRFST
   string TRFST = 9;
   // 年薪，对应ANSAL
-  killer.common.v1.Money ANSAL = 10;
+  common.v1.Money ANSAL = 10;
   // 货币代码，对应WAESSION
   string WAERS = 11;
   // 删除标识，对应LOEKZ
   string LOEKZ = 12;
   // 审计信息
-  killer.common.v1.AuditInfo audit_info = 13;
+  common.v1.AuditInfo audit_info = 13;
   // 工资类型明细
   repeated PayrollItem items = 14;
 }
@@ -80,13 +77,13 @@ message PayrollItem {
   // 工资类型描述
   string LGTXT = 3;
   // 金额，对应BETRG
-  killer.common.v1.Money BETRG = 4;
+  common.v1.Money BETRG = 4;
   // 数量/工时，对应ANZHL
-  killer.common.v1.Quantity ANZHL = 5;
+  common.v1.Quantity ANZHL = 5;
   // 单位
   string EINHT = 6;
   // 计算基数
-  killer.common.v1.Money BASE = 7;
+  common.v1.Money BASE = 7;
   // 百分比
   string RATE = 8;
   // 开始日期
@@ -111,15 +108,15 @@ message PayrollResult {
   // 薪资月份
   int32 PAYROLL_MONTH = 4;
   // 应发工资
-  killer.common.v1.Money GROSS_PAY = 5;
+  common.v1.Money GROSS_PAY = 5;
   // 扣款合计
-  killer.common.v1.Money DEDUCTIONS = 6;
+  common.v1.Money DEDUCTIONS = 6;
   // 社保个人部分
-  killer.common.v1.Money SOCIAL_INSURANCE = 7;
+  common.v1.Money SOCIAL_INSURANCE = 7;
   // 个人所得税
-  killer.common.v1.Money INCOME_TAX = 8;
+  common.v1.Money INCOME_TAX = 8;
   // 实发工资
-  killer.common.v1.Money NET_PAY = 9;
+  common.v1.Money NET_PAY = 9;
   // 货币代码
   string WAERS = 10;
   // 发放状态
@@ -149,7 +146,7 @@ message CreatePayrollRecordRequest {
   // 工资级别
   string TRFST = 6;
   // 年薪
-  killer.common.v1.Money ANSAL = 7;
+  common.v1.Money ANSAL = 7;
   // 货币代码
   string WAERS = 8;
   // 工资类型明细
@@ -185,7 +182,7 @@ message ListPayrollRecordsRequest {
   // 生效日期止
   google.protobuf.Timestamp BEGDA_TO = 3;
   // 分页请求
-  killer.common.v1.PageRequest page_request = 4;
+  common.v1.PageRequest page_request = 4;
 }
 
 // 查询薪资记录列表响应
@@ -193,7 +190,7 @@ message ListPayrollRecordsResponse {
   // 薪资记录列表
   repeated PayrollRecord payroll_records = 1;
   // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  common.v1.PageInfo page_info = 2;
 }
 
 // 执行薪资计算请求
