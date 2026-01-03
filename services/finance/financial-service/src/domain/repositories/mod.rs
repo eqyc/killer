@@ -27,6 +27,8 @@ pub trait GLAccountRepository: Send + Sync {
 pub trait JournalEntryRepository: Send + Sync {
     async fn find_by_id(&self, company_code: &CompanyCode, document_number: &DocumentNumber, fiscal_year: &str) -> Option<JournalEntry>;
     async fn find_all(&self, company_code: &CompanyCode, fiscal_year: &str) -> Vec<JournalEntry>;
+    async fn find_by_status(&self, company_code: &CompanyCode, fiscal_year: &str, status: i32) -> Vec<JournalEntry>;
+    async fn find_posted_in_period(&self, company_code: &CompanyCode, posting_date_from: chrono::NaiveDate, posting_date_to: chrono::NaiveDate) -> Vec<JournalEntry>;
     async fn save(&self, entry: &JournalEntry) -> Result<(), String>;
     async fn delete(&self, company_code: &CompanyCode, document_number: &DocumentNumber, fiscal_year: &str) -> Result<(), String>;
 }
@@ -36,6 +38,8 @@ pub trait JournalEntryRepository: Send + Sync {
 pub trait CustomerRepository: Send + Sync {
     async fn find_by_id(&self, company_code: &CompanyCode, customer_id: &str) -> Option<Customer>;
     async fn find_all(&self, company_code: &CompanyCode) -> Vec<Customer>;
+    async fn find_by_status(&self, company_code: &CompanyCode, status: i32) -> Vec<Customer>;
+    async fn find_by_account_group(&self, company_code: &CompanyCode, account_group: &str) -> Vec<Customer>;
     async fn save(&self, customer: &Customer) -> Result<(), String>;
     async fn delete(&self, company_code: &CompanyCode, customer_id: &str) -> Result<(), String>;
 }
@@ -45,6 +49,8 @@ pub trait CustomerRepository: Send + Sync {
 pub trait VendorRepository: Send + Sync {
     async fn find_by_id(&self, company_code: &CompanyCode, vendor_id: &str) -> Option<Vendor>;
     async fn find_all(&self, company_code: &CompanyCode) -> Vec<Vendor>;
+    async fn find_by_status(&self, company_code: &CompanyCode, status: i32) -> Vec<Vendor>;
+    async fn find_by_account_group(&self, company_code: &CompanyCode, account_group: &str) -> Vec<Vendor>;
     async fn save(&self, vendor: &Vendor) -> Result<(), String>;
     async fn delete(&self, company_code: &CompanyCode, vendor_id: &str) -> Result<(), String>;
 }

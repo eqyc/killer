@@ -202,7 +202,7 @@ impl Customer {
     }
 
     /// 解冻客户
-    pub fn unblock(&mut self, updated_by: impl IntoString) {
+    pub fn unblock(&mut self, updated_by: impl Into<String>) {
         self.status = CustomerStatus::Active;
         self.audit_info.update(updated_by);
     }
