@@ -1,212 +1,1079 @@
-// 文件路径: finance/controlling/v1/controlling.proto
-// =============================================================================
-// KILLER ERP - 管理会计服务 (CO)
-// =============================================================================
-//
-// 基于ERP系统核心表COEP/COSP/COSS设计
-// 提供成本核算、内部订单、成本中心会计等功能
-//
-// =============================================================================
-
 syntax = "proto3";
 
-package killer.finance.controlling.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.finance.controlling.v1";
+package finance.controlling.v1;
 
 import "common/v1/types.proto";
-import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
 // =============================================================================
-// ControllingService - 管理会计服务
+// 管理会计服务 (Controlling Service)
+// 提供成本中心会计、内部订单、作业会计、获利能力分析等管理会计功能
 // =============================================================================
 service ControllingService {
+  // === 成本凭证管理 ===
   // 创建成本凭证
   rpc CreateCostDocument(CreateCostDocumentRequest) returns (CreateCostDocumentResponse);
   // 获取成本凭证
   rpc GetCostDocument(GetCostDocumentRequest) returns (GetCostDocumentResponse);
   // 查询成本凭证列表
   rpc ListCostDocuments(ListCostDocumentsRequest) returns (ListCostDocumentsResponse);
-  // 获取成本中心报表
+  // 冲销成本凭证
+  rpc ReverseCostDocument(ReverseCostDocumentRequest) returns (ReverseCostDocumentResponse);
+  // 批量创建凭证
+  rpc BatchCreateCostDocuments(BatchCreateCostDocumentsRequest) returns (BatchCreateCostDocumentsResponse);
+
+  // === 成本中心 ===
+  // 获取成本中心主数据
+  rpc GetCostCenter(GetCostCenterRequest) returns (GetCostCenterResponse);
+  // 查询成本中心列表
+  rpc ListCostCenters(ListCostCentersRequest) returns (ListCostCentersResponse);
+  // 成本中心初始过账
+  rpc PostCostCenterPosting(PostCostCenterPostingRequest) returns (PostCostCenterPostingResponse);
+  // 成本中心转移过账
+  rpc PostCostCenterTransfer(PostCostCenterTransferRequest) returns (PostCostCenterTransferResponse);
+  // 成本中心重过账
+  rpc PostCostCenterReposting(PostCostCenterRepostingRequest) returns (PostCostCenterRepostingResponse);
+  // 成本中心报表
   rpc GetCostCenterReport(GetCostCenterReportRequest) returns (GetCostCenterReportResponse);
+  // 计划/实际对比
+  rpc GetCostCenterPlanActual(GetCostCenterPlanActualRequest) returns (GetCostCenterPlanActualResponse);
+
+  // === 内部订单 ===
+  // 创建内部订单
+  rpc CreateInternalOrder(CreateInternalOrderRequest) returns (CreateInternalOrderResponse);
+  // 获取内部订单
+  rpc GetInternalOrder(GetInternalOrderRequest) returns (GetInternalOrderResponse);
+  // 查询内部订单
+  rpc ListInternalOrders(ListInternalOrdersRequest) returns (ListInternalOrdersResponse);
+  // 下达内部订单
+  rpc ReleaseInternalOrder(ReleaseInternalOrderRequest) returns (ReleaseInternalOrderResponse);
+  // 内部订单过账
+  rpc PostInternalOrderPosting(PostInternalOrderPostingRequest) returns (PostInternalOrderPostingResponse);
+  // 内部订单结算
+  rpc SettleInternalOrder(SettleInternalOrderRequest) returns (SettleInternalOrderResponse);
+  // 关闭内部订单
+  rpc CloseInternalOrder(CloseInternalOrderRequest) returns (CloseInternalOrderResponse);
+  // 内部订单报表
+  rpc GetInternalOrderReport(GetInternalOrderReportRequest) returns (GetInternalOrderReportResponse);
+
+  // === 作业会计 ===
+  // 获取作业类型
+  rpc GetActivityType(GetActivityTypeRequest) returns (GetActivityTypeResponse);
+  // 查询作业类型
+  rpc ListActivityTypes(ListActivityTypesRequest) returns (ListActivityTypesResponse);
+  // 作业分配过账
+  rpc PostActivityAllocation(PostActivityAllocationRequest) returns (PostActivityAllocationResponse);
+  // 统计指标过账
+  rpc PostStatisticalKeyFigure(PostStatisticalKeyFigureRequest) returns (PostStatisticalKeyFigureResponse);
+  // 作业价格计算
+  rpc CalculateActivityPrice(CalculateActivityPriceRequest) returns (CalculateActivityPriceResponse);
+
+  // === 分摊/分配 ===
+  // 获取分摊周期
+  rpc GetAllocationCycle(GetAllocationCycleRequest) returns (GetAllocationCycleResponse);
+  // 执行分摊
+  rpc ExecuteAssessment(ExecuteAssessmentRequest) returns (ExecuteAssessmentResponse);
+  // 执行分配
+  rpc ExecuteDistribution(ExecuteDistributionRequest) returns (ExecuteDistributionResponse);
+  // 执行周期性重过账
+  rpc ExecutePeriodicReposting(ExecutePeriodicRepostingRequest) returns (ExecutePeriodicRepostingResponse);
+
+  // === 获利能力分析 ===
+  // PA凭证过账
+  rpc PostProfitabilityDocument(PostProfitabilityDocumentRequest) returns (PostProfitabilityDocumentResponse);
+  // 获利分析报表
+  rpc GetProfitabilityReport(GetProfitabilityReportRequest) returns (GetProfitabilityReportResponse);
+
+  // === 利润中心 ===
+  // 获取利润中心
+  rpc GetProfitCenter(GetProfitCenterRequest) returns (GetProfitCenterResponse);
+  // 查询利润中心
+  rpc ListProfitCenters(ListProfitCentersRequest) returns (ListProfitCentersResponse);
+  // 利润中心报表
+  rpc GetProfitCenterReport(GetProfitCenterReportRequest) returns (GetProfitCenterReportResponse);
+
+  // === 期末处理 ===
+  // 期末关账
+  rpc ExecutePeriodClose(ExecutePeriodCloseRequest) returns (ExecutePeriodCloseResponse);
+  // 实际成本拆分
+  rpc ExecuteActualCostSplit(ExecuteActualCostSplitRequest) returns (ExecuteActualCostSplitResponse);
+  // 在制品计算
+  rpc ExecuteWIPCalculation(ExecuteWIPCalculationRequest) returns (ExecuteWIPCalculationResponse);
+  // 差异计算
+  rpc ExecuteVarianceCalculation(ExecuteVarianceCalculationRequest) returns (ExecuteVarianceCalculationResponse);
 }
 
 // =============================================================================
-// CostDocument - 成本凭证（聚合根）
+// 通用类型定义
 // =============================================================================
-// 对应ERP系统核心表COEP（成本核算凭证）
-message CostDocument {
-  // 控制范围，对应KOKRS
-  string KOKRS = 1;
-  // 对象号，对应OBJNR
-  string OBJNR = 2;
-  // 会计年度，对应GJAHR
-  int32 GJAHR = 3;
-  // 期间，对应PERIO
-  int32 PERIO = 4;
-  // 记录代码，对应WRTTP，区分计划/实际
-  string WRTTP = 5;
-  // 业务类型，对应VRGNG
-  string VRGNG = 6;
-  // 版本，对应VERSN
-  string VERSN = 7;
-  // 成本要素，对应KSTAR
-  string KSTAR = 8;
-  // 成本中心，对应KOSTL
-  string KOSTL = 9;
-  // 公司代码，对应BUKRS
-  string BUKRS = 10;
-  // 货币代码，对应WAERS
-  string WAERS = 11;
-  // 金额（第1期），对应WKG001
-  killer.common.v1.Money WKG001 = 12;
-  // 金额（第2期），对应WKG002
-  killer.common.v1.Money WKG002 = 13;
-  // 金额（第3期），对应WKG003
-  killer.common.v1.Money WKG003 = 14;
-  // 计量单位，对应MEINB
-  string MEINB = 15;
-  // 数量（第1期），对应MEG001
-  killer.common.v1.Quantity MEG001 = 16;
-  // 删除标识，对应LOEKZ
-  string LOEKZ = 17;
-  // 审计信息
-  killer.common.v1.AuditInfo audit_info = 18;
-  // 行项目列表
-  repeated CostDocumentItem items = 19;
+
+// 订单状态枚举
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_CREATED = 1;           // 已创建
+  ORDER_STATUS_RELEASED = 2;          // 已下达
+  ORDER_STATUS_PARTIALLY_COMPLETED = 3; // 部分完成
+  ORDER_STATUS_COMPLETED = 4;         // 技术完成
+  ORDER_STATUS_CLOSED = 5;            // 业务关闭
+  ORDER_STATUS_SETTLED = 6;           // 已结算
 }
 
 // =============================================================================
-// CostDocumentItem - 成本凭证行项目
+// 主数据实体
 // =============================================================================
-// 对应COEP行级字段
-message CostDocumentItem {
-  // 行号
-  int32 ZEESSION = 1;
-  // 成本要素，对应KSTAR
-  string KSTAR = 2;
-  // 发送方成本中心，对应SKOSTL
-  string SKOSTL = 3;
-  // 接收方成本中心，对应KOSTL
-  string KOSTL = 4;
-  // 内部订单，对应AUFNR
-  string AUFNR = 5;
-  // 金额，对应WKGBTR
-  killer.common.v1.Money WKGBTR = 6;
-  // 数量，对应MBGBTR
-  killer.common.v1.Quantity MBGBTR = 7;
-  // 计量单位，对应MEINH
-  string MEINH = 8;
-  // 活动类型，对应LSTAR
-  string LSTAR = 9;
-  // 利润中心，对应PRCTR
-  string PRCTR = 10;
-  // 功能范围，对应FKBER
-  string FKBER = 11;
-  // 参考凭证号，对应REFBN
-  string REFBN = 12;
-  // 行项目文本
-  string SGTXT = 13;
+
+// 成本中心主数据
+message CostCenter {
+  string KOKRS = 1;           // 控制范围
+  string KOSTL = 2;           // 成本中心
+  string DATAB = 3;           // 有效起始日期
+  string DATBI = 4;           // 有效截止日期
+  string KOSAR = 5;           // 成本中心类型
+  string VERAK = 6;           // 负责人
+  string VERAK_USER = 7;      // 负责人用户ID
+  string BUKRS = 8;           // 公司代码
+  string GSBER = 9;           // 业务范围
+  string PRCTR = 10;          // 利润中心
+  string KHINR = 11;          // 成本中心层次
+  string KTEXT = 12;          // 描述
+  string LTEXT = 13;          // 长文本
+  string WAERS = 14;          // 货币
+  bool BKZKP = 15;            // 锁定计划
+  bool BKZKS = 16;            // 锁定实际
+  string LOEKZ = 17;          // 删除标识
+  common.v1.AuditInfo audit_info = 18;
+}
+
+// 内部订单主数据
+message InternalOrder {
+  string AUFNR = 1;           // 订单号
+  string AUART = 2;           // 订单类型
+  string AUTYP = 3;           // 订单类别 (01=维护, 02=投资, 03=间接费用, 04=收入)
+  string KOKRS = 4;           // 控制范围
+  string BUKRS = 5;           // 公司代码
+  string WERKS = 6;           // 工厂
+  string GSBER = 7;           // 业务范围
+  string KOSTV = 8;           // 责任成本中心
+  string PRCTR = 9;           // 利润中心
+  string KTEXT = 10;          // 短文本
+  string LTEXT = 11;          // 长文本
+  string ASTNR = 12;          // 申请人
+  string WAERS = 13;          // 货币
+  google.protobuf.Timestamp PDAT1 = 14;       // 计划开始日期
+  google.protobuf.Timestamp PDAT2 = 15;       // 计划完成日期
+  google.protobuf.Timestamp IDAT1 = 16;       // 实际开始日期
+  google.protobuf.Timestamp IDAT2 = 17;       // 实际完成日期
+  common.v1.Money BUDGET = 18;          // 预算金额
+  common.v1.Money OBLIGO = 19;          // 承诺金额
+  common.v1.Money ACTUAL = 20;          // 实际金额
+  string OBJNR = 21;          // 对象号
+  OrderStatus STATUS = 22;    // 订单状态
+  string LOEKZ = 23;          // 删除标识
+  common.v1.AuditInfo audit_info = 24;
+  repeated InternalOrderSettlementRule settlement_rules = 25;  // 结算规则
+}
+
+// 内部订单结算规则
+message InternalOrderSettlementRule {
+  int32 SESSION = 1;          // 序号
+  string KONTY = 2;           // 结算接收器类型 (COSTL=成本中心, ORD=订单, WBS=WBS)
+  string KOSTL = 3;           // 结算至成本中心
+  string AUFNR = 4;           // 结算至内部订单
+  string PSPNR = 5;           // 结算至WBS
+  string HKONT = 6;           // 结算至总账科目
+  string ANLN1 = 7;           // 结算至资产
+  int32 PROZS = 8;            // 结算百分比
+  string AUBER = 9;           // 结算类型
+}
+
+// 作业类型主数据
+message ActivityType {
+  string KOKRS = 1;           // 控制范围
+  string LSTAR = 2;           // 作业类型
+  string DATAB = 3;           // 有效起始日期
+  string DATBI = 4;           // 有效截止日期
+  string MEINH = 5;           // 作业单位
+  string KTEXT = 6;           // 描述
+  string LSTAR_VAR = 7;       // 价格指标
+  bool SPERK = 8;             // 价格锁定
+  string LOEKZ = 9;           // 删除标识
+  common.v1.AuditInfo audit_info = 10;
+}
+
+// 利润中心主数据
+message ProfitCenter {
+  string KOKRS = 1;           // 控制范围
+  string PRCTR = 2;           // 利润中心
+  string DATAB = 3;           // 有效起始日期
+  string DATBI = 4;           // 有效截止日期
+  string BUKRS = 5;           // 公司代码
+  string SEGMENT = 6;         // 分部
+  string VERAK = 7;           // 负责人
+  string KTEXT = 8;           // 描述
+  string LTEXT = 9;           // 长文本
+  string PKHINR = 10;         // 利润中心层次
+  string LOEKZ = 11;          // 删除标识
+  common.v1.AuditInfo audit_info = 12;
+}
+
+// 分摊/分配周期
+message AllocationCycle {
+  string KOKRS = 1;           // 控制范围
+  string CYCLE = 2;           // 周期名称
+  string CTYPE = 3;           // 周期类型 (ASM=分摊, DST=分配)
+  string KTEXT = 4;           // 描述
+  google.protobuf.Timestamp DATAB = 5;        // 有效起始
+  google.protobuf.Timestamp DATBI = 6;        // 有效截止
+  bool AKTIV = 7;             // 激活状态
+  repeated AllocationSegment segments = 8;    // 分摊段
+}
+
+// 分摊段
+message AllocationSegment {
+  int32 SESSION = 1;          // 段号
+  string SENDER = 2;          // 发送方规则
+  string RECEIVER = 3;        // 接收方规则
+  string TRATY = 4;           // 追踪因子类型
+  int32 PROZS = 5;            // 固定百分比
 }
 
 // =============================================================================
-// 请求/响应消息定义
+// 成本凭证管理
 // =============================================================================
 
 // 创建成本凭证请求
 message CreateCostDocumentRequest {
-  // 控制范围
-  string KOKRS = 1;
-  // 会计年度
-  int32 GJAHR = 2;
-  // 期间
-  int32 PERIO = 3;
-  // 记录代码（计划/实际）
-  string WRTTP = 4;
-  // 业务类型
-  string VRGNG = 5;
-  // 成本中心
-  string KOSTL = 6;
-  // 货币代码
-  string WAERS = 7;
-  // 行项目列表
-  repeated CostDocumentItem items = 8;
+  string KOKRS = 1;           // 控制范围
+  string BLART = 2;           // 凭证类型
+  google.protobuf.Timestamp BUDAT = 3;        // 过账日期
+  google.protobuf.Timestamp BLDAT = 4;        // 凭证日期
+  repeated CostDocumentLine lines = 5;        // 行项目
+  string BUKRS = 6;           // 公司代码
+  string WAERS = 7;           // 货币
+  string XBLNR = 8;           // 参考凭证号
+  string BKTXT = 9;           // 凭证文本
+}
+
+// 成本凭证行项目
+message CostDocumentLine {
+  int32 ZEARNR = 1;           // 行号
+  string KOSTL = 2;           // 成本中心
+  string AUFNR = 3;           // 内部订单
+  string KSTAR = 4;           // 成本要素
+  string WBS_ELEMENT = 5;     // WBS元素
+  string VRGNG = 6;           // 业务类型
+  common.v1.Money WKGBTR = 7;           // 金额
+  common.v1.Quantity MBGBTR = 8;        // 数量
+  string MEINH = 9;           // 单位
+  string SGTXT = 10;          // 文本
+  string PRCTR = 11;          // 利润中心
+  string SHKZG = 12;          // 借贷标识 (S=借方, H=贷方)
 }
 
 // 创建成本凭证响应
 message CreateCostDocumentResponse {
-  // 创建的成本凭证
-  CostDocument cost_document = 1;
+  string DOC_NO = 1;          // 凭证号
+  string OBJNR = 2;           // 对象号
+  google.protobuf.Timestamp posted_at = 3;    // 过账时间
 }
 
 // 获取成本凭证请求
 message GetCostDocumentRequest {
-  // 控制范围
-  string KOKRS = 1;
-  // 对象号
-  string OBJNR = 2;
-  // 会计年度
-  int32 GJAHR = 3;
+  string KOKRS = 1;           // 控制范围
+  string DOC_NO = 2;          // 凭证号
+  int32 GJAHR = 3;            // 会计年度
 }
 
 // 获取成本凭证响应
 message GetCostDocumentResponse {
-  // 成本凭证
-  CostDocument cost_document = 1;
+  string DOC_NO = 1;
+  string KOKRS = 2;
+  string BLART = 3;
+  google.protobuf.Timestamp BUDAT = 4;
+  repeated CostDocumentLine lines = 5;
+  common.v1.Money total_debit = 6;
+  common.v1.Money total_credit = 7;
 }
 
 // 查询成本凭证列表请求
 message ListCostDocumentsRequest {
-  // 控制范围
-  string KOKRS = 1;
-  // 成本中心
-  string KOSTL = 2;
-  // 会计年度
-  int32 GJAHR = 3;
-  // 期间范围起
-  int32 PERIO_FROM = 4;
-  // 期间范围止
-  int32 PERIO_TO = 5;
-  // 分页请求
-  killer.common.v1.PageRequest page_request = 6;
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 会计年度
+  int32 PERIO_FROM = 3;       // 起始期间
+  int32 PERIO_TO = 4;         // 结束期间
+  string KOSTL = 5;           // 成本中心（可选）
+  string KSTAR = 6;           // 成本要素（可选）
+  string AUFNR = 7;           // 内部订单（可选）
+  string BLART = 8;           // 凭证类型（可选）
+  int32 page_size = 9;
+  string page_token = 10;
 }
 
 // 查询成本凭证列表响应
 message ListCostDocumentsResponse {
-  // 成本凭证列表
-  repeated CostDocument cost_documents = 1;
-  // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  repeated GetCostDocumentResponse documents = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
 }
 
-// 获取成本中心报表请求
+// 冲销成本凭证请求
+message ReverseCostDocumentRequest {
+  string KOKRS = 1;           // 控制范围
+  string DOC_NO = 2;          // 凭证号
+  int32 GJAHR = 3;            // 会计年度
+  google.protobuf.Timestamp REVDT = 4;         // 冲销日期
+  string REASON = 5;          // 冲销原因
+}
+
+// 冲销成本凭证响应
+message ReverseCostDocumentResponse {
+  string original_doc_no = 1; // 原始凭证号
+  string reversal_doc_no = 2; // 冲销凭证号
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 批量创建凭证请求
+message BatchCreateCostDocumentsRequest {
+  repeated CreateCostDocumentRequest documents = 1;
+  bool fail_on_error = 2;     // 遇错终止
+}
+
+// 批量创建凭证响应
+message BatchCreateCostDocumentsResponse {
+  int32 total = 1;            // 总数
+  int32 success = 2;          // 成功数
+  int32 failed = 3;           // 失败数
+  repeated CreateCostDocumentResponse results = 4;
+  repeated string errors = 5;
+}
+
+// =============================================================================
+// 成本中心会计
+// =============================================================================
+
+// 获取成本中心请求
+message GetCostCenterRequest {
+  string KOKRS = 1;           // 控制范围
+  string KOSTL = 2;           // 成本中心
+  string DATUM = 3;           // 查询日期
+}
+
+// 获取成本中心响应
+message GetCostCenterResponse {
+  CostCenter cost_center = 1;
+}
+
+// 查询成本中心列表请求
+message ListCostCentersRequest {
+  string KOKRS = 1;           // 控制范围
+  string BUKRS = 2;           // 公司代码（可选）
+  string KOSAR = 3;           // 成本中心类型（可选）
+  string PRCTR = 4;           // 利润中心（可选）
+  string VERAK_USER = 5;      // 负责人（可选）
+  string DATUM = 6;           // 查询日期
+  int32 page_size = 7;
+  string page_token = 8;
+}
+
+// 查询成本中心列表响应
+message ListCostCentersResponse {
+  repeated CostCenter cost_centers = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 成本中心初始过账请求
+message PostCostCenterPostingRequest {
+  string KOKRS = 1;           // 控制范围
+  string KOSTL = 2;           // 成本中心
+  string KSTAR = 3;           // 成本要素
+  int32 GJAHR = 4;            // 会计年度
+  int32 PERIO = 5;            // 期间
+  common.v1.Money WKGBTR = 6;           // 金额
+  common.v1.Quantity MBGBTR = 7;        // 数量（可选）
+  string MEINH = 8;           // 单位
+  string VRGNG = 9;           // 业务类型
+  string SGTXT = 10;          // 文本
+  string XBLNR = 11;          // 参考凭证
+  string PRCTR = 12;          // 利润中心
+  string AUFNR = 13;          // 关联内部订单（可选）
+  google.protobuf.Timestamp BUDAT = 14;       // 过账日期
+}
+
+// 成本中心初始过账响应
+message PostCostCenterPostingResponse {
+  string DOC_NO = 1;          // 凭证号
+  string OBJNR = 2;           // 对象号
+  google.protobuf.Timestamp posted_at = 3;    // 过账时间
+}
+
+// 成本中心转移过账请求
+message PostCostCenterTransferRequest {
+  string KOKRS = 1;           // 控制范围
+  string SKOSTL = 2;          // 发送方成本中心
+  string EKOSTL = 3;          // 接收方成本中心
+  string KSTAR = 4;           // 成本要素
+  int32 GJAHR = 5;            // 会计年度
+  int32 PERIO = 6;            // 期间
+  common.v1.Money WKGBTR = 7;           // 金额
+  string VRGNG = 8;           // 业务类型
+  string SGTXT = 9;           // 文本
+  google.protobuf.Timestamp BUDAT = 10;       // 过账日期
+}
+
+// 成本中心转移过账响应
+message PostCostCenterTransferResponse {
+  string DOC_NO = 1;
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 成本中心重过账请求
+message PostCostCenterRepostingRequest {
+  string KOKRS = 1;           // 控制范围
+  string KOSTL_FROM = 2;      // 源成本中心
+  string KOSTL_TO = 3;        // 目标成本中心
+  string KSTAR = 4;           // 成本要素
+  int32 GJAHR = 5;            // 会计年度
+  int32 PERIO = 6;            // 期间
+  common.v1.Money WKGBTR = 7;           // 金额
+  string VRGNG = 8;           // 业务类型
+  string SGTXT = 9;           // 文本
+  google.protobuf.Timestamp BUDAT = 10;       // 过账日期
+}
+
+// 成本中心重过账响应
+message PostCostCenterRepostingResponse {
+  string DOC_NO = 1;
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 成本中心报表请求
 message GetCostCenterReportRequest {
-  // 控制范围
-  string KOKRS = 1;
-  // 成本中心
-  string KOSTL = 2;
-  // 会计年度
-  int32 GJAHR = 3;
-  // 期间
-  int32 PERIO = 4;
-  // 版本
-  string VERSN = 5;
+  string KOKRS = 1;           // 控制范围
+  string KOSTL = 2;           // 成本中心
+  int32 GJAHR = 3;            // 会计年度
+  int32 PERIO_FROM = 4;       // 起始期间
+  int32 PERIO_TO = 5;         // 结束期间
 }
 
-// 获取成本中心报表响应
+// 成本中心报表响应
 message GetCostCenterReportResponse {
-  // 成本中心
   string KOSTL = 1;
-  // 会计年度
+  repeated CostCenterReportLine lines = 2;
+  common.v1.Money total_plan = 3;
+  common.v1.Money total_actual = 4;
+  common.v1.Money total_variance = 5;
+}
+
+// 成本中心报表行
+message CostCenterReportLine {
+  string KSTAR = 1;           // 成本要素
+  string KSTAR_TEXT = 2;      // 描述
+  common.v1.Money plan_amount = 3;      // 计划
+  common.v1.Money actual_amount = 4;    // 实际
+  common.v1.Money variance = 5;         // 差异
+  double variance_pct = 6;    // 差异百分比
+}
+
+// 成本中心计划/实际对比请求
+message GetCostCenterPlanActualRequest {
+  string KOKRS = 1;           // 控制范围
+  string KOSTL = 2;           // 成本中心
+  int32 GJAHR = 3;            // 会计年度
+  int32 PERIO_FROM = 4;       // 起始期间
+  int32 PERIO_TO = 5;         // 结束期间
+  string VERSN = 6;           // 计划版本
+}
+
+// 成本中心计划/实际对比响应
+message GetCostCenterPlanActualResponse {
+  string KOSTL = 1;
   int32 GJAHR = 2;
-  // 计划金额
-  killer.common.v1.Money plan_amount = 3;
-  // 实际金额
-  killer.common.v1.Money actual_amount = 4;
-  // 差异金额
-  killer.common.v1.Money variance_amount = 5;
-  // 明细行项目
-  repeated CostDocumentItem details = 6;
+  repeated CostElementLine lines = 3;
+  common.v1.Money total_plan = 4;
+  common.v1.Money total_actual = 5;
+  common.v1.Money total_variance = 6;
+  double variance_percentage = 7;
+}
+
+// 成本要素行
+message CostElementLine {
+  string KSTAR = 1;           // 成本要素
+  string KSTAR_TEXT = 2;      // 描述
+  common.v1.Money plan_amount = 3;      // 计划
+  common.v1.Money actual_amount = 4;    // 实际
+  common.v1.Money variance = 5;         // 差异
+  double variance_pct = 6;    // 差异百分比
+}
+
+// =============================================================================
+// 内部订单
+// =============================================================================
+
+// 创建内部订单请求
+message CreateInternalOrderRequest {
+  string AUART = 1;           // 订单类型
+  string KOKRS = 2;           // 控制范围
+  string BUKRS = 3;           // 公司代码
+  string WERKS = 4;           // 工厂
+  string KTEXT = 5;           // 短文本
+  string LTEXT = 6;           // 长文本（可选）
+  string KOSTV = 7;           // 责任成本中心
+  string PRCTR = 8;           // 利润中心
+  string WAERS = 9;           // 货币
+  google.protobuf.Timestamp PDAT1 = 10;       // 计划开始日期
+  google.protobuf.Timestamp PDAT2 = 11;       // 计划完成日期
+  common.v1.Money BUDGET = 12;         // 预算金额（可选）
+  repeated InternalOrderSettlementRule settlement_rules = 13; // 结算规则（可选）
+}
+
+// 创建内部订单响应
+message CreateInternalOrderResponse {
+  string AUFNR = 1;           // 订单号
+  string OBJNR = 2;           // 对象号
+}
+
+// 获取内部订单请求
+message GetInternalOrderRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 订单号
+}
+
+// 获取内部订单响应
+message GetInternalOrderResponse {
+  InternalOrder internal_order = 1;
+}
+
+// 查询内部订单列表请求
+message ListInternalOrdersRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUART = 2;           // 订单类型（可选）
+  string BUKRS = 3;           // 公司代码（可选）
+  string WERKS = 4;           // 工厂（可选）
+  OrderStatus STATUS = 5;     // 订单状态（可选）
+  string PRCTR = 6;           // 利润中心（可选）
+  string KOSTV = 7;           // 责任成本中心（可选）
+  google.protobuf.Timestamp PDAT1_FROM = 8;    // 计划开始日期从
+  google.protobuf.Timestamp PDAT1_TO = 9;      // 计划开始日期至
+  int32 page_size = 10;
+  string page_token = 11;
+}
+
+// 查询内部订单列表响应
+message ListInternalOrdersResponse {
+  repeated InternalOrder internal_orders = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 下达内部订单请求
+message ReleaseInternalOrderRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 订单号
+}
+
+// 下达内部订单响应
+message ReleaseInternalOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// 内部订单过账请求
+message PostInternalOrderPostingRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 内部订单
+  string KSTAR = 3;           // 成本要素
+  int32 GJAHR = 4;            // 年度
+  int32 PERIO = 5;            // 期间
+  common.v1.Money WKGBTR = 6;           // 金额
+  common.v1.Quantity MBGBTR = 7;        // 数量
+  string VRGNG = 8;           // 业务类型
+  string SGTXT = 9;           // 文本
+  string KOSTL = 10;          // 成本中心
+  google.protobuf.Timestamp BUDAT = 11;       // 过账日期
+}
+
+// 内部订单过账响应
+message PostInternalOrderPostingResponse {
+  string DOC_NO = 1;
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 内部订单结算请求
+message SettleInternalOrderRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 内部订单
+  int32 GJAHR = 3;            // 年度
+  int32 PERIO = 4;            // 期间
+  bool TEST_RUN = 5;          // 测试运行
+  bool FULL_SETTLEMENT = 6;   // 完全结算
+  string DOC_DATE = 7;        // 凭证日期
+  string POST_DATE = 8;       // 过账日期
+}
+
+// 内部订单结算响应
+message SettleInternalOrderResponse {
+  string DOC_NO = 1;          // 结算凭证号
+  common.v1.Money settled_amount = 2;   // 结算金额
+  repeated SettlementLine lines = 3;       // 结算明细
+  bool success = 4;
+  string message = 5;
+}
+
+// 结算行
+message SettlementLine {
+  string receiver_type = 1;   // 接收器类型 (COSTL/ORD/WBS/ANL)
+  string receiver = 2;        // 接收器
+  common.v1.Money amount = 3;           // 金额
+  int32 percentage = 4;       // 百分比
+}
+
+// 关闭内部订单请求
+message CloseInternalOrderRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 订单号
+}
+
+// 关闭内部订单响应
+message CloseInternalOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// 内部订单报表请求
+message GetInternalOrderReportRequest {
+  string KOKRS = 1;           // 控制范围
+  string AUFNR = 2;           // 订单号
+  int32 GJAHR = 3;            // 会计年度
+}
+
+// 内部订单报表响应
+message GetInternalOrderReportResponse {
+  InternalOrder order = 1;
+  common.v1.Money budget = 2;
+  common.v1.Money plan = 3;
+  common.v1.Money committed = 4;        // 承诺
+  common.v1.Money actual = 5;
+  common.v1.Money available = 6;        // 可用
+  repeated OrderCostLine cost_lines = 7;
+}
+
+// 订单成本行
+message OrderCostLine {
+  string KSTAR = 1;
+  string KSTAR_TEXT = 2;
+  common.v1.Money plan = 3;
+  common.v1.Money actual = 4;
+  google.protobuf.Timestamp last_posting = 5;
+}
+
+// =============================================================================
+// 作业会计
+// =============================================================================
+
+// 获取作业类型请求
+message GetActivityTypeRequest {
+  string KOKRS = 1;           // 控制范围
+  string LSTAR = 2;           // 作业类型
+  string DATUM = 3;           // 查询日期
+}
+
+// 获取作业类型响应
+message GetActivityTypeResponse {
+  ActivityType activity_type = 1;
+}
+
+// 查询作业类型列表请求
+message ListActivityTypesRequest {
+  string KOKRS = 1;           // 控制范围
+  string DATUM = 2;           // 查询日期
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+// 查询作业类型列表响应
+message ListActivityTypesResponse {
+  repeated ActivityType activity_types = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 作业分配过账请求
+message PostActivityAllocationRequest {
+  string KOKRS = 1;           // 控制范围
+  string SKOSTL = 2;          // 发送方成本中心
+  string LSTAR = 3;           // 作业类型
+  string EKOSTL = 4;          // 接收方成本中心
+  string EAUFNR = 5;          // 接收方内部订单（可选）
+  string EPSPNR = 6;          // 接收方WBS（可选）
+  common.v1.Quantity LSTTR = 7;         // 作业数量
+  string MEINH = 8;           // 单位
+  int32 GJAHR = 9;            // 年度
+  int32 PERIO = 10;           // 期间
+  string SGTXT = 11;          // 文本
+  google.protobuf.Timestamp BUDAT = 12;       // 过账日期
+}
+
+// 作业分配过账响应
+message PostActivityAllocationResponse {
+  string DOC_NO = 1;
+  common.v1.Money calculated_amount = 2;  // 计算的金额
+  google.protobuf.Timestamp posted_at = 3;
+}
+
+// 统计指标过账请求
+message PostStatisticalKeyFigureRequest {
+  string KOKRS = 1;           // 控制范围
+  string STAGR = 2;           // 统计指标
+  string KOSTL = 3;           // 成本中心
+  int32 GJAHR = 4;            // 年度
+  int32 PERIO = 5;            // 期间
+  common.v1.Quantity VALUE = 6;          // 数值
+  string WRTTP = 7;           // 记录类型 (1=计划, 2=实际)
+}
+
+// 统计指标过账响应
+message PostStatisticalKeyFigureResponse {
+  string DOC_NO = 1;
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 作业价格计算请求
+message CalculateActivityPriceRequest {
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 年度
+  int32 PERIO_FROM = 3;       // 起始期间
+  int32 PERIO_TO = 4;         // 结束期间
+  repeated string KOSTL = 5;  // 成本中心（可选，空=全部）
+  repeated string LSTAR = 6;  // 作业类型（可选）
+  bool TEST_RUN = 7;          // 测试运行
+}
+
+// 作业价格计算响应
+message CalculateActivityPriceResponse {
+  repeated ActivityPriceResult prices = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+// 作业价格结果
+message ActivityPriceResult {
+  string KOSTL = 1;           // 成本中心
+  string LSTAR = 2;           // 作业类型
+  int32 PERIO = 3;            // 期间
+  common.v1.Money fixed_price = 4;      // 固定价格
+  common.v1.Money variable_price = 5;   // 变动价格
+  common.v1.Money total_price = 6;      // 总价格
+  common.v1.Quantity planned_qty = 7;   // 计划数量
+  common.v1.Money planned_cost = 8;     // 计划成本
+}
+
+// =============================================================================
+// 分摊/分配
+// =============================================================================
+
+// 获取分摊周期请求
+message GetAllocationCycleRequest {
+  string KOKRS = 1;           // 控制范围
+  string CYCLE = 2;           // 周期名称
+}
+
+// 获取分摊周期响应
+message GetAllocationCycleResponse {
+  AllocationCycle allocation_cycle = 1;
+}
+
+// 执行分摊请求
+message ExecuteAssessmentRequest {
+  string KOKRS = 1;           // 控制范围
+  string CYCLE = 2;           // 分摊周期
+  int32 GJAHR = 3;            // 年度
+  int32 PERIO_FROM = 4;       // 起始期间
+  int32 PERIO_TO = 5;         // 结束期间
+  bool TEST_RUN = 6;          // 测试运行
+  bool DETAIL_LIST = 7;       // 详细清单
+  string RUN_DATE = 8;        // 运行日期
+}
+
+// 执行分摊响应
+message ExecuteAssessmentResponse {
+  string RUN_ID = 1;          // 运行ID
+  int32 documents_created = 2; // 创建凭证数
+  common.v1.Money total_amount = 3;     // 总金额
+  repeated AllocationResult results = 4; // 分摊结果
+  bool success = 5;
+  string message = 6;
+}
+
+// 分摊结果
+message AllocationResult {
+  string sender_kostl = 1;    // 发送方
+  string receiver_kostl = 2;  // 接收方
+  string kstar = 3;           // 成本要素
+  common.v1.Money amount = 4;           // 金额
+}
+
+// 执行分配请求
+message ExecuteDistributionRequest {
+  string KOKRS = 1;
+  string CYCLE = 2;
+  int32 GJAHR = 3;
+  int32 PERIO_FROM = 4;
+  int32 PERIO_TO = 5;
+  bool TEST_RUN = 6;
+  string RUN_DATE = 7;
+}
+
+// 执行分配响应
+message ExecuteDistributionResponse {
+  string RUN_ID = 1;
+  int32 documents_created = 2;
+  common.v1.Money total_amount = 3;
+  repeated AllocationResult results = 4;
+  bool success = 5;
+  string message = 6;
+}
+
+// 执行周期性重过账请求
+message ExecutePeriodicRepostingRequest {
+  string KOKRS = 1;
+  string CYCLE = 2;
+  int32 GJAHR = 3;
+  int32 PERIO_FROM = 4;
+  int32 PERIO_TO = 5;
+  bool TEST_RUN = 6;
+}
+
+// 执行周期性重过账响应
+message ExecutePeriodicRepostingResponse {
+  string RUN_ID = 1;
+  int32 documents_created = 2;
+  common.v1.Money total_amount = 3;
+  bool success = 4;
+  string message = 5;
+}
+
+// =============================================================================
+// 获利能力分析
+// =============================================================================
+
+// PA凭证过账请求
+message PostProfitabilityDocumentRequest {
+  string KOKRS = 1;           // 控制范围
+  string ERLOB = 2;           // 经营范围
+  google.protobuf.Timestamp BUDAT = 3;        // 过账日期
+  repeated PALineItem items = 4;              // 行项目
+  string KNDNR = 5;           // 客户（可选）
+  string MATNR = 6;           // 产品（可选）
+  string VKORG = 7;           // 销售组织（可选）
+  string VTWEG = 8;           // 分销渠道（可选）
+  string SPART = 9;           // 产品组（可选）
+}
+
+// PA行项目
+message PALineItem {
+  string KNDNR = 1;           // 客户
+  string MATNR = 2;           // 产品
+  string VKORG = 3;           // 销售组织
+  string VTWEG = 4;           // 分销渠道
+  string SPART = 5;           // 产品组
+  common.v1.Quantity ABSMG = 6;         // 数量
+  common.v1.Money VV001 = 7;            // 销售收入
+  common.v1.Money VV010 = 8;            // 销售成本
+  common.v1.Money VV020 = 9;            // 毛利
+}
+
+// PA凭证过账响应
+message PostProfitabilityDocumentResponse {
+  string DOC_NO = 1;
+  google.protobuf.Timestamp posted_at = 2;
+}
+
+// 获利分析报表请求
+message GetProfitabilityReportRequest {
+  string KOKRS = 1;           // 控制范围
+  string ERLOB = 2;           // 经营范围
+  int32 GJAHR = 3;            // 年度
+  int32 PERIO_FROM = 4;       // 起始期间
+  int32 PERIO_TO = 5;         // 结束期间
+  string KNDNR = 6;           // 客户（可选）
+  string MATNR = 7;           // 产品（可选）
+  string VKORG = 8;           // 销售组织（可选）
+  string SPART = 9;           // 产品组（可选）
+}
+
+// 获利分析报表响应
+message GetProfitabilityReportResponse {
+  repeated ProfitabilityLine lines = 1;
+  common.v1.Money total_revenue = 2;    // 总收入
+  common.v1.Money total_cost = 3;       // 总成本
+  common.v1.Money total_profit = 4;     // 总利润
+  double profit_margin = 5;        // 利润率
+}
+
+// 获利分析报表行
+message ProfitabilityLine {
+  string segment = 1;         // 分段
+  common.v1.Money revenue = 2;          // 收入
+  common.v1.Money cost = 3;             // 成本
+  common.v1.Money profit = 4;           // 利润
+  double margin = 5;          // 利润率
+}
+
+// =============================================================================
+// 利润中心会计
+// =============================================================================
+
+// 获取利润中心请求
+message GetProfitCenterRequest {
+  string KOKRS = 1;           // 控制范围
+  string PRCTR = 2;           // 利润中心
+  string DATUM = 3;           // 查询日期
+}
+
+// 获取利润中心响应
+message GetProfitCenterResponse {
+  ProfitCenter profit_center = 1;
+}
+
+// 查询利润中心列表请求
+message ListProfitCentersRequest {
+  string KOKRS = 1;           // 控制范围
+  string BUKRS = 2;           // 公司代码（可选）
+  string SEGMENT = 3;         // 分部（可选）
+  string VERAK = 4;           // 负责人（可选）
+  string DATUM = 5;           // 查询日期
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+// 查询利润中心列表响应
+message ListProfitCentersResponse {
+  repeated ProfitCenter profit_centers = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 利润中心报表请求
+message GetProfitCenterReportRequest {
+  string KOKRS = 1;
+  string PRCTR = 2;
+  int32 GJAHR = 3;
+  int32 PERIO_FROM = 4;
+  int32 PERIO_TO = 5;
+}
+
+// 利润中心报表响应
+message GetProfitCenterReportResponse {
+  string PRCTR = 1;
+  common.v1.Money revenue = 2;          // 收入
+  common.v1.Money cost = 3;             // 成本
+  common.v1.Money profit = 4;           // 利润
+  double margin = 5;          // 利润率
+  repeated ProfitCenterLine lines = 6;
+}
+
+// 利润中心报表行
+message ProfitCenterLine {
+  string account_type = 1;    // 科目类型
+  string account = 2;         // 科目
+  string description = 3;
+  common.v1.Money amount = 4;
+}
+
+// =============================================================================
+// 期末处理
+// =============================================================================
+
+// 期末关账请求
+message ExecutePeriodCloseRequest {
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 年度
+  int32 PERIO = 3;            // 期间
+  bool OPEN = 4;              // true=开启, false=关闭
+  repeated string CLOSE_TASKS = 5; // 关账任务列表
+}
+
+// 期末关账响应
+message ExecutePeriodCloseResponse {
+  bool success = 1;
+  string message = 2;
+  repeated PeriodCloseTaskResult task_results = 3;
+}
+
+// 关账任务结果
+message PeriodCloseTaskResult {
+  string task = 1;
+  bool completed = 2;
+  string message = 3;
+}
+
+// 实际成本拆分请求
+message ExecuteActualCostSplitRequest {
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 年度
+  int32 PERIO = 3;            // 期间
+  string WERKS = 4;           // 工厂（可选）
+  bool TEST_RUN = 5;          // 测试运行
+}
+
+// 实际成本拆分响应
+message ExecuteActualCostSplitResponse {
+  bool success = 1;
+  string message = 2;
+  repeated CostSplitResult results = 3;
+}
+
+// 成本拆分结果
+message CostSplitResult {
+  string order = 1;           // 订单
+  string cost_element = 2;    // 成本要素
+  common.v1.Money fixed_amount = 3;     // 固定部分
+  common.v1.Money variable_amount = 4;  // 变动部分
+}
+
+// 在制品计算请求
+message ExecuteWIPCalculationRequest {
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 年度
+  int32 PERIO = 3;            // 期间
+  string ORDER_TYPE = 4;      // 订单类型
+  bool TEST_RUN = 5;          // 测试运行
+}
+
+// 在制品计算响应
+message ExecuteWIPCalculationResponse {
+  bool success = 1;
+  string message = 2;
+  repeated WIPResult results = 3;
+}
+
+// 在制品结果
+message WIPResult {
+  string AUFNR = 1;           // 订单号
+  common.v1.Money WIP = 2;              // 在制品金额
+  common.v1.Money variances = 3;        // 差异
+}
+
+// 差异计算请求
+message ExecuteVarianceCalculationRequest {
+  string KOKRS = 1;           // 控制范围
+  int32 GJAHR = 2;            // 年度
+  int32 PERIO = 3;            // 期间
+  string CALC_TYPE = 4;       // 计算类型
+  bool TEST_RUN = 5;          // 测试运行
+}
+
+// 差异计算响应
+message ExecuteVarianceCalculationResponse {
+  bool success = 1;
+  string message = 2;
+  repeated VarianceResult results = 3;
+}
+
+// 差异结果
+message VarianceResult {
+  string AUFNR = 1;           // 订单号
+  string variance_category = 2; // 差异类别
+  common.v1.Money amount = 3;           // 金额
 }

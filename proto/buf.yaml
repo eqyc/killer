@@ -14,8 +14,8 @@ modules:
 lint:
   use:
     - STANDARD           # 标准规则集
-    - COMMENTS           # 注释规则
   except:
+    - COMMENTS           # 禁用注释规则
     - PACKAGE_VERSION_SUFFIX  # 允许不带版本后缀
     - FIELD_LOWER_SNAKE_CASE  # 允许大写字段名（与ERP数据表字段对齐）
     - ENUM_VALUE_PREFIX       # 允许灵活的枚举值前缀
