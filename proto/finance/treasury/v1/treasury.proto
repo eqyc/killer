@@ -1,202 +1,1035 @@
-// 文件路径: finance/treasury/v1/treasury.proto
-// =============================================================================
-// KILLER ERP - 资金管理服务 (TR)
-// =============================================================================
-//
-// 基于ERP系统核心表FQM_FLOW/TRLPOS设计
-// 提供现金管理、流动性预测、银行账户管理等功能
-//
-// =============================================================================
-
 syntax = "proto3";
 
-package killer.finance.treasury.v1;
-
-option java_multiple_files = true;
-option java_package = "com.killer.finance.treasury.v1";
+package finance.treasury.v1;
 
 import "common/v1/types.proto";
-import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
 // =============================================================================
-// TreasuryService - 资金管理服务
+// 资金管理服务 (Treasury Service)
+// 提供现金管理、资金头寸、投资管理、融资管理、外汇管理等资金功能
+// 对应 SAP TR 模块核心功能
 // =============================================================================
 service TreasuryService {
-  // 创建现金流项目
+  // === 现金管理 (Cash Management) ===
+  // 获取银行账户
+  rpc GetBankAccount(GetBankAccountRequest) returns (GetBankAccountResponse);
+  // 查询银行账户列表
+  rpc ListBankAccounts(ListBankAccountsRequest) returns (ListBankAccountsResponse);
+  // 创建银行账户
+  rpc CreateBankAccount(CreateBankAccountRequest) returns (CreateBankAccountResponse);
+  // 更新银行账户
+  rpc UpdateBankAccount(UpdateBankAccountRequest) returns (UpdateBankAccountResponse);
+  // 获取账户余额
+  rpc GetAccountBalance(GetAccountBalanceRequest) returns (GetAccountBalanceResponse);
+  // 查询账户交易
+  rpc ListAccountTransactions(ListAccountTransactionsRequest) returns (ListAccountTransactionsResponse);
+
+  // === 现金流管理 (Cash Flow Management) ===
+  // 创建现金流
   rpc CreateCashFlow(CreateCashFlowRequest) returns (CreateCashFlowResponse);
-  // 获取现金流项目
+  // 获取现金流
   rpc GetCashFlow(GetCashFlowRequest) returns (GetCashFlowResponse);
   // 查询现金流列表
   rpc ListCashFlows(ListCashFlowsRequest) returns (ListCashFlowsResponse);
+  // 确认现金流
+  rpc ConfirmCashFlow(ConfirmCashFlowRequest) returns (ConfirmCashFlowResponse);
+  // 取消现金流
+  rpc CancelCashFlow(CancelCashFlowRequest) returns (CancelCashFlowResponse);
+
+  // === 流动性管理 (Liquidity Management) ===
   // 获取流动性报表
   rpc GetLiquidityReport(GetLiquidityReportRequest) returns (GetLiquidityReportResponse);
+  // 流动性预测
+  rpc GenerateLiquidityForecast(GenerateLiquidityForecastRequest) returns (GenerateLiquidityForecastResponse);
+  // 现金流汇总
+  rpc GetCashFlowSummary(GetCashFlowSummaryRequest) returns (GetCashFlowSummaryResponse);
+
+  // === 现金池管理 (Cash Pooling) ===
+  // 创建现金池
+  rpc CreateCashPool(CreateCashPoolRequest) returns (CreateCashPoolResponse);
+  // 执行现金池归集
+  rpc ExecuteCashPool(ExecuteCashPoolRequest) returns (ExecuteCashPoolResponse);
+  // 查询现金池状态
+  rpc GetCashPoolStatus(GetCashPoolStatusRequest) returns (GetCashPoolStatusResponse);
+
+  // === 资金头寸 (Treasury Position) ===
+  // 获取资金头寸
+  rpc GetTreasuryPosition(GetTreasuryPositionRequest) returns (GetTreasuryPositionResponse);
+  // 查询头寸历史
+  rpc ListPositionHistory(ListPositionHistoryRequest) returns (ListPositionHistoryResponse);
+  // 调整资金头寸
+  rpc AdjustPosition(AdjustPositionRequest) returns (AdjustPositionResponse);
+
+  // === 投资管理 (Investment Management) ===
+  // 获取定期存款
+  rpc GetTermDeposit(GetTermDepositRequest) returns (GetTermDepositResponse);
+  // 创建定期存款
+  rpc CreateTermDeposit(CreateTermDepositRequest) returns (CreateTermDepositResponse);
+  // 到期处理
+  rpc ProcessMaturity(ProcessMaturityRequest) returns (ProcessMaturityResponse);
+  // 查询投资组合
+  rpc ListInvestments(ListInvestmentsRequest) returns (ListInvestmentsResponse);
+
+  // === 融资管理 (Finance Management) ===
+  // 获取贷款
+  rpc GetLoan(GetLoanRequest) returns (GetLoanResponse);
+  // 创建贷款
+  rpc CreateLoan(CreateLoanRequest) returns (CreateLoanResponse);
+  // 贷款提款
+  rpc DrawdownLoan(DrawdownLoanRequest) returns (DrawdownLoanResponse);
+  // 偿还贷款
+  rpc RepayLoan(RepayLoanRequest) returns (RepayLoanResponse);
+  // 查询贷款列表
+  rpc ListLoans(ListLoansRequest) returns (ListLoansResponse);
+
+  // === 外汇管理 (Foreign Exchange) ===
+  // 获取外汇交易
+  rpc GetFXTransaction(GetFXTransactionRequest) returns (GetFXTransactionResponse);
+  // 创建外汇交易
+  rpc CreateFXTransaction(CreateFXTransactionRequest) returns (CreateFXTransactionResponse);
+  // 执行外汇交易
+  rpc ExecuteFXTransaction(ExecuteFXTransactionRequest) returns (ExecuteFXTransactionResponse);
+  // 查询外汇敞口
+  rpc GetFXExposure(GetFXExposureRequest) returns (GetFXExposureResponse);
+  // 外汇重估
+  rpc RevalueFXPosition(RevalueFXPositionRequest) returns (RevalueFXPositionResponse);
+
+  // === 内部银行 (Internal Bank) ===
+  // 创建内部银行账户
+  rpc CreateInternalBankAccount(CreateInternalBankAccountRequest) returns (CreateInternalBankAccountResponse);
+  // 内部转账
+  rpc InternalTransfer(InternalTransferRequest) returns (InternalTransferResponse);
+  // 获取内部银行对账单
+  rpc GetInternalBankStatement(GetInternalBankStatementRequest) returns (GetInternalBankStatementResponse);
 }
 
 // =============================================================================
-// CashFlow - 现金流项目（聚合根）
+// 通用类型定义
 // =============================================================================
-// 对应ERP系统核心表FQM_FLOW
+
+// 现金流类型枚举
+enum CashFlowType {
+  CASH_FLOW_TYPE_UNSPECIFIED = 0;
+  CASH_FLOW_TYPE_INFLOW = 1;     // 流入 I
+  CASH_FLOW_TYPE_OUTFLOW = 2;    // 流出 O
+}
+
+// 现金流状态枚举
+enum CashFlowStatus {
+  CASH_FLOW_STATUS_UNSPECIFIED = 0;
+  CASH_FLOW_STATUS_PLANNED = 1;      // 计划
+  CASH_FLOW_STATUS_CONFIRMED = 2;    // 已确认
+  CASH_FLOW_STATUS_ACTUAL = 3;       // 已实际
+  CASH_FLOW_STATUS_CANCELLED = 4;    // 已取消
+}
+
+// 银行账户类型枚举
+enum BankAccountType {
+  BANK_ACCOUNT_TYPE_UNSPECIFIED = 0;
+  BANK_ACCOUNT_TYPE_CURRENT = 1;     // 活期
+  BANK_ACCOUNT_TYPE_TERM = 2;        // 定期
+  BANK_ACCOUNT_TYPE_LOAN = 3;        // 贷款
+  BANK_ACCOUNT_TYPE_SAVINGS = 4;     // 储蓄
+}
+
+// 账户状态枚举
+enum BankAccountStatus {
+  BANK_ACCOUNT_STATUS_UNSPECIFIED = 0;
+  BANK_ACCOUNT_STATUS_ACTIVE = 1;        // 活跃
+  BANK_ACCOUNT_STATUS_BLOCKED = 2;       // 冻结
+  BANK_ACCOUNT_STATUS_CLOSED = 3;        // 关闭
+}
+
+// 投资类型枚举
+enum InvestmentType {
+  INVESTMENT_TYPE_UNSPECIFIED = 0;
+  INVESTMENT_TYPE_TERM_DEPOSIT = 1;      // 定期存款
+  INVESTMENT_TYPE_STRUCTURED = 2;        // 结构化存款
+  INVESTMENT_TYPE_MONEY_MARKET = 3;      // 货币市场
+  INVESTMENT_TYPE_BOND = 4;              // 债券
+  INVESTMENT_TYPE_EQUITY = 5;            // 权益
+}
+
+// 贷款类型枚举
+enum LoanType {
+  LOAN_TYPE_UNSPECIFIED = 0;
+  LOAN_TYPE_REVOLVING = 1;           // 循环贷款
+  LOAN_TYPE_TERM = 2;                // 定期贷款
+  LOAN_TYPE_OVERDRAFT = 3;           // 透支额度
+  LOAN_TYPE_FACTORING = 4;           // 保理贷款
+}
+
+// 贷款状态枚举
+enum LoanStatus {
+  LOAN_STATUS_UNSPECIFIED = 0;
+  LOAN_STATUS_APPROVED = 1;          // 已批准
+  LOAN_STATUS_ACTIVE = 2;            // 已生效
+  LOAN_STATUS_DRAWDOWN = 3;          // 已提款
+  LOAN_STATUS_REPAID = 4;            // 已还清
+  LOAN_STATUS_NPL = 5;               // 不良贷款
+}
+
+// 外汇交易类型枚举
+enum FXTransactionType {
+  FX_TRANSACTION_TYPE_UNSPECIFIED = 0;
+  FX_TRANSACTION_TYPE_SPOT = 1;          // 即期
+  FX_TRANSACTION_TYPE_FORWARD = 2;       // 远期
+  FX_TRANSACTION_TYPE_SWAP = 3;          // 互换
+  FX_TRANSACTION_TYPE_OPTION = 4;        // 期权
+}
+
+// 外汇交易状态枚举
+enum FXTransactionStatus {
+  FX_TRANSACTION_STATUS_UNSPECIFIED = 0;
+  FX_TRANSACTION_STATUS_PENDING = 1;         // 待执行
+  FX_TRANSACTION_STATUS_EXECUTED = 2;        // 已执行
+  FX_TRANSACTION_STATUS_SETTLED = 3;         // 已结算
+  FX_TRANSACTION_STATUS_CANCELLED = 4;       // 已取消
+}
+
+// =============================================================================
+// 主数据实体
+// =============================================================================
+
+// 银行账户主数据
+message BankAccount {
+  string BUKRS = 1;           // 公司代码
+  string BANK_ACCOUNT = 2;    // 银行账户号
+  string BANKS = 3;           // 银行国家
+  string BANKL = 4;           // 银行代码
+  string BANKA = 5;           // 银行名称
+  string IBAN = 6;            // IBAN
+  string SWIFT = 7;           // SWIFT代码
+  string ACCOUNT_TYPE = 8;    // 账户类型
+  string WAERS = 9;           // 账户货币
+  string CURRENCY = 10;
+  common.v1.Money CURRENT_BALANCE = 11;     // 当前余额
+  common.v1.Money AVAILABLE_BALANCE = 12;   // 可用余额
+  common.v1.Money BLOCKED_AMOUNT = 13;      // 冻结金额
+  google.protobuf.Timestamp OPENING_DATE = 14;   // 开户日期
+  google.protobuf.Timestamp LAST_TRANSACTION = 15;  // 最后交易
+  BankAccountStatus STATUS = 16;
+  string REMARKS = 17;        // 备注
+  common.v1.AuditInfo audit_info = 18;
+}
+
+// 银行账户交易
+message BankAccountTransaction {
+  string TRANSACTION_ID = 1;  // 交易ID
+  string BANK_ACCOUNT = 2;    // 账户
+  string TRANSACTION_TYPE = 3;    // 交易类型
+  common.v1.Money AMOUNT = 4; // 金额
+  string WAERS = 5;           // 货币
+  string COUNTERPARTY = 6;    // 交易对手
+  string REFERENCE = 7;       // 参考
+  google.protobuf.Timestamp TRANSACTION_DATE = 8;    // 交易日期
+  google.protobuf.Timestamp VALUE_DATE = 9;          // 起息日
+  string REMARKS = 10;        // 备注
+}
+
+// 现金流项目
 message CashFlow {
-  // 现金流唯一标识
-  string FLOW_ID = 1;
-  // 公司代码，对应BUKRS
-  string BUKRS = 2;
-  // 银行账户，对应BANK_ACCOUNT
-  string BANK_ACCOUNT = 3;
-  // 现金流类型，对应CASH_FLOW_TYPE (I=流入, O=流出)
-  string CASH_FLOW_TYPE = 4;
-  // 流动性科目，对应LIQUIDITY_ITEM
-  string LIQUIDITY_ITEM = 5;
-  // 计划日期，对应PLAN_DATE
-  google.protobuf.Timestamp PLAN_DATE = 6;
-  // 过账日期，对应BUDAT
-  google.protobuf.Timestamp BUDAT = 7;
-  // 金额，对应AMOUNT
-  killer.common.v1.Money AMOUNT = 8;
-  // 货币代码，对应WAERS
-  string WAERS = 9;
-  // 业务伙伴，对应PARTNER
-  string PARTNER = 10;
-  // 参考凭证号，对应REF_DOC
-  string REF_DOC = 11;
-  // 现金流来源，对应SOURCE
-  string SOURCE = 12;
-  // 状态（计划/确认/实际）
-  string STATUS = 13;
-  // 备注
-  string NOTES = 14;
-  // 删除标识，对应LOEKZ
-  string LOEKZ = 15;
-  // 审计信息
-  killer.common.v1.AuditInfo audit_info = 16;
-  // 明细行项目
+  string FLOW_ID = 1;         // 现金流ID
+  string BUKRS = 2;           // 公司代码
+  string BANK_ACCOUNT = 3;    // 银行账户
+  CashFlowType CASH_FLOW_TYPE = 4;   // 现金流类型
+  string LIQUIDITY_ITEM = 5;  // 流动性科目
+  google.protobuf.Timestamp PLAN_DATE = 6;     // 计划日期
+  google.protobuf.Timestamp BUDAT = 7;         // 过账日期
+  common.v1.Money AMOUNT = 8;  // 金额
+  string WAERS = 9;           // 货币
+  string PARTNER = 10;        // 业务伙伴
+  string REF_DOC = 11;        // 参考凭证
+  string SOURCE = 12;         // 现金流来源
+  CashFlowStatus STATUS = 13; // 状态
+  string NOTES = 14;          // 备注
+  string LOEKZ = 15;          // 删除标识
+  common.v1.AuditInfo audit_info = 16;
   repeated CashFlowItem items = 17;
 }
 
-// =============================================================================
-// CashFlowItem - 现金流行项目
-// =============================================================================
-// 对应TRLPOS表行级字段
+// 现金流行项目
 message CashFlowItem {
-  // 行号，对应POSNR
-  int32 POSNR = 1;
-  // 流动性科目，对应LIQUIDITY_ITEM
-  string LIQUIDITY_ITEM = 2;
-  // 金额，对应AMOUNT
-  killer.common.v1.Money AMOUNT = 3;
-  // 货币代码，对应WAERS
-  string WAERS = 4;
-  // 起息日，对应VALUE_DATE
-  google.protobuf.Timestamp VALUE_DATE = 5;
-  // 描述
-  string DESCRIPTION = 6;
-  // 银行账户
-  string BANK_ACCOUNT = 7;
-  // 参考凭证号
-  string REF_DOC = 8;
-  // 参考凭证行号
-  int32 REF_POSNR = 9;
-  // 内部订单
-  string AUFNR = 10;
-  // 成本中心
-  string KOSTL = 11;
+  int32 POSNR = 1;            // 行号
+  string LIQUIDITY_ITEM = 2;  // 流动性科目
+  common.v1.Money AMOUNT = 3; // 金额
+  string WAERS = 4;           // 货币
+  google.protobuf.Timestamp VALUE_DATE = 5;     // 起息日
+  string DESCRIPTION = 6;     // 描述
+  string BANK_ACCOUNT = 7;    // 银行账户
+  string REF_DOC = 8;         // 参考凭证
+  int32 REF_POSNR = 9;        // 参考行号
+  string AUFNR = 10;          // 内部订单
+  string KOSTL = 11;          // 成本中心
+}
+
+// 现金池
+message CashPool {
+  string POOL_ID = 1;         // 现金池ID
+  string POOL_NAME = 2;       // 现金池名称
+  string POOL_TYPE = 3;       // 池类型 (ZERO_BALANCE/PHYSICAL)
+  repeated string BANK_ACCOUNTS = 4;  // 参与账户
+  string MASTER_ACCOUNT = 5;  // 主账户
+  string FREQUENCY = 6;       // 归集频率
+  string LAST_EXECUTED = 7;   // 上次执行
+  string NEXT_EXECUTED = 8;   // 下次执行
+  bool ACTIVE = 9;            // 是否激活
+  common.v1.AuditInfo audit_info = 10;
+}
+
+// 资金头寸
+message TreasuryPosition {
+  string BUKRS = 1;           // 公司代码
+  string CURRENCY = 2;        // 货币
+  google.protobuf.Timestamp POSITION_DATE = 3;    // 头寸日期
+  common.v1.Money CASH_BALANCE = 4;      // 现金余额
+  common.v1.Money INVESTMENTS = 5;       // 投资
+  common.v1.Money LOANS = 6;             // 贷款
+  common.v1.Money NET_POSITION = 7;      // 净头寸
+  common.v1.Money AVAILABLE_FUNDS = 8;   // 可用资金
+  common.v1.Money CREDIT_LINE = 9;       // 信用额度
+  common.v1.Money UTILIZED_LINE = 10;    // 已用额度
+}
+
+// 定期存款
+message TermDeposit {
+  string DEPOSIT_ID = 1;      // 存款ID
+  string BUKRS = 2;           // 公司代码
+  string BANK_ACCOUNT = 3;    // 银行账户
+  string INVESTMENT_TYPE = 4; // 投资类型
+  common.v1.Money PRINCIPAL = 5;       // 本金
+  string CURRENCY = 6;        // 货币
+  double INTEREST_RATE = 7;   // 利率
+  google.protobuf.Timestamp DEPOSIT_DATE = 8;    // 存款日期
+  google.protobuf.Timestamp MATURITY_DATE = 9;   // 到期日期
+  common.v1.Money INTEREST = 10;       // 利息
+  common.v1.Money MATURITY_AMOUNT = 11; // 到期金额
+  string STATUS = 12;        // 状态
+  common.v1.AuditInfo audit_info = 13;
+}
+
+// 贷款
+message Loan {
+  string LOAN_ID = 1;         // 贷款ID
+  string BUKRS = 2;           // 公司代码
+  string LENDER = 3;          // 贷款人
+  string LOAN_TYPE = 4;       // 贷款类型
+  common.v1.Money PRINCIPAL = 5;       // 本金
+  string CURRENCY = 6;        // 货币
+  double INTEREST_RATE = 7;   // 利率
+  google.protobuf.Timestamp START_DATE = 8;      // 起始日期
+  google.protobuf.Timestamp END_DATE = 9;        // 结束日期
+  int32 TERM_MONTHS = 10;     // 期限（月）
+  string REPAYMENT_TYPE = 11; // 还款方式
+  common.v1.Money DRAWN_AMOUNT = 12;     // 已提金额
+  common.v1.Money REPAID_AMOUNT = 13;    // 已还金额
+  common.v1.Money OUTSTANDING = 14;      // 剩余本金
+  LoanStatus STATUS = 15;
+  common.v1.AuditInfo audit_info = 16;
+}
+
+// 外汇交易
+message FXTransaction {
+  string FX_ID = 1;           // 外汇交易ID
+  string BUKRS = 2;           // 公司代码
+  string TRANSACTION_TYPE = 3;    // 交易类型
+  string BUY_CURRENCY = 4;    // 买入货币
+  string SELL_CURRENCY = 5;   // 卖出货币
+  common.v1.Money BUY_AMOUNT = 6; // 买入金额
+  common.v1.Money SELL_AMOUNT = 7;    // 卖出金额
+  double EXCHANGE_RATE = 8;   // 汇率
+  google.protobuf.Timestamp TRADE_DATE = 9;      // 交易日
+  google.protobuf.Timestamp VALUE_DATE = 10;     // 起息日
+  string COUNTERPARTY = 11;   // 交易对手
+  string STATUS = 12;         // 状态
+  string NOTES = 13;          // 备注
+  common.v1.AuditInfo audit_info = 14;
+}
+
+// 外汇敞口
+message FXExposure {
+  string EXPOSURE_ID = 1;     // 敞口ID
+  string BUKRS = 2;           // 公司代码
+  string CURRENCY = 3;        // 货币
+  common.v1.Money EXPOSURE_AMOUNT = 4;   // 敞口金额
+  common.v1.Money HEDGED_AMOUNT = 5;      // 已对冲金额
+  common.v1.Money UNHEDGED_AMOUNT = 6;    // 未对冲金额
+  double CURRENT_RATE = 7;    // 当前汇率
+  double MARK_TO_MARKET = 8;  // 市值重估
+  string RISK_LEVEL = 9;      // 风险等级
 }
 
 // =============================================================================
-// 请求/响应消息定义
+// 现金管理
+// =============================================================================
+
+// 获取银行账户请求
+message GetBankAccountRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+}
+
+// 获取银行账户响应
+message GetBankAccountResponse {
+  BankAccount bank_account = 1;
+}
+
+// 查询银行账户列表请求
+message ListBankAccountsRequest {
+  string BUKRS = 1;           // 公司代码
+  string BANKS = 2;           // 银行国家（可选）
+  string BANKL = 3;           // 银行代码（可选）
+  BankAccountStatus STATUS = 4;   // 状态（可选）
+  string WAERS = 5;           // 货币（可选）
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+// 查询银行账户列表响应
+message ListBankAccountsResponse {
+  repeated BankAccount bank_accounts = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 创建银行账户请求
+message CreateBankAccountRequest {
+  string BUKRS = 1;
+  string BANKS = 2;
+  string BANKL = 3;
+  string IBAN = 4;
+  string SWIFT = 5;
+  string ACCOUNT_TYPE = 6;
+  string WAERS = 7;
+}
+
+// 创建银行账户响应
+message CreateBankAccountResponse {
+  string BANK_ACCOUNT = 1;
+}
+
+// 更新银行账户请求
+message UpdateBankAccountRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  string STATUS = 3;
+  string REMARKS = 4;
+}
+
+// 更新银行账户响应
+message UpdateBankAccountResponse {
+  bool success = 1;
+}
+
+// 获取账户余额请求
+message GetAccountBalanceRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  string WAERS = 3;           // 兑换货币（可选）
+}
+
+// 获取账户余额响应
+message GetAccountBalanceResponse {
+  string BANK_ACCOUNT = 1;
+  common.v1.Money current_balance = 2;
+  common.v1.Money available_balance = 3;
+  common.v1.Money blocked_amount = 4;
+  string WAERS = 5;
+  google.protobuf.Timestamp as_of_date = 6;
+}
+
+// 查询账户交易请求
+message ListAccountTransactionsRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  google.protobuf.Timestamp DATE_FROM = 3;
+  google.protobuf.Timestamp DATE_TO = 4;
+  string TRANSACTION_TYPE = 5;    // 交易类型（可选）
+  int32 page_size = 6;
+  string page_token = 7;
+}
+
+// 查询账户交易响应
+message ListAccountTransactionsResponse {
+  repeated BankAccountTransaction transactions = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// =============================================================================
+// 现金流管理
 // =============================================================================
 
 // 创建现金流请求
 message CreateCashFlowRequest {
-  // 公司代码
   string BUKRS = 1;
-  // 银行账户
   string BANK_ACCOUNT = 2;
-  // 现金流类型
-  string CASH_FLOW_TYPE = 3;
-  // 流动性科目
+  CashFlowType CASH_FLOW_TYPE = 3;
   string LIQUIDITY_ITEM = 4;
-  // 计划日期
   google.protobuf.Timestamp PLAN_DATE = 5;
-  // 金额
-  killer.common.v1.Money AMOUNT = 6;
-  // 货币代码
+  common.v1.Money AMOUNT = 6;
   string WAERS = 7;
-  // 业务伙伴
   string PARTNER = 8;
-  // 明细行项目
-  repeated CashFlowItem items = 9;
+  string SOURCE = 9;
+  string NOTES = 10;
+  repeated CashFlowItem items = 11;
 }
 
 // 创建现金流响应
 message CreateCashFlowResponse {
-  // 创建的现金流
-  CashFlow cash_flow = 1;
+  string FLOW_ID = 1;
 }
 
 // 获取现金流请求
 message GetCashFlowRequest {
-  // 现金流唯一标识
   string FLOW_ID = 1;
-  // 公司代码
   string BUKRS = 2;
 }
 
 // 获取现金流响应
 message GetCashFlowResponse {
-  // 现金流信息
   CashFlow cash_flow = 1;
 }
 
 // 查询现金流列表请求
 message ListCashFlowsRequest {
-  // 公司代码
   string BUKRS = 1;
-  // 银行账户
-  string BANK_ACCOUNT = 2;
-  // 现金流类型
-  string CASH_FLOW_TYPE = 3;
-  // 计划日期起
+  string BANK_ACCOUNT = 2;    // 银行账户（可选）
+  CashFlowType CASH_FLOW_TYPE = 3;   // 类型（可选）
   google.protobuf.Timestamp PLAN_DATE_FROM = 4;
-  // 计划日期止
   google.protobuf.Timestamp PLAN_DATE_TO = 5;
-  // 分页请求
-  killer.common.v1.PageRequest page_request = 6;
+  CashFlowStatus STATUS = 6; // 状态（可选）
+  int32 page_size = 7;
+  string page_token = 8;
 }
 
 // 查询现金流列表响应
 message ListCashFlowsResponse {
-  // 现金流列表
   repeated CashFlow cash_flows = 1;
-  // 分页信息
-  killer.common.v1.PageInfo page_info = 2;
+  string next_page_token = 2;
+  int32 total_count = 3;
 }
+
+// 确认现金流请求
+message ConfirmCashFlowRequest {
+  string BUKRS = 1;
+  string FLOW_ID = 2;
+  google.protobuf.Timestamp BUDAT = 3;
+}
+
+// 确认现金流响应
+message ConfirmCashFlowResponse {
+  bool success = 1;
+  string CONFIRMED_ID = 2;
+}
+
+// 取消现金流请求
+message CancelCashFlowRequest {
+  string BUKRS = 1;
+  string FLOW_ID = 2;
+  string REASON = 3;
+}
+
+// 取消现金流响应
+message CancelCashFlowResponse {
+  bool success = 1;
+}
+
+// =============================================================================
+// 流动性管理
+// =============================================================================
 
 // 获取流动性报表请求
 message GetLiquidityReportRequest {
-  // 公司代码
   string BUKRS = 1;
-  // 报表日期起
   google.protobuf.Timestamp DATE_FROM = 2;
-  // 报表日期止
   google.protobuf.Timestamp DATE_TO = 3;
-  // 货币代码
-  string WAERS = 4;
+  string WAERS = 4;           // 报表货币
+  string CONSOLIDATION_LEVEL = 5;   // 合并层级
 }
 
 // 获取流动性报表响应
 message GetLiquidityReportResponse {
-  // 公司代码
   string BUKRS = 1;
-  // 期初余额
-  killer.common.v1.Money opening_balance = 2;
-  // 流入总额
-  killer.common.v1.Money total_inflow = 3;
-  // 流出总额
-  killer.common.v1.Money total_outflow = 4;
-  // 期末余额
-  killer.common.v1.Money closing_balance = 5;
-  // 明细数据
-  repeated CashFlow details = 6;
+  common.v1.Money opening_balance = 2;
+  common.v1.Money total_inflow = 3;
+  common.v1.Money total_outflow = 4;
+  common.v1.Money closing_balance = 5;
+  string WAERS = 6;
+  repeated LiquidityByCurrency by_currency = 7;
+  repeated LiquidityByBank by_bank = 8;
+}
+
+// 按货币汇总
+message LiquidityByCurrency {
+  string CURRENCY = 1;
+  common.v1.Money balance = 2;
+  double percent = 3;
+}
+
+// 按银行汇总
+message LiquidityByBank {
+  string BANKL = 1;
+  string BANKA = 2;
+  common.v1.Money balance = 3;
+}
+
+// 流动性预测请求
+message GenerateLiquidityForecastRequest {
+  string BUKRS = 1;
+  google.protobuf.Timestamp START_DATE = 2;
+  google.protobuf.Timestamp END_DATE = 3;
+  string WAERS = 4;
+  bool INCLUDE_PLANNED = 5;   // 包含计划
+  bool INCLUDE_COMMITTED = 6; // 包含承诺
+}
+
+// 流动性预测响应
+message GenerateLiquidityForecastResponse {
+  string BUKRS = 1;
+  repeated DailyLiquidity daily_data = 2;
+  common.v1.Money minimum_balance = 3;
+  common.v1.Money peak_balance = 4;
+  string CURRENCY = 5;
+}
+
+// 每日流动性
+message DailyLiquidity {
+  string DATE = 1;
+  common.v1.Money expected_balance = 2;
+  common.v1.Money inflow = 3;
+  common.v1.Money outflow = 4;
+}
+
+// 现金流汇总请求
+message GetCashFlowSummaryRequest {
+  string BUKRS = 1;
+  google.protobuf.Timestamp DATE_FROM = 2;
+  google.protobuf.Timestamp DATE_TO = 3;
+  string GROUP_BY = 4;        // 分组方式 (LIQUIDITY_ITEM/BANK_ACCOUNT/PARTNER)
+}
+
+// 现金流汇总响应
+message GetCashFlowSummaryResponse {
+  string BUKRS = 1;
+  repeated CashFlowSummaryLine lines = 2;
+  common.v1.Money total_inflow = 3;
+  common.v1.Money total_outflow = 4;
+}
+
+// 汇总行
+message CashFlowSummaryLine {
+  string group_key = 1;
+  string group_name = 2;
+  common.v1.Money inflow = 3;
+  common.v1.Money outflow = 4;
+  common.v1.Money net = 5;
+}
+
+// =============================================================================
+// 现金池管理
+// =============================================================================
+
+// 创建现金池请求
+message CreateCashPoolRequest {
+  string POOL_NAME = 1;
+  string POOL_TYPE = 2;
+  repeated string BANK_ACCOUNTS = 3;
+  string MASTER_ACCOUNT = 4;
+  string FREQUENCY = 5;
+}
+
+// 创建现金池响应
+message CreateCashPoolResponse {
+  string POOL_ID = 1;
+}
+
+// 执行现金池归集请求
+message ExecuteCashPoolRequest {
+  string POOL_ID = 1;
+  google.protobuf.Timestamp EXECUTION_DATE = 2;
+  bool TEST_RUN = 3;
+}
+
+// 执行现金池归集响应
+message ExecuteCashPoolResponse {
+  bool success = 1;
+  string TRANSACTION_ID = 2;
+  repeated PoolTransferResult transfers = 3;
+}
+
+// 池转账结果
+message PoolTransferResult {
+  string from_account = 1;
+  string to_account = 2;
+  common.v1.Money amount = 3;
+}
+
+// 查询现金池状态请求
+message GetCashPoolStatusRequest {
+  string POOL_ID = 1;
+}
+
+// 查询现金池状态响应
+message GetCashPoolStatusResponse {
+  string POOL_ID = 1;
+  string POOL_NAME = 2;
+  bool ACTIVE = 3;
+  string LAST_EXECUTED = 4;
+  string NEXT_EXECUTED = 5;
+  repeated PoolAccountStatus accounts = 6;
+}
+
+// 池账户状态
+message PoolAccountStatus {
+  string BANK_ACCOUNT = 1;
+  common.v1.Money balance = 2;
+  common.v1.Money transferred_in = 3;
+  common.v1.Money transferred_out = 4;
+}
+
+// =============================================================================
+// 资金头寸
+// =============================================================================
+
+// 获取资金头寸请求
+message GetTreasuryPositionRequest {
+  string BUKRS = 1;
+  string CURRENCY = 2;        // 货币（可选，空=全部）
+  google.protobuf.Timestamp POSITION_DATE = 3;
+}
+
+// 获取资金头寸响应
+message GetTreasuryPositionResponse {
+  string BUKRS = 1;
+  repeated TreasuryPosition positions = 2;
+  common.v1.Money total_net_position = 3;
+  common.v1.Money total_available_funds = 4;
+}
+
+// 查询头寸历史请求
+message ListPositionHistoryRequest {
+  string BUKRS = 1;
+  string CURRENCY = 2;
+  google.protobuf.Timestamp DATE_FROM = 3;
+  google.protobuf.Timestamp DATE_TO = 4;
+  int32 page_size = 5;
+  string page_token = 6;
+}
+
+// 查询头寸历史响应
+message ListPositionHistoryResponse {
+  repeated TreasuryPosition history = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 调整资金头寸请求
+message AdjustPositionRequest {
+  string BUKRS = 1;
+  string CURRENCY = 2;
+  string BANK_ACCOUNT_FROM = 3;
+  string BANK_ACCOUNT_TO = 4;
+  common.v1.Money AMOUNT = 5;
+  google.protobuf.Timestamp BUDAT = 6;
+  string REASON = 7;
+}
+
+// 调整资金头寸响应
+message AdjustPositionResponse {
+  bool success = 1;
+  string TRANSACTION_ID = 2;
+}
+
+// =============================================================================
+// 投资管理
+// =============================================================================
+
+// 获取定期存款请求
+message GetTermDepositRequest {
+  string BUKRS = 1;
+  string DEPOSIT_ID = 2;
+}
+
+// 获取定期存款响应
+message GetTermDepositResponse {
+  TermDeposit term_deposit = 1;
+}
+
+// 创建定期存款请求
+message CreateTermDepositRequest {
+  string BUKRS = 1;
+  string BANK_ACCOUNT = 2;
+  string INVESTMENT_TYPE = 3;
+  common.v1.Money PRINCIPAL = 4;
+  string CURRENCY = 5;
+  double INTEREST_RATE = 6;
+  int32 TERM_DAYS = 7;        // 期限（天）
+  google.protobuf.Timestamp MATURITY_DATE = 8;
+}
+
+// 创建定期存款响应
+message CreateTermDepositResponse {
+  string DEPOSIT_ID = 1;
+}
+
+// 到期处理请求
+message ProcessMaturityRequest {
+  string BUKRS = 1;
+  string DEPOSIT_ID = 2;
+  string ACTION = 3;          // RENEW/REDEEM
+  string RENEW_TERM = 4;      // 续存期限（可选）
+}
+
+// 到期处理响应
+message ProcessMaturityResponse {
+  bool success = 1;
+  string DEPOSIT_ID = 2;
+  common.v1.Money MATURITY_AMOUNT = 3;
+}
+
+// 查询投资组合请求
+message ListInvestmentsRequest {
+  string BUKRS = 1;
+  InvestmentType INVESTMENT_TYPE = 2;    // 类型（可选）
+  string STATUS = 3;         // 状态（可选）
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+// 查询投资组合响应
+message ListInvestmentsResponse {
+  repeated TermDeposit investments = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  common.v1.Money total_principal = 4;
+  common.v1.Money total_value = 5;
+}
+
+// =============================================================================
+// 融资管理
+// =============================================================================
+
+// 获取贷款请求
+message GetLoanRequest {
+  string BUKRS = 1;
+  string LOAN_ID = 2;
+}
+
+// 获取贷款响应
+message GetLoanResponse {
+  Loan loan = 1;
+}
+
+// 创建贷款请求
+message CreateLoanRequest {
+  string BUKRS = 1;
+  string LENDER = 2;
+  string LOAN_TYPE = 3;
+  common.v1.Money PRINCIPAL = 4;
+  string CURRENCY = 5;
+  double INTEREST_RATE = 6;
+  int32 TERM_MONTHS = 7;
+  google.protobuf.Timestamp START_DATE = 8;
+  string REPAYMENT_TYPE = 9;
+}
+
+// 创建贷款响应
+message CreateLoanResponse {
+  string LOAN_ID = 1;
+}
+
+// 贷款提款请求
+message DrawdownLoanRequest {
+  string BUKRS = 1;
+  string LOAN_ID = 2;
+  common.v1.Money AMOUNT = 3;
+  string BANK_ACCOUNT = 4;    // 收款账户
+  google.protobuf.Timestamp BUDAT = 5;
+}
+
+// 贷款提款响应
+message DrawdownLoanResponse {
+  bool success = 1;
+  string DRAWDOWN_ID = 2;
+  common.v1.Money DRAWN_AMOUNT = 3;
+}
+
+// 偿还贷款请求
+message RepayLoanRequest {
+  string BUKRS = 1;
+  string LOAN_ID = 2;
+  common.v1.Money AMOUNT = 3;
+  string BANK_ACCOUNT = 4;    // 还款账户
+  google.protobuf.Timestamp BUDAT = 5;
+  string REPAYMENT_TYPE = 6;  // FULL/PARTIAL
+}
+
+// 偿还贷款响应
+message RepayLoanResponse {
+  bool success = 1;
+  string REPAYMENT_ID = 2;
+  common.v1.Money OUTSTANDING = 3;
+}
+
+// 查询贷款列表请求
+message ListLoansRequest {
+  string BUKRS = 1;
+  LoanStatus STATUS = 2;      // 状态（可选）
+  string LENDER = 3;          // 贷款人（可选）
+  int32 page_size = 4;
+  string page_token = 5;
+}
+
+// 查询贷款列表响应
+message ListLoansResponse {
+  repeated Loan loans = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  common.v1.Money total_principal = 4;
+  common.v1.Money total_outstanding = 5;
+}
+
+// =============================================================================
+// 外汇管理
+// =============================================================================
+
+// 获取外汇交易请求
+message GetFXTransactionRequest {
+  string BUKRS = 1;
+  string FX_ID = 2;
+}
+
+// 获取外汇交易响应
+message GetFXTransactionResponse {
+  FXTransaction fx_transaction = 1;
+}
+
+// 创建外汇交易请求
+message CreateFXTransactionRequest {
+  string BUKRS = 1;
+  FXTransactionType TRANSACTION_TYPE = 2;
+  string BUY_CURRENCY = 3;
+  string SELL_CURRENCY = 4;
+  common.v1.Money BUY_AMOUNT = 5;
+  common.v1.Money SELL_AMOUNT = 6;
+  double EXCHANGE_RATE = 7;
+  google.protobuf.Timestamp VALUE_DATE = 8;
+  string COUNTERPARTY = 9;
+  string NOTES = 10;
+}
+
+// 创建外汇交易响应
+message CreateFXTransactionResponse {
+  string FX_ID = 1;
+}
+
+// 执行外汇交易请求
+message ExecuteFXTransactionRequest {
+  string BUKRS = 1;
+  string FX_ID = 2;
+  google.protobuf.Timestamp EXECUTION_DATE = 3;
+}
+
+// 执行外汇交易响应
+message ExecuteFXTransactionResponse {
+  bool success = 1;
+  string FX_ID = 2;
+  string SETTLEMENT_ID = 3;
+}
+
+// 查询外汇敞口请求
+message GetFXExposureRequest {
+  string BUKRS = 1;
+  string CURRENCY = 2;        // 货币（可选）
+}
+
+// 查询外汇敞口响应
+message GetFXExposureResponse {
+  repeated FXExposure exposures = 1;
+  common.v1.Money total_exposure = 2;
+  common.v1.Money total_hedged = 3;
+  common.v1.Money total_unhedged = 4;
+}
+
+// 外汇重估请求
+message RevalueFXPositionRequest {
+  string BUKRS = 1;
+  string CURRENCY = 2;
+  double NEW_RATE = 3;
+  google.protobuf.Timestamp REVALUATION_DATE = 4;
+}
+
+// 外汇重估响应
+message RevalueFXPositionResponse {
+  bool success = 1;
+  double OLD_RATE = 2;
+  double NEW_RATE = 3;
+  common.v1.Money GAIN = 4;
+  common.v1.Money LOSS = 5;
+  string ADJUSTMENT_DOC = 6;
+}
+
+// =============================================================================
+// 内部银行
+// =============================================================================
+
+// 创建内部银行账户请求
+message CreateInternalBankAccountRequest {
+  string BUKRS = 1;
+  string ACCOUNT_NAME = 2;
+  string PARENT_COMPANY = 3;
+  string WAERS = 4;
+}
+
+// 创建内部银行账户响应
+message CreateInternalBankAccountResponse {
+  string ACCOUNT_ID = 1;
+}
+
+// 内部转账请求
+message InternalTransferRequest {
+  string BUKRS = 1;
+  string FROM_ACCOUNT = 2;
+  string TO_ACCOUNT = 3;
+  common.v1.Money AMOUNT = 4;
+  string WAERS = 5;
+  google.protobuf.Timestamp BUDAT = 6;
+  string REFERENCE = 7;
+  string NOTES = 8;
+}
+
+// 内部转账响应
+message InternalTransferResponse {
+  bool success = 1;
+  string TRANSACTION_ID = 2;
+}
+
+// 获取内部银行对账单请求
+message GetInternalBankStatementRequest {
+  string BUKRS = 1;
+  string ACCOUNT_ID = 2;
+  google.protobuf.Timestamp DATE_FROM = 3;
+  google.protobuf.Timestamp DATE_TO = 4;
+}
+
+// 获取内部银行对账单响应
+message GetInternalBankStatementResponse {
+  string ACCOUNT_ID = 1;
+  string ACCOUNT_NAME = 2;
+  common.v1.Money OPENING_BALANCE = 3;
+  common.v1.Money CLOSING_BALANCE = 4;
+  repeated InternalTransferTransaction transactions = 5;
+}
+
+// 内部转账交易
+message InternalTransferTransaction {
+  string TRANSACTION_ID = 1;
+  string FROM_ACCOUNT = 2;
+  string TO_ACCOUNT = 3;
+  common.v1.Money AMOUNT = 4;
+  string WAERS = 5;
+  google.protobuf.Timestamp TRANSACTION_DATE = 6;
+  string REFERENCE = 7;
 }
