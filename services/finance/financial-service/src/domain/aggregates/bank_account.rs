@@ -170,4 +170,15 @@ impl BankAccount {
     pub fn update_balance(&mut self, new_balance: Money) {
         self.current_balance = new_balance;
     }
+
+    /// 从数据库加载时设置银行类型
+    pub fn set_bank_type(&mut self, bank_type: impl Into<String>) {
+        self.bank_type = Some(bank_type.into());
+    }
+
+    /// 从数据库加载时设置余额
+    pub fn set_balance(&mut self, current: Money, available: Money) {
+        self.current_balance = current;
+        self.available_balance = available;
+    }
 }

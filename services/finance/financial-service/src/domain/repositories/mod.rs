@@ -3,7 +3,7 @@
 //! 定义各聚合根的仓储接口
 
 use async_trait::async_trait;
-use killer_domain_primitives::{AccountCode, CompanyCode, DocumentNumber};
+use killer_domain_primitives::{AccountCode, CompanyCode, DocumentNumber, Money};
 use crate::domain::aggregates::{
     gl_account::GLAccount,
     journal_entry::JournalEntry,
@@ -54,6 +54,7 @@ pub trait VendorRepository: Send + Sync {
 pub trait FixedAssetRepository: Send + Sync {
     async fn find_by_id(&self, company_code: &CompanyCode, asset_number: &str, sub_number: &str) -> Option<FixedAsset>;
     async fn find_all(&self, company_code: &CompanyCode) -> Vec<FixedAsset>;
+    async fn find_by_status(&self, company_code: &CompanyCode, status: i32) -> Vec<FixedAsset>;
     async fn save(&self, asset: &FixedAsset) -> Result<(), String>;
     async fn delete(&self, company_code: &CompanyCode, asset_number: &str, sub_number: &str) -> Result<(), String>;
 }
@@ -63,6 +64,9 @@ pub trait FixedAssetRepository: Send + Sync {
 pub trait BankAccountRepository: Send + Sync {
     async fn find_by_id(&self, bank_key: &str, bank_account: &str) -> Option<BankAccount>;
     async fn find_all(&self) -> Vec<BankAccount>;
+    async fn find_by_country(&self, country_code: &str) -> Vec<BankAccount>;
+    async fn find_by_swift(&self, swift_code: &str) -> Option<BankAccount>;
     async fn save(&self, account: &BankAccount) -> Result<(), String>;
     async fn delete(&self, bank_key: &str, bank_account: &str) -> Result<(), String>;
+    async fn update_balance(&self, bank_key: &str, bank_account: &str, new_balance: Money) -> Result<(), String>;
 }

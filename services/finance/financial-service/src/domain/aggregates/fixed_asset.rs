@@ -169,6 +169,11 @@ impl FixedAsset {
         self.asset_number = number.into();
     }
 
+    /// 设置资产子编号
+    pub fn set_sub_number(&mut self, number: impl Into<String>) {
+        self.sub_number = number.into();
+    }
+
     /// 设置成本中心
     pub fn set_cost_center(&mut self, cost_center: impl Into<String>) {
         self.cost_center = Some(cost_center.into());
