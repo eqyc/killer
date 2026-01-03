@@ -34,6 +34,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "SERVICENAME",
+            "description": "服务名称（可选，为空则检查网关自身）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "APIGatewayService"
         ]
@@ -57,6 +66,88 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "METHOD",
+            "description": "HTTP方法（GET/POST/PUT/DELETE等）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PATH",
+            "description": "请求路径",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "HEADERS",
+            "description": "请求头",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "QUERYPARAMS",
+            "description": "查询参数",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BODY",
+            "description": "请求体（JSON字符串或二进制）",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "REQUESTID",
+            "description": "请求ID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CLIENTIP",
+            "description": "客户端IP",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TOKEN",
+            "description": "用户令牌",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "REQUESTTIME",
+            "description": "请求时间戳",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "TARGETSERVICE",
+            "description": "目标服务名称",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TIMEOUTMS",
+            "description": "超时时间（毫秒）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "APIGatewayService"
         ]
@@ -86,6 +177,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }

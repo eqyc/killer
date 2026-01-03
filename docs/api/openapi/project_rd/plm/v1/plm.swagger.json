@@ -34,6 +34,36 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "STLNR",
+            "description": "BOM编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "或通过物料号+工厂查询",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "effectiveDate",
+            "description": "有效日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "PLMService"
         ]
@@ -57,6 +87,72 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "物料号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STLTY",
+            "description": "BOM类别",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STLST",
+            "description": "BOM状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "PLMService"
         ]
@@ -80,6 +176,58 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "CHANGETYPE",
+            "description": "变更类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DESCRIPTION",
+            "description": "描述",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EFFECTIVEDATE",
+            "description": "生效日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "MATNR",
+            "description": "物料号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "RESPONSIBLE",
+            "description": "负责人",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "REASONCODE",
+            "description": "原因代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "PLMService"
         ]
@@ -109,6 +257,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -271,6 +420,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1BOMItem"
           },
           "title": "BOM项目列表"
@@ -365,6 +515,7 @@
         "boms": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1BillOfMaterial"
           },
           "title": "BOM列表"

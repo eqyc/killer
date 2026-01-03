@@ -34,6 +34,73 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "QMART",
+            "description": "通知类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EQUNR",
+            "description": "设备号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TPLNR",
+            "description": "功能位置",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRIOK",
+            "description": "优先级\n\n - PRIOK_UNSPECIFIED: 未指定\n - PRIOK_1: 1 = 紧急\n - PRIOK_2: 2 = 高\n - PRIOK_3: 3 = 中\n - PRIOK_4: 4 = 低",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PRIOK_UNSPECIFIED",
+              "PRIOK_1",
+              "PRIOK_2",
+              "PRIOK_3",
+              "PRIOK_4"
+            ],
+            "default": "PRIOK_UNSPECIFIED"
+          },
+          {
+            "name": "QMTXT",
+            "description": "描述",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUSZT",
+            "description": "故障开始日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "INGPR",
+            "description": "计划员组",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "MaintenanceService"
         ]
@@ -57,6 +124,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "AUFNR",
+            "description": "维护订单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "MaintenanceService"
         ]
@@ -80,6 +156,96 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EQUNR",
+            "description": "设备号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRIOK",
+            "description": "优先级\n\n - PRIOK_UNSPECIFIED: 未指定\n - PRIOK_1: 1 = 紧急\n - PRIOK_2: 2 = 高\n - PRIOK_3: 3 = 中\n - PRIOK_4: 4 = 低",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PRIOK_UNSPECIFIED",
+              "PRIOK_1",
+              "PRIOK_2",
+              "PRIOK_3",
+              "PRIOK_4"
+            ],
+            "default": "PRIOK_UNSPECIFIED"
+          },
+          {
+            "name": "SUSTA",
+            "description": "订单状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GSTRPFROM",
+            "description": "计划开始日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "GSTRPTO",
+            "description": "计划开始日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "MaintenanceService"
         ]
@@ -109,6 +275,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -174,6 +341,7 @@
         "maintenanceOrders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1MaintenanceOrder"
           },
           "title": "维护订单列表"
@@ -331,6 +499,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1MaintenanceOrderItem"
           },
           "title": "订单行项目（工序）"

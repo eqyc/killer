@@ -34,6 +34,27 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WAERS",
+            "description": "兑换货币（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -57,6 +78,54 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "DATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "TRANSACTIONTYPE",
+            "description": "交易类型（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -80,6 +149,67 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNTFROM",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNTTO",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "BUDAT",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "REASON",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -103,6 +233,32 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "REMARKS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -126,6 +282,63 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "description": "公司代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKS",
+            "description": "银行国家（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKL",
+            "description": "银行代码（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态（可选）\n\n - BANK_ACCOUNT_STATUS_ACTIVE: 活跃\n - BANK_ACCOUNT_STATUS_BLOCKED: 冻结\n - BANK_ACCOUNT_STATUS_CLOSED: 关闭",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "BANK_ACCOUNT_STATUS_UNSPECIFIED",
+              "BANK_ACCOUNT_STATUS_ACTIVE",
+              "BANK_ACCOUNT_STATUS_BLOCKED",
+              "BANK_ACCOUNT_STATUS_CLOSED"
+            ],
+            "default": "BANK_ACCOUNT_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "WAERS",
+            "description": "货币（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -149,6 +362,26 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FLOWID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "REASON",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -172,6 +405,20 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "FLOWID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -195,6 +442,76 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "description": "银行账户（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CASHFLOWTYPE",
+            "description": "类型（可选）\n\n - CASH_FLOW_TYPE_INFLOW: 流入 I\n - CASH_FLOW_TYPE_OUTFLOW: 流出 O",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CASH_FLOW_TYPE_UNSPECIFIED",
+              "CASH_FLOW_TYPE_INFLOW",
+              "CASH_FLOW_TYPE_OUTFLOW"
+            ],
+            "default": "CASH_FLOW_TYPE_UNSPECIFIED"
+          },
+          {
+            "name": "PLANDATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PLANDATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态（可选）\n\n - CASH_FLOW_STATUS_PLANNED: 计划\n - CASH_FLOW_STATUS_CONFIRMED: 已确认\n - CASH_FLOW_STATUS_ACTUAL: 已实际\n - CASH_FLOW_STATUS_CANCELLED: 已取消",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CASH_FLOW_STATUS_UNSPECIFIED",
+              "CASH_FLOW_STATUS_PLANNED",
+              "CASH_FLOW_STATUS_CONFIRMED",
+              "CASH_FLOW_STATUS_ACTUAL",
+              "CASH_FLOW_STATUS_CANCELLED"
+            ],
+            "default": "CASH_FLOW_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -218,6 +535,35 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "DATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "GROUPBY",
+            "description": "分组方式 (LIQUIDITY_ITEM/BANK_ACCOUNT/PARTNER)",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -241,6 +587,42 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "POOLNAME",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "POOLTYPE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNTS",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "MASTERACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FREQUENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -264,6 +646,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "POOLID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -287,6 +677,27 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FLOWID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -310,6 +721,56 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LOANID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "description": "收款账户",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -333,6 +794,27 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "POOLID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EXECUTIONDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "TESTRUN",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -356,6 +838,27 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FXID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EXECUTIONDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -379,6 +882,21 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CURRENCY",
+            "description": "货币（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -402,6 +920,111 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TRANSACTIONTYPE",
+            "description": " - FX_TRANSACTION_TYPE_SPOT: 即期\n - FX_TRANSACTION_TYPE_FORWARD: 远期\n - FX_TRANSACTION_TYPE_SWAP: 互换\n - FX_TRANSACTION_TYPE_OPTION: 期权",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FX_TRANSACTION_TYPE_UNSPECIFIED",
+              "FX_TRANSACTION_TYPE_SPOT",
+              "FX_TRANSACTION_TYPE_FORWARD",
+              "FX_TRANSACTION_TYPE_SWAP",
+              "FX_TRANSACTION_TYPE_OPTION"
+            ],
+            "default": "FX_TRANSACTION_TYPE_UNSPECIFIED"
+          },
+          {
+            "name": "BUYCURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SELLCURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUYAMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUYAMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUYAMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "SELLAMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SELLAMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SELLAMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "EXCHANGERATE",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "VALUEDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "COUNTERPARTY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "NOTES",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -425,6 +1048,48 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STARTDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "ENDDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "WAERS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "INCLUDEPLANNED",
+            "description": "包含计划",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "INCLUDECOMMITTED",
+            "description": "包含承诺",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -448,6 +1113,32 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ACCOUNTNAME",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PARENTCOMPANY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WAERS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -471,6 +1162,34 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ACCOUNTID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "DATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -494,6 +1213,73 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "FROMACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TOACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WAERS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "REFERENCE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "NOTES",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -517,6 +1303,50 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "INVESTMENTTYPE",
+            "description": "类型（可选）\n\n - INVESTMENT_TYPE_TERM_DEPOSIT: 定期存款\n - INVESTMENT_TYPE_STRUCTURED: 结构化存款\n - INVESTMENT_TYPE_MONEY_MARKET: 货币市场\n - INVESTMENT_TYPE_BOND: 债券\n - INVESTMENT_TYPE_EQUITY: 权益",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "INVESTMENT_TYPE_UNSPECIFIED",
+              "INVESTMENT_TYPE_TERM_DEPOSIT",
+              "INVESTMENT_TYPE_STRUCTURED",
+              "INVESTMENT_TYPE_MONEY_MARKET",
+              "INVESTMENT_TYPE_BOND",
+              "INVESTMENT_TYPE_EQUITY"
+            ],
+            "default": "INVESTMENT_TYPE_UNSPECIFIED"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -540,6 +1370,42 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "DATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "WAERS",
+            "description": "报表货币",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CONSOLIDATIONLEVEL",
+            "description": "合并层级",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -563,6 +1429,81 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LENDER",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LOANTYPE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "CURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "INTERESTRATE",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "TERMMONTHS",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "STARTDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "REPAYMENTTYPE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -586,6 +1527,50 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态（可选）\n\n - LOAN_STATUS_APPROVED: 已批准\n - LOAN_STATUS_ACTIVE: 已生效\n - LOAN_STATUS_DRAWDOWN: 已提款\n - LOAN_STATUS_REPAID: 已还清\n - LOAN_STATUS_NPL: 不良贷款",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "LOAN_STATUS_UNSPECIFIED",
+              "LOAN_STATUS_APPROVED",
+              "LOAN_STATUS_ACTIVE",
+              "LOAN_STATUS_DRAWDOWN",
+              "LOAN_STATUS_REPAID",
+              "LOAN_STATUS_NPL"
+            ],
+            "default": "LOAN_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "LENDER",
+            "description": "贷款人（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -609,6 +1594,47 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATEFROM",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "DATETO",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -632,6 +1658,34 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DEPOSITID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ACTION",
+            "description": "RENEW/REDEEM",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "RENEWTERM",
+            "description": "续存期限（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -655,6 +1709,63 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LOANID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AMOUNT.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "description": "还款账户",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "REPAYMENTTYPE",
+            "description": "FULL/PARTIAL",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -678,6 +1789,34 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "NEWRATE",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "REVALUATIONDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -701,6 +1840,76 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BANKACCOUNT",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "INVESTMENTTYPE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRINCIPAL.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "CURRENCY",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "INTERESTRATE",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "TERMDAYS",
+            "description": "期限（天）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "MATURITYDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -724,6 +1933,28 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CURRENCY",
+            "description": "货币（可选，空=全部）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "POSITIONDATE",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "TreasuryService"
         ]
@@ -753,6 +1984,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -798,57 +2030,72 @@
       "type": "object",
       "properties": {
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "BANKACCOUNT": {
-          "type": "string"
+          "type": "string",
+          "title": "银行账户号"
         },
         "BANKS": {
-          "type": "string"
+          "type": "string",
+          "title": "银行国家"
         },
         "BANKL": {
-          "type": "string"
+          "type": "string",
+          "title": "银行代码"
         },
         "BANKA": {
-          "type": "string"
+          "type": "string",
+          "title": "银行名称"
         },
         "IBAN": {
-          "type": "string"
+          "type": "string",
+          "title": "IBAN"
         },
         "SWIFT": {
-          "type": "string"
+          "type": "string",
+          "title": "SWIFT代码"
         },
         "ACCOUNTTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "账户类型"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "账户货币"
         },
         "CURRENCY": {
           "type": "string"
         },
         "CURRENTBALANCE": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "当前余额"
         },
         "AVAILABLEBALANCE": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "可用余额"
         },
         "BLOCKEDAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "冻结金额"
         },
         "OPENINGDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "开户日期"
         },
         "LASTTRANSACTION": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "最后交易"
         },
         "STATUS": {
           "$ref": "#/definitions/v1BankAccountStatus"
         },
         "REMARKS": {
-          "type": "string"
+          "type": "string",
+          "title": "备注"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -865,42 +2112,53 @@
         "BANK_ACCOUNT_STATUS_CLOSED"
       ],
       "default": "BANK_ACCOUNT_STATUS_UNSPECIFIED",
+      "description": "- BANK_ACCOUNT_STATUS_ACTIVE: 活跃\n - BANK_ACCOUNT_STATUS_BLOCKED: 冻结\n - BANK_ACCOUNT_STATUS_CLOSED: 关闭",
       "title": "账户状态枚举"
     },
     "v1BankAccountTransaction": {
       "type": "object",
       "properties": {
         "TRANSACTIONID": {
-          "type": "string"
+          "type": "string",
+          "title": "交易ID"
         },
         "BANKACCOUNT": {
-          "type": "string"
+          "type": "string",
+          "title": "账户"
         },
         "TRANSACTIONTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "交易类型"
         },
         "AMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "COUNTERPARTY": {
-          "type": "string"
+          "type": "string",
+          "title": "交易对手"
         },
         "REFERENCE": {
-          "type": "string"
+          "type": "string",
+          "title": "参考"
         },
         "TRANSACTIONDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "交易日期"
         },
         "VALUEDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "起息日"
         },
         "REMARKS": {
-          "type": "string"
+          "type": "string",
+          "title": "备注"
         }
       },
       "title": "银行账户交易"
@@ -918,51 +2176,66 @@
       "type": "object",
       "properties": {
         "FLOWID": {
-          "type": "string"
+          "type": "string",
+          "title": "现金流ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "BANKACCOUNT": {
-          "type": "string"
+          "type": "string",
+          "title": "银行账户"
         },
         "CASHFLOWTYPE": {
-          "$ref": "#/definitions/v1CashFlowType"
+          "$ref": "#/definitions/v1CashFlowType",
+          "title": "现金流类型"
         },
         "LIQUIDITYITEM": {
-          "type": "string"
+          "type": "string",
+          "title": "流动性科目"
         },
         "PLANDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "计划日期"
         },
         "BUDAT": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "过账日期"
         },
         "AMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "PARTNER": {
-          "type": "string"
+          "type": "string",
+          "title": "业务伙伴"
         },
         "REFDOC": {
-          "type": "string"
+          "type": "string",
+          "title": "参考凭证"
         },
         "SOURCE": {
-          "type": "string"
+          "type": "string",
+          "title": "现金流来源"
         },
         "STATUS": {
-          "$ref": "#/definitions/v1CashFlowStatus"
+          "$ref": "#/definitions/v1CashFlowStatus",
+          "title": "状态"
         },
         "NOTES": {
-          "type": "string"
+          "type": "string",
+          "title": "备注"
         },
         "LOEKZ": {
-          "type": "string"
+          "type": "string",
+          "title": "删除标识"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -970,6 +2243,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CashFlowItem"
           }
         }
@@ -981,39 +2255,50 @@
       "properties": {
         "POSNR": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "行号"
         },
         "LIQUIDITYITEM": {
-          "type": "string"
+          "type": "string",
+          "title": "流动性科目"
         },
         "AMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "VALUEDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "起息日"
         },
         "DESCRIPTION": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "BANKACCOUNT": {
-          "type": "string"
+          "type": "string",
+          "title": "银行账户"
         },
         "REFDOC": {
-          "type": "string"
+          "type": "string",
+          "title": "参考凭证"
         },
         "REFPOSNR": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "参考行号"
         },
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "内部订单"
         },
         "KOSTL": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心"
         }
       },
       "title": "现金流行项目"
@@ -1028,6 +2313,7 @@
         "CASH_FLOW_STATUS_CANCELLED"
       ],
       "default": "CASH_FLOW_STATUS_UNSPECIFIED",
+      "description": "- CASH_FLOW_STATUS_PLANNED: 计划\n - CASH_FLOW_STATUS_CONFIRMED: 已确认\n - CASH_FLOW_STATUS_ACTUAL: 已实际\n - CASH_FLOW_STATUS_CANCELLED: 已取消",
       "title": "现金流状态枚举"
     },
     "v1CashFlowSummaryLine": {
@@ -1059,6 +2345,7 @@
         "CASH_FLOW_TYPE_OUTFLOW"
       ],
       "default": "CASH_FLOW_TYPE_UNSPECIFIED",
+      "description": "- CASH_FLOW_TYPE_INFLOW: 流入 I\n - CASH_FLOW_TYPE_OUTFLOW: 流出 O",
       "title": "现金流类型枚举"
     },
     "v1ConfirmCashFlowResponse": {
@@ -1181,6 +2468,7 @@
         "transfers": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1PoolTransferResult"
           }
         }
@@ -1206,33 +2494,42 @@
       "type": "object",
       "properties": {
         "EXPOSUREID": {
-          "type": "string"
+          "type": "string",
+          "title": "敞口ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "CURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "EXPOSUREAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "敞口金额"
         },
         "HEDGEDAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "已对冲金额"
         },
         "UNHEDGEDAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "未对冲金额"
         },
         "CURRENTRATE": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "当前汇率"
         },
         "MARKTOMARKET": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "市值重估"
         },
         "RISKLEVEL": {
-          "type": "string"
+          "type": "string",
+          "title": "风险等级"
         }
       },
       "title": "外汇敞口"
@@ -1241,46 +2538,59 @@
       "type": "object",
       "properties": {
         "FXID": {
-          "type": "string"
+          "type": "string",
+          "title": "外汇交易ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "TRANSACTIONTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "交易类型"
         },
         "BUYCURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "买入货币"
         },
         "SELLCURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "卖出货币"
         },
         "BUYAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "买入金额"
         },
         "SELLAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "卖出金额"
         },
         "EXCHANGERATE": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "汇率"
         },
         "TRADEDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "交易日"
         },
         "VALUEDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "起息日"
         },
         "COUNTERPARTY": {
-          "type": "string"
+          "type": "string",
+          "title": "交易对手"
         },
         "STATUS": {
-          "type": "string"
+          "type": "string",
+          "title": "状态"
         },
         "NOTES": {
-          "type": "string"
+          "type": "string",
+          "title": "备注"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -1298,6 +2608,7 @@
         "FX_TRANSACTION_TYPE_OPTION"
       ],
       "default": "FX_TRANSACTION_TYPE_UNSPECIFIED",
+      "description": "- FX_TRANSACTION_TYPE_SPOT: 即期\n - FX_TRANSACTION_TYPE_FORWARD: 远期\n - FX_TRANSACTION_TYPE_SWAP: 互换\n - FX_TRANSACTION_TYPE_OPTION: 期权",
       "title": "外汇交易类型枚举"
     },
     "v1GenerateLiquidityForecastResponse": {
@@ -1309,6 +2620,7 @@
         "dailyData": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1DailyLiquidity"
           }
         },
@@ -1376,6 +2688,7 @@
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CashFlowSummaryLine"
           }
         },
@@ -1409,6 +2722,7 @@
         "accounts": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1PoolAccountStatus"
           }
         }
@@ -1421,6 +2735,7 @@
         "exposures": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1FXExposure"
           }
         },
@@ -1463,6 +2778,7 @@
         "transactions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1InternalTransferTransaction"
           }
         }
@@ -1493,12 +2809,14 @@
         "byCurrency": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1LiquidityByCurrency"
           }
         },
         "byBank": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1LiquidityByBank"
           }
         }
@@ -1532,6 +2850,7 @@
         "positions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1TreasuryPosition"
           }
         },
@@ -1595,6 +2914,7 @@
         "INVESTMENT_TYPE_EQUITY"
       ],
       "default": "INVESTMENT_TYPE_UNSPECIFIED",
+      "description": "- INVESTMENT_TYPE_TERM_DEPOSIT: 定期存款\n - INVESTMENT_TYPE_STRUCTURED: 结构化存款\n - INVESTMENT_TYPE_MONEY_MARKET: 货币市场\n - INVESTMENT_TYPE_BOND: 债券\n - INVESTMENT_TYPE_EQUITY: 权益",
       "title": "投资类型枚举"
     },
     "v1LiquidityByBank": {
@@ -1634,6 +2954,7 @@
         "transactions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1BankAccountTransaction"
           }
         },
@@ -1653,6 +2974,7 @@
         "bankAccounts": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1BankAccount"
           }
         },
@@ -1672,6 +2994,7 @@
         "cashFlows": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CashFlow"
           }
         },
@@ -1691,6 +3014,7 @@
         "investments": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1TermDeposit"
           }
         },
@@ -1716,6 +3040,7 @@
         "loans": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1Loan"
           }
         },
@@ -1741,6 +3066,7 @@
         "history": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1TreasuryPosition"
           }
         },
@@ -1758,50 +3084,64 @@
       "type": "object",
       "properties": {
         "LOANID": {
-          "type": "string"
+          "type": "string",
+          "title": "贷款ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "LENDER": {
-          "type": "string"
+          "type": "string",
+          "title": "贷款人"
         },
         "LOANTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "贷款类型"
         },
         "PRINCIPAL": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "本金"
         },
         "CURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "INTERESTRATE": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "利率"
         },
         "STARTDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "起始日期"
         },
         "ENDDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "结束日期"
         },
         "TERMMONTHS": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "期限（月）"
         },
         "REPAYMENTTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "还款方式"
         },
         "DRAWNAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "已提金额"
         },
         "REPAIDAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "已还金额"
         },
         "OUTSTANDING": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "剩余本金"
         },
         "STATUS": {
           "$ref": "#/definitions/v1LoanStatus"
@@ -1823,6 +3163,7 @@
         "LOAN_STATUS_NPL"
       ],
       "default": "LOAN_STATUS_UNSPECIFIED",
+      "description": "- LOAN_STATUS_APPROVED: 已批准\n - LOAN_STATUS_ACTIVE: 已生效\n - LOAN_STATUS_DRAWDOWN: 已提款\n - LOAN_STATUS_REPAID: 已还清\n - LOAN_STATUS_NPL: 不良贷款",
       "title": "贷款状态枚举"
     },
     "v1Money": {
@@ -1937,43 +3278,55 @@
       "type": "object",
       "properties": {
         "DEPOSITID": {
-          "type": "string"
+          "type": "string",
+          "title": "存款ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "BANKACCOUNT": {
-          "type": "string"
+          "type": "string",
+          "title": "银行账户"
         },
         "INVESTMENTTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "投资类型"
         },
         "PRINCIPAL": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "本金"
         },
         "CURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "INTERESTRATE": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "利率"
         },
         "DEPOSITDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "存款日期"
         },
         "MATURITYDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "到期日期"
         },
         "INTEREST": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "利息"
         },
         "MATURITYAMOUNT": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "到期金额"
         },
         "STATUS": {
-          "type": "string"
+          "type": "string",
+          "title": "状态"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -1985,35 +3338,45 @@
       "type": "object",
       "properties": {
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "CURRENCY": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "POSITIONDATE": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "头寸日期"
         },
         "CASHBALANCE": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "现金余额"
         },
         "INVESTMENTS": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "投资"
         },
         "LOANS": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "贷款"
         },
         "NETPOSITION": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "净头寸"
         },
         "AVAILABLEFUNDS": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "可用资金"
         },
         "CREDITLINE": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "信用额度"
         },
         "UTILIZEDLINE": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "已用额度"
         }
       },
       "title": "资金头寸"

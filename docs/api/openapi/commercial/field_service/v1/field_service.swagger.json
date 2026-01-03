@@ -34,6 +34,38 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "SERVICEORDERID",
+            "description": "服务订单标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TECHNICIANID",
+            "description": "技术人员编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SCHEDULEDSTART",
+            "description": "计划开始时间",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "SCHEDULEDEND",
+            "description": "计划结束时间",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "FieldService"
         ]
@@ -57,6 +89,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "SERVICEORDERID",
+            "description": "服务订单标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "FieldService"
         ]
@@ -80,6 +121,103 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KUNNR",
+            "description": "客户编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EQUIPMENTID",
+            "description": "设备标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRIORITY",
+            "description": "优先级\n\n - PRIORITY_UNSPECIFIED: 未指定\n - PRIORITY_URGENT: 紧急\n - PRIORITY_HIGH: 高\n - PRIORITY_MEDIUM: 中\n - PRIORITY_LOW: 低",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PRIORITY_UNSPECIFIED",
+              "PRIORITY_URGENT",
+              "PRIORITY_HIGH",
+              "PRIORITY_MEDIUM",
+              "PRIORITY_LOW"
+            ],
+            "default": "PRIORITY_UNSPECIFIED"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TECHNICIANID",
+            "description": "技术人员编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SCHEDULEDFROM",
+            "description": "计划服务日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "SCHEDULEDTO",
+            "description": "计划服务日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "FieldService"
         ]
@@ -109,6 +247,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -204,6 +343,7 @@
         "serviceOrders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ServiceOrder"
           },
           "title": "服务订单列表"
@@ -418,6 +558,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ServiceOrderItem"
           },
           "title": "服务项目列表"

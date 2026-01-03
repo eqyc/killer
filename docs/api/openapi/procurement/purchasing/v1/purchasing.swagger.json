@@ -34,6 +34,23 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "EBELN",
+            "description": "采购凭证号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "confirmationDate",
+            "description": "确认日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "PurchasingService"
         ]
@@ -57,6 +74,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "EBELN",
+            "description": "采购凭证号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "PurchasingService"
         ]
@@ -80,6 +106,95 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "description": "公司代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EKORG",
+            "description": "采购组织",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LIFNR",
+            "description": "供应商",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BSART",
+            "description": "采购凭证类别",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BEDATFROM",
+            "description": "凭证日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "BEDATTO",
+            "description": "凭证日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "STATU",
+            "description": "状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "PurchasingService"
         ]
@@ -109,6 +224,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -192,6 +308,7 @@
         "purchaseOrders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1PurchaseOrder"
           },
           "title": "采购订单列表"
@@ -351,6 +468,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1PurchaseOrderItem"
           },
           "title": "行项目列表"

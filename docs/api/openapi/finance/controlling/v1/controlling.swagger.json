@@ -34,6 +34,29 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LSTAR",
+            "description": "作业类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -57,6 +80,35 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -80,6 +132,22 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CYCLE",
+            "description": "周期名称",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -103,6 +171,68 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "description": "起始期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "description": "结束期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心（可选，空=全部）",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "LSTAR",
+            "description": "作业类型（可选）",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -126,6 +256,22 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "订单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -149,6 +295,29 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -172,6 +341,53 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "description": "起始期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "description": "结束期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "VERSN",
+            "description": "计划版本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -195,6 +411,46 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "description": "起始期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "description": "结束期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -218,6 +474,63 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUKRS",
+            "description": "公司代码（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSAR",
+            "description": "成本中心类型（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRCTR",
+            "description": "利润中心（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VERAKUSER",
+            "description": "负责人（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -241,6 +554,30 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DOCNO",
+            "description": "凭证号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -264,6 +601,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "failOnError",
+            "description": "遇错终止",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -287,6 +633,45 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WERKS",
+            "description": "工厂（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -310,6 +695,67 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CYCLE",
+            "description": "分摊周期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "description": "起始期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "description": "结束期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "DETAILLIST",
+            "description": "详细清单",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "RUNDATE",
+            "description": "运行日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -333,6 +779,53 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CYCLE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "TESTRUN",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "RUNDATE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -356,6 +849,49 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "OPEN",
+            "description": "true=开启, false=关闭",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "CLOSETASKS",
+            "description": "关账任务列表",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -379,6 +915,47 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CYCLE",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "TESTRUN",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -402,6 +979,45 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "CALCTYPE",
+            "description": "计算类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -425,6 +1041,45 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "ORDERTYPE",
+            "description": "订单类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -448,6 +1103,22 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "订单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -471,6 +1142,30 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "订单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -494,6 +1189,96 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUART",
+            "description": "订单类型（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUKRS",
+            "description": "公司代码（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "工厂（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "订单状态（可选）\n\n - ORDER_STATUS_CREATED: 已创建\n - ORDER_STATUS_RELEASED: 已下达\n - ORDER_STATUS_PARTIALLY_COMPLETED: 部分完成\n - ORDER_STATUS_COMPLETED: 技术完成\n - ORDER_STATUS_CLOSED: 业务关闭\n - ORDER_STATUS_SETTLED: 已结算",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ORDER_STATUS_UNSPECIFIED",
+              "ORDER_STATUS_CREATED",
+              "ORDER_STATUS_RELEASED",
+              "ORDER_STATUS_PARTIALLY_COMPLETED",
+              "ORDER_STATUS_COMPLETED",
+              "ORDER_STATUS_CLOSED",
+              "ORDER_STATUS_SETTLED"
+            ],
+            "default": "ORDER_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "PRCTR",
+            "description": "利润中心（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTV",
+            "description": "责任成本中心（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PDAT1FROM",
+            "description": "计划开始日期从",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PDAT1TO",
+            "description": "计划开始日期至",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -517,6 +1302,102 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SKOSTL",
+            "description": "发送方成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LSTAR",
+            "description": "作业类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EKOSTL",
+            "description": "接收方成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EAUFNR",
+            "description": "接收方内部订单（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EPSPNR",
+            "description": "接收方WBS（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LSTTR.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LSTTR.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MEINH",
+            "description": "单位",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "SGTXT",
+            "description": "文本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -540,6 +1421,131 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KSTAR",
+            "description": "成本要素",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WKGBTR.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "MBGBTR.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MBGBTR.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MEINH",
+            "description": "单位",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VRGNG",
+            "description": "业务类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SGTXT",
+            "description": "文本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "XBLNR",
+            "description": "参考凭证",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRCTR",
+            "description": "利润中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "关联内部订单（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -563,6 +1569,96 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTLFROM",
+            "description": "源成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTLTO",
+            "description": "目标成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KSTAR",
+            "description": "成本要素",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WKGBTR.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "VRGNG",
+            "description": "业务类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SGTXT",
+            "description": "文本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -586,6 +1682,96 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SKOSTL",
+            "description": "发送方成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EKOSTL",
+            "description": "接收方成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KSTAR",
+            "description": "成本要素",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WKGBTR.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "VRGNG",
+            "description": "业务类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SGTXT",
+            "description": "文本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -609,6 +1795,110 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "内部订单",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KSTAR",
+            "description": "成本要素",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "WKGBTR.currencyCode",
+            "description": "ISO 4217 货币代码 (CNY, USD, EUR)，对应WAERS字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.amount",
+            "description": "金额值，使用字符串表示以保持精度",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WKGBTR.scale",
+            "description": "小数位数",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "MBGBTR.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MBGBTR.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VRGNG",
+            "description": "业务类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SGTXT",
+            "description": "文本",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -632,6 +1922,65 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ERLOB",
+            "description": "经营范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "KNDNR",
+            "description": "客户（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "产品（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VKORG",
+            "description": "销售组织（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VTWEG",
+            "description": "分销渠道（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SPART",
+            "description": "产品组（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -655,6 +2004,66 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STAGR",
+            "description": "统计指标",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "VALUE.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VALUE.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WRTTP",
+            "description": "记录类型 (1=计划, 2=实际)",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -678,6 +2087,74 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ERLOB",
+            "description": "经营范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "description": "起始期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "description": "结束期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "KNDNR",
+            "description": "客户（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "产品（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VKORG",
+            "description": "销售组织（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SPART",
+            "description": "产品组（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -701,6 +2178,29 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRCTR",
+            "description": "利润中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -724,6 +2224,41 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PRCTR",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOFROM",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIOTO",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -747,6 +2282,56 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUKRS",
+            "description": "公司代码（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SEGMENT",
+            "description": "分部（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VERAK",
+            "description": "负责人（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DATUM",
+            "description": "查询日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -770,6 +2355,22 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "订单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -793,6 +2394,45 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DOCNO",
+            "description": "凭证号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "会计年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "REVDT",
+            "description": "冲销日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "REASON",
+            "description": "冲销原因",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -816,6 +2456,66 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "KOKRS",
+            "description": "控制范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "AUFNR",
+            "description": "内部订单",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "GJAHR",
+            "description": "年度",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "PERIO",
+            "description": "期间",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "TESTRUN",
+            "description": "测试运行",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "FULLSETTLEMENT",
+            "description": "完全结算",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "DOCDATE",
+            "description": "凭证日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "POSTDATE",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ControllingService"
         ]
@@ -845,6 +2545,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -854,29 +2555,37 @@
       "type": "object",
       "properties": {
         "KOSTL": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心"
         },
         "LSTAR": {
-          "type": "string"
+          "type": "string",
+          "title": "作业类型"
         },
         "PERIO": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "期间"
         },
         "fixedPrice": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "固定价格"
         },
         "variablePrice": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "变动价格"
         },
         "totalPrice": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "总价格"
         },
         "plannedQty": {
-          "$ref": "#/definitions/v1Quantity"
+          "$ref": "#/definitions/v1Quantity",
+          "title": "计划数量"
         },
         "plannedCost": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "计划成本"
         }
       },
       "title": "作业价格结果"
@@ -885,31 +2594,40 @@
       "type": "object",
       "properties": {
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "LSTAR": {
-          "type": "string"
+          "type": "string",
+          "title": "作业类型"
         },
         "DATAB": {
-          "type": "string"
+          "type": "string",
+          "title": "有效起始日期"
         },
         "DATBI": {
-          "type": "string"
+          "type": "string",
+          "title": "有效截止日期"
         },
         "MEINH": {
-          "type": "string"
+          "type": "string",
+          "title": "作业单位"
         },
         "KTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "LSTARVAR": {
-          "type": "string"
+          "type": "string",
+          "title": "价格指标"
         },
         "SPERK": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "价格锁定"
         },
         "LOEKZ": {
-          "type": "string"
+          "type": "string",
+          "title": "删除标识"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -921,33 +2639,42 @@
       "type": "object",
       "properties": {
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "CYCLE": {
-          "type": "string"
+          "type": "string",
+          "title": "周期名称"
         },
         "CTYPE": {
-          "type": "string"
+          "type": "string",
+          "title": "周期类型 (ASM=分摊, DST=分配)"
         },
         "KTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "DATAB": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "有效起始"
         },
         "DATBI": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "有效截止"
         },
         "AKTIV": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "激活状态"
         },
         "segments": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1AllocationSegment"
-          }
+          },
+          "title": "分摊段"
         }
       },
       "title": "分摊/分配周期"
@@ -956,16 +2683,20 @@
       "type": "object",
       "properties": {
         "senderKostl": {
-          "type": "string"
+          "type": "string",
+          "title": "发送方"
         },
         "receiverKostl": {
-          "type": "string"
+          "type": "string",
+          "title": "接收方"
         },
         "kstar": {
-          "type": "string"
+          "type": "string",
+          "title": "成本要素"
         },
         "amount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         }
       },
       "title": "分摊结果"
@@ -975,20 +2706,25 @@
       "properties": {
         "SESSION": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "段号"
         },
         "SENDER": {
-          "type": "string"
+          "type": "string",
+          "title": "发送方规则"
         },
         "RECEIVER": {
-          "type": "string"
+          "type": "string",
+          "title": "接收方规则"
         },
         "TRATY": {
-          "type": "string"
+          "type": "string",
+          "title": "追踪因子类型"
         },
         "PROZS": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "固定百分比"
         }
       },
       "title": "分摊段"
@@ -1022,19 +2758,23 @@
       "properties": {
         "total": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "总数"
         },
         "success": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "成功数"
         },
         "failed": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "失败数"
         },
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CreateCostDocumentResponse"
           }
         },
@@ -1053,6 +2793,7 @@
         "prices": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ActivityPriceResult"
           }
         },
@@ -1081,55 +2822,72 @@
       "type": "object",
       "properties": {
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "KOSTL": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心"
         },
         "DATAB": {
-          "type": "string"
+          "type": "string",
+          "title": "有效起始日期"
         },
         "DATBI": {
-          "type": "string"
+          "type": "string",
+          "title": "有效截止日期"
         },
         "KOSAR": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心类型"
         },
         "VERAK": {
-          "type": "string"
+          "type": "string",
+          "title": "负责人"
         },
         "VERAKUSER": {
-          "type": "string"
+          "type": "string",
+          "title": "负责人用户ID"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "GSBER": {
-          "type": "string"
+          "type": "string",
+          "title": "业务范围"
         },
         "PRCTR": {
-          "type": "string"
+          "type": "string",
+          "title": "利润中心"
         },
         "KHINR": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心层次"
         },
         "KTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "LTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "长文本"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "BKZKP": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "锁定计划"
         },
         "BKZKS": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "锁定实际"
         },
         "LOEKZ": {
-          "type": "string"
+          "type": "string",
+          "title": "删除标识"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -1141,23 +2899,29 @@
       "type": "object",
       "properties": {
         "KSTAR": {
-          "type": "string"
+          "type": "string",
+          "title": "成本要素"
         },
         "KSTARTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "planAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "计划"
         },
         "actualAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "实际"
         },
         "variance": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "差异"
         },
         "variancePct": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "差异百分比"
         }
       },
       "title": "成本中心报表行"
@@ -1167,40 +2931,52 @@
       "properties": {
         "ZEARNR": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "行号"
         },
         "KOSTL": {
-          "type": "string"
+          "type": "string",
+          "title": "成本中心"
         },
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "内部订单"
         },
         "KSTAR": {
-          "type": "string"
+          "type": "string",
+          "title": "成本要素"
         },
         "WBSELEMENT": {
-          "type": "string"
+          "type": "string",
+          "title": "WBS元素"
         },
         "VRGNG": {
-          "type": "string"
+          "type": "string",
+          "title": "业务类型"
         },
         "WKGBTR": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         },
         "MBGBTR": {
-          "$ref": "#/definitions/v1Quantity"
+          "$ref": "#/definitions/v1Quantity",
+          "title": "数量"
         },
         "MEINH": {
-          "type": "string"
+          "type": "string",
+          "title": "单位"
         },
         "SGTXT": {
-          "type": "string"
+          "type": "string",
+          "title": "文本"
         },
         "PRCTR": {
-          "type": "string"
+          "type": "string",
+          "title": "利润中心"
         },
         "SHKZG": {
-          "type": "string"
+          "type": "string",
+          "title": "借贷标识 (S=借方, H=贷方)"
         }
       },
       "title": "成本凭证行项目"
@@ -1209,23 +2985,29 @@
       "type": "object",
       "properties": {
         "KSTAR": {
-          "type": "string"
+          "type": "string",
+          "title": "成本要素"
         },
         "KSTARTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "planAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "计划"
         },
         "actualAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "实际"
         },
         "variance": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "差异"
         },
         "variancePct": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "差异百分比"
         }
       },
       "title": "成本要素行"
@@ -1234,16 +3016,20 @@
       "type": "object",
       "properties": {
         "order": {
-          "type": "string"
+          "type": "string",
+          "title": "订单"
         },
         "costElement": {
-          "type": "string"
+          "type": "string",
+          "title": "成本要素"
         },
         "fixedAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "固定部分"
         },
         "variableAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "变动部分"
         }
       },
       "title": "成本拆分结果"
@@ -1252,36 +3038,46 @@
       "type": "object",
       "properties": {
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "BLART": {
-          "type": "string"
+          "type": "string",
+          "title": "凭证类型"
         },
         "BUDAT": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "过账日期"
         },
         "BLDAT": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "凭证日期"
         },
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostDocumentLine"
-          }
+          },
+          "title": "行项目"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "XBLNR": {
-          "type": "string"
+          "type": "string",
+          "title": "参考凭证号"
         },
         "BKTXT": {
-          "type": "string"
+          "type": "string",
+          "title": "凭证文本"
         }
       },
       "title": "创建成本凭证请求"
@@ -1290,14 +3086,17 @@
       "type": "object",
       "properties": {
         "DOCNO": {
-          "type": "string"
+          "type": "string",
+          "title": "凭证号"
         },
         "OBJNR": {
-          "type": "string"
+          "type": "string",
+          "title": "对象号"
         },
         "postedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "过账时间"
         }
       },
       "title": "创建成本凭证响应"
@@ -1306,10 +3105,12 @@
       "type": "object",
       "properties": {
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "订单号"
         },
         "OBJNR": {
-          "type": "string"
+          "type": "string",
+          "title": "对象号"
         }
       },
       "title": "创建内部订单响应"
@@ -1326,6 +3127,7 @@
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostSplitResult"
           }
         }
@@ -1336,20 +3138,25 @@
       "type": "object",
       "properties": {
         "RUNID": {
-          "type": "string"
+          "type": "string",
+          "title": "运行ID"
         },
         "documentsCreated": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "创建凭证数"
         },
         "totalAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "总金额"
         },
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1AllocationResult"
-          }
+          },
+          "title": "分摊结果"
         },
         "success": {
           "type": "boolean"
@@ -1376,6 +3183,7 @@
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1AllocationResult"
           }
         },
@@ -1400,6 +3208,7 @@
         "taskResults": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1PeriodCloseTaskResult"
           }
         }
@@ -1440,6 +3249,7 @@
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1VarianceResult"
           }
         }
@@ -1458,6 +3268,7 @@
         "results": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1WIPResult"
           }
         }
@@ -1495,6 +3306,7 @@
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostElementLine"
           }
         },
@@ -1523,6 +3335,7 @@
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostCenterReportLine"
           }
         },
@@ -1566,6 +3379,7 @@
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostDocumentLine"
           }
         },
@@ -1591,17 +3405,20 @@
           "$ref": "#/definitions/v1Money"
         },
         "committed": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "承诺"
         },
         "actual": {
           "$ref": "#/definitions/v1Money"
         },
         "available": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "可用"
         },
         "costLines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1OrderCostLine"
           }
         }
@@ -1624,21 +3441,26 @@
           "type": "string"
         },
         "revenue": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "收入"
         },
         "cost": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "成本"
         },
         "profit": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "利润"
         },
         "margin": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "利润率"
         },
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ProfitCenterLine"
           }
         }
@@ -1660,21 +3482,26 @@
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ProfitabilityLine"
           }
         },
         "totalRevenue": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "总收入"
         },
         "totalCost": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "总成本"
         },
         "totalProfit": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "总利润"
         },
         "profitMargin": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "利润率"
         }
       },
       "title": "获利分析报表响应"
@@ -1683,77 +3510,100 @@
       "type": "object",
       "properties": {
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "订单号"
         },
         "AUART": {
-          "type": "string"
+          "type": "string",
+          "title": "订单类型"
         },
         "AUTYP": {
-          "type": "string"
+          "type": "string",
+          "title": "订单类别 (01=维护, 02=投资, 03=间接费用, 04=收入)"
         },
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "WERKS": {
-          "type": "string"
+          "type": "string",
+          "title": "工厂"
         },
         "GSBER": {
-          "type": "string"
+          "type": "string",
+          "title": "业务范围"
         },
         "KOSTV": {
-          "type": "string"
+          "type": "string",
+          "title": "责任成本中心"
         },
         "PRCTR": {
-          "type": "string"
+          "type": "string",
+          "title": "利润中心"
         },
         "KTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "短文本"
         },
         "LTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "长文本"
         },
         "ASTNR": {
-          "type": "string"
+          "type": "string",
+          "title": "申请人"
         },
         "WAERS": {
-          "type": "string"
+          "type": "string",
+          "title": "货币"
         },
         "PDAT1": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "计划开始日期"
         },
         "PDAT2": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "计划完成日期"
         },
         "IDAT1": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "实际开始日期"
         },
         "IDAT2": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "实际完成日期"
         },
         "BUDGET": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "预算金额"
         },
         "OBLIGO": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "承诺金额"
         },
         "ACTUAL": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "实际金额"
         },
         "OBJNR": {
-          "type": "string"
+          "type": "string",
+          "title": "对象号"
         },
         "STATUS": {
-          "$ref": "#/definitions/v1OrderStatus"
+          "$ref": "#/definitions/v1OrderStatus",
+          "title": "订单状态"
         },
         "LOEKZ": {
-          "type": "string"
+          "type": "string",
+          "title": "删除标识"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -1761,8 +3611,10 @@
         "settlementRules": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1InternalOrderSettlementRule"
-          }
+          },
+          "title": "结算规则"
         }
       },
       "title": "内部订单主数据"
@@ -1772,32 +3624,41 @@
       "properties": {
         "SESSION": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "序号"
         },
         "KONTY": {
-          "type": "string"
+          "type": "string",
+          "title": "结算接收器类型 (COSTL=成本中心, ORD=订单, WBS=WBS)"
         },
         "KOSTL": {
-          "type": "string"
+          "type": "string",
+          "title": "结算至成本中心"
         },
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "结算至内部订单"
         },
         "PSPNR": {
-          "type": "string"
+          "type": "string",
+          "title": "结算至WBS"
         },
         "HKONT": {
-          "type": "string"
+          "type": "string",
+          "title": "结算至总账科目"
         },
         "ANLN1": {
-          "type": "string"
+          "type": "string",
+          "title": "结算至资产"
         },
         "PROZS": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "结算百分比"
         },
         "AUBER": {
-          "type": "string"
+          "type": "string",
+          "title": "结算类型"
         }
       },
       "title": "内部订单结算规则"
@@ -1808,6 +3669,7 @@
         "activityTypes": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ActivityType"
           }
         },
@@ -1827,6 +3689,7 @@
         "costCenters": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1CostCenter"
           }
         },
@@ -1846,6 +3709,7 @@
         "documents": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1GetCostDocumentResponse"
           }
         },
@@ -1865,6 +3729,7 @@
         "internalOrders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1InternalOrder"
           }
         },
@@ -1884,6 +3749,7 @@
         "profitCenters": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1ProfitCenter"
           }
         },
@@ -1950,37 +3816,47 @@
         "ORDER_STATUS_SETTLED"
       ],
       "default": "ORDER_STATUS_UNSPECIFIED",
+      "description": "- ORDER_STATUS_CREATED: 已创建\n - ORDER_STATUS_RELEASED: 已下达\n - ORDER_STATUS_PARTIALLY_COMPLETED: 部分完成\n - ORDER_STATUS_COMPLETED: 技术完成\n - ORDER_STATUS_CLOSED: 业务关闭\n - ORDER_STATUS_SETTLED: 已结算",
       "title": "订单状态枚举"
     },
     "v1PALineItem": {
       "type": "object",
       "properties": {
         "KNDNR": {
-          "type": "string"
+          "type": "string",
+          "title": "客户"
         },
         "MATNR": {
-          "type": "string"
+          "type": "string",
+          "title": "产品"
         },
         "VKORG": {
-          "type": "string"
+          "type": "string",
+          "title": "销售组织"
         },
         "VTWEG": {
-          "type": "string"
+          "type": "string",
+          "title": "分销渠道"
         },
         "SPART": {
-          "type": "string"
+          "type": "string",
+          "title": "产品组"
         },
         "ABSMG": {
-          "$ref": "#/definitions/v1Quantity"
+          "$ref": "#/definitions/v1Quantity",
+          "title": "数量"
         },
         "VV001": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "销售收入"
         },
         "VV010": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "销售成本"
         },
         "VV020": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "毛利"
         }
       },
       "title": "PA行项目"
@@ -2007,7 +3883,8 @@
           "type": "string"
         },
         "calculatedAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "计算的金额"
         },
         "postedAt": {
           "type": "string",
@@ -2020,14 +3897,17 @@
       "type": "object",
       "properties": {
         "DOCNO": {
-          "type": "string"
+          "type": "string",
+          "title": "凭证号"
         },
         "OBJNR": {
-          "type": "string"
+          "type": "string",
+          "title": "对象号"
         },
         "postedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "过账时间"
         }
       },
       "title": "成本中心初始过账响应"
@@ -2101,37 +3981,48 @@
       "type": "object",
       "properties": {
         "KOKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "控制范围"
         },
         "PRCTR": {
-          "type": "string"
+          "type": "string",
+          "title": "利润中心"
         },
         "DATAB": {
-          "type": "string"
+          "type": "string",
+          "title": "有效起始日期"
         },
         "DATBI": {
-          "type": "string"
+          "type": "string",
+          "title": "有效截止日期"
         },
         "BUKRS": {
-          "type": "string"
+          "type": "string",
+          "title": "公司代码"
         },
         "SEGMENT": {
-          "type": "string"
+          "type": "string",
+          "title": "分部"
         },
         "VERAK": {
-          "type": "string"
+          "type": "string",
+          "title": "负责人"
         },
         "KTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "描述"
         },
         "LTEXT": {
-          "type": "string"
+          "type": "string",
+          "title": "长文本"
         },
         "PKHINR": {
-          "type": "string"
+          "type": "string",
+          "title": "利润中心层次"
         },
         "LOEKZ": {
-          "type": "string"
+          "type": "string",
+          "title": "删除标识"
         },
         "auditInfo": {
           "$ref": "#/definitions/v1AuditInfo"
@@ -2143,10 +4034,12 @@
       "type": "object",
       "properties": {
         "accountType": {
-          "type": "string"
+          "type": "string",
+          "title": "科目类型"
         },
         "account": {
-          "type": "string"
+          "type": "string",
+          "title": "科目"
         },
         "description": {
           "type": "string"
@@ -2161,20 +4054,25 @@
       "type": "object",
       "properties": {
         "segment": {
-          "type": "string"
+          "type": "string",
+          "title": "分段"
         },
         "revenue": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "收入"
         },
         "cost": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "成本"
         },
         "profit": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "利润"
         },
         "margin": {
           "type": "number",
-          "format": "double"
+          "format": "double",
+          "title": "利润率"
         }
       },
       "title": "获利分析报表行"
@@ -2209,10 +4107,12 @@
       "type": "object",
       "properties": {
         "originalDocNo": {
-          "type": "string"
+          "type": "string",
+          "title": "原始凭证号"
         },
         "reversalDocNo": {
-          "type": "string"
+          "type": "string",
+          "title": "冲销凭证号"
         },
         "postedAt": {
           "type": "string",
@@ -2225,16 +4125,20 @@
       "type": "object",
       "properties": {
         "DOCNO": {
-          "type": "string"
+          "type": "string",
+          "title": "结算凭证号"
         },
         "settledAmount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "结算金额"
         },
         "lines": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1SettlementLine"
-          }
+          },
+          "title": "结算明细"
         },
         "success": {
           "type": "boolean"
@@ -2249,17 +4153,21 @@
       "type": "object",
       "properties": {
         "receiverType": {
-          "type": "string"
+          "type": "string",
+          "title": "接收器类型 (COSTL/ORD/WBS/ANL)"
         },
         "receiver": {
-          "type": "string"
+          "type": "string",
+          "title": "接收器"
         },
         "amount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         },
         "percentage": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "百分比"
         }
       },
       "title": "结算行"
@@ -2268,13 +4176,16 @@
       "type": "object",
       "properties": {
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "订单号"
         },
         "varianceCategory": {
-          "type": "string"
+          "type": "string",
+          "title": "差异类别"
         },
         "amount": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "金额"
         }
       },
       "title": "差异结果"
@@ -2283,13 +4194,16 @@
       "type": "object",
       "properties": {
         "AUFNR": {
-          "type": "string"
+          "type": "string",
+          "title": "订单号"
         },
         "WIP": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "在制品金额"
         },
         "variances": {
-          "$ref": "#/definitions/v1Money"
+          "$ref": "#/definitions/v1Money",
+          "title": "差异"
         }
       },
       "title": "在制品结果"

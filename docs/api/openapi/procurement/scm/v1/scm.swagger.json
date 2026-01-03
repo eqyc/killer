@@ -34,6 +34,51 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "物料号（可选，不填则全工厂运行）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "DISPO",
+            "description": "MRP控制者",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PLANDATE",
+            "description": "计划日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "CREATEPURCHASEREQ",
+            "description": "是否创建采购申请",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "CREATEPLANNEDORDER",
+            "description": "是否创建计划订单",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "SupplyChainService"
         ]
@@ -57,6 +102,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "PLANID",
+            "description": "计划标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "SupplyChainService"
         ]
@@ -80,6 +134,88 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "物料号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PLANTYPE",
+            "description": "计划类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PLANDATEFROM",
+            "description": "计划日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PLANDATETO",
+            "description": "计划日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "SupplyChainService"
         ]
@@ -109,6 +245,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -164,6 +301,7 @@
         "supplyPlans": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1SupplyPlan"
           },
           "title": "供应链计划列表"
@@ -363,6 +501,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1SupplyPlanItem"
           },
           "title": "计划行项目"

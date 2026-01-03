@@ -34,6 +34,96 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "VSTEL",
+            "description": "装运点",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LFART",
+            "description": "交货类型\n\n - LFART_UNSPECIFIED: 未指定\n - LFART_LF: LF = 标准交货\n - LFART_NL: NL = 补货交货\n - LFART_LR: LR = 退货交货\n - LFART_EL: EL = 快速交货",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "LFART_UNSPECIFIED",
+              "LFART_LF",
+              "LFART_NL",
+              "LFART_LR",
+              "LFART_EL"
+            ],
+            "default": "LFART_UNSPECIFIED"
+          },
+          {
+            "name": "KUNNR",
+            "description": "客户",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WADATFROM",
+            "description": "计划发货日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "WADATTO",
+            "description": "计划发货日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "WBSTK",
+            "description": "发货状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "ShippingService"
         ]
@@ -57,6 +147,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "VBELN",
+            "description": "交货单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ShippingService"
         ]
@@ -80,6 +179,23 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "VBELN",
+            "description": "交货单号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUDAT",
+            "description": "过账日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "ShippingService"
         ]
@@ -109,6 +225,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -225,6 +342,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1DeliveryItem"
           },
           "title": "行项目列表"
@@ -333,6 +451,7 @@
         "deliveries": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1Delivery"
           },
           "title": "交货单列表"

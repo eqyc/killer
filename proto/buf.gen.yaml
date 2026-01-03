@@ -6,13 +6,20 @@
 version: v2
 
 plugins:
-  # ==========================================================================
-  # OpenAPI (Swagger) 文档生成
-  # ==========================================================================
 
-  - local: protoc-gen-openapiv2
-    out: ../docs/api/openapi
-    opt: merge_file_name=killer-erp
+  # Prost - Protocol Buffers 消息类型生成
+  - local: protoc-gen-prost
+    out: ../libs/integration/api-contracts/src/gen
+    opt:
+      - compile_well_known_types
+      - extern_path=.google.protobuf=::prost_types
+
+  # Tonic - gRPC 服务代码生成
+  - local: protoc-gen-tonic
+    out: ../libs/integration/api-contracts/src/gen
+    opt:
+      - compile_well_known_types
+      - extern_path=.google.protobuf=::prost_types
 
 inputs:
   - directory: .

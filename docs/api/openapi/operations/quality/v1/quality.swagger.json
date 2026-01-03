@@ -34,6 +34,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "PRUEFLOS",
+            "description": "质检批号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "QualityService"
         ]
@@ -57,6 +66,88 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MATNR",
+            "description": "物料号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ART",
+            "description": "检验类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STAT35",
+            "description": "系统状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PASTRTERMFROM",
+            "description": "检验开始日期起",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PASTRTERMTO",
+            "description": "检验开始日期止",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "QualityService"
         ]
@@ -80,6 +171,50 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "PRUEFLOS",
+            "description": "质检批号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "VCODE",
+            "description": "使用决策代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MGVGBZ.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MGVGBZ.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MGVGBX.value",
+            "description": "数量值",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MGVGBX.unit",
+            "description": "计量单位，对应MEINS/VRKME等单位字段",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "QualityService"
         ]
@@ -109,6 +244,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -251,6 +387,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1InspectionLotItem"
           },
           "title": "检验项目列表"
@@ -323,6 +460,7 @@
         "inspectionLots": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1InspectionLot"
           },
           "title": "质检批列表"

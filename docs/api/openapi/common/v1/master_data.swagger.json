@@ -34,6 +34,36 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "RECORDID",
+            "description": "记录标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "TYPE",
+            "description": "或通过类型+对象编号查询",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "OBJECTID",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "effectiveDate",
+            "description": "有效日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "MasterDataService"
         ]
@@ -57,6 +87,79 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "TYPE",
+            "description": "主数据类型",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BUKRS",
+            "description": "公司代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "工厂",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SOURCESYSTEM",
+            "description": "数据来源",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "MasterDataService"
         ]
@@ -80,6 +183,29 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "RECORDID",
+            "description": "记录标识",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "新状态",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "NOTES",
+            "description": "备注",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "MasterDataService"
         ]
@@ -109,6 +235,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -164,6 +291,7 @@
         "masterRecords": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1MasterRecord"
           },
           "title": "主数据记录列表"
@@ -254,6 +382,7 @@
         "fields": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1MasterRecordField"
           },
           "title": "扩展字段列表"

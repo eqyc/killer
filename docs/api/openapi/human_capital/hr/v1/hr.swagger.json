@@ -34,6 +34,23 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "PERNR",
+            "description": "人员编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "effectiveDate",
+            "description": "生效日期（可选，默认当前日期）",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
         "tags": [
           "HRService"
         ]
@@ -57,6 +74,86 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "BUKRS",
+            "description": "公司代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "人事范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ORGEH",
+            "description": "组织单位",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PERSG",
+            "description": "员工组",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "STATUS",
+            "description": "在职状态（在职/离职）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.pageNumber",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.pageSize",
+            "description": "每页大小（默认20，最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageRequest.sortBy",
+            "description": "排序字段名",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageRequest.sortOrder",
+            "description": "排序方向\n\n - SORT_ORDER_UNSPECIFIED: 未指定\n - SORT_ORDER_ASC: 升序\n - SORT_ORDER_DESC: 降序",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SORT_ORDER_UNSPECIFIED",
+              "SORT_ORDER_ASC",
+              "SORT_ORDER_DESC"
+            ],
+            "default": "SORT_ORDER_UNSPECIFIED"
+          }
+        ],
         "tags": [
           "HRService"
         ]
@@ -80,6 +177,65 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "PERNR",
+            "description": "人员编号",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "BEGDA",
+            "description": "生效日期",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "BUKRS",
+            "description": "新公司代码",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "WERKS",
+            "description": "新人事范围",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "KOSTL",
+            "description": "新成本中心",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ORGEH",
+            "description": "新组织单位",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "PLANS",
+            "description": "新职位",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "REASON",
+            "description": "变更原因",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "HRService"
         ]
@@ -109,6 +265,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -249,6 +406,7 @@
         "records": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1EmployeeInfoRecord"
           },
           "title": "信息类型记录列表"
@@ -313,6 +471,7 @@
         "employees": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1Employee"
           },
           "title": "员工列表"
