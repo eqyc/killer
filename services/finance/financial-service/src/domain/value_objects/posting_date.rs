@@ -60,11 +60,11 @@ impl PostingDate {
     /// 获取所在月份的最后一天
     pub fn month_end(&self) -> NaiveDate {
         let next_month = if self.0.month() == 12 {
-            NaiveDate::new(self.0.year() + 1, 1, 1)
+            NaiveDate::from_ymd_opt(self.0.year() + 1, 1, 1).unwrap()
         } else {
-            NaiveDate::new(self.0.year(), self.0.month() + 1, 1)
+            NaiveDate::from_ymd_opt(self.0.year(), self.0.month() + 1, 1).unwrap()
         };
-        next_month.pred()
+        next_month.pred_opt().unwrap()
     }
 }
 

@@ -102,12 +102,27 @@ impl BankAccount {
         self.bank_type.as_deref()
     }
 
-    pub fn current_balance(&self) -> Money {
-        self.current_balance
+    pub fn is_active(&self) -> bool {
+        // 银行账户默认都是激活的
+        true
     }
 
-    pub fn available_balance(&self) -> Money {
-        self.available_balance
+    pub fn current_balance(&self) -> &Money {
+        &self.current_balance
+    }
+
+    pub fn available_balance(&self) -> &Money {
+        &self.available_balance
+    }
+
+    /// 获取当前余额的金额值
+    pub fn current_balance_amount(&self) -> rust_decimal::Decimal {
+        self.current_balance.amount()
+    }
+
+    /// 获取可用余额的金额值
+    pub fn available_balance_amount(&self) -> rust_decimal::Decimal {
+        self.available_balance.amount()
     }
 
     // Commands
@@ -146,8 +161,8 @@ impl BankAccount {
 
     /// 存入资金
     pub fn deposit(&mut self, amount: Money) {
-        self.current_balance = self.current_balance.add(amount);
-        self.available_balance = self.available_balance.add(amount);
+        self.current_balance = self.current_balance.add(&amount).unwrap();
+        self.available_balance = self.available_balance.add(&amount).unwrap();
     }
 
     /// 支出资金
@@ -155,14 +170,14 @@ impl BankAccount {
         if self.available_balance < amount {
             return Err("可用余额不足".to_string());
         }
-        self.available_balance = self.available_balance.sub(amount);
+        self.available_balance = self.available_balance.subtract(&amount).unwrap();
         // 实际扣款可能在清算后才发生
         Ok(())
     }
 
     /// 确认扣款
     pub fn confirm_debit(&mut self, amount: Money) {
-        self.current_balance = self.current_balance.sub(amount);
+        self.current_balance = self.current_balance.subtract(&amount).unwrap();
     }
 
     /// 更新余额（用于对账）

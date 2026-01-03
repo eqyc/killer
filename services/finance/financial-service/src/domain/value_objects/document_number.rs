@@ -31,7 +31,7 @@ impl DocumentNumber {
             return Err(DocumentNumberError::TooLong(number.len()));
         }
         if !number.chars().all(|c| c.is_ascii_digit()) {
-            return Err(DocumentNumberError::InvalidFormat(number.clone()));
+            return Err(DocumentNumberError::InvalidFormat(number.to_string()));
         }
         Ok(())
     }

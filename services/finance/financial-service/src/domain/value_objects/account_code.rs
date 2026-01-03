@@ -26,7 +26,7 @@ impl AccountCode {
             return Err(AccountCodeError::TooLong(code.len()));
         }
         if !code.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '-') {
-            return Err(AccountCodeError::InvalidFormat(code.clone()));
+            return Err(AccountCodeError::InvalidFormat(code.to_string()));
         }
         Ok(())
     }

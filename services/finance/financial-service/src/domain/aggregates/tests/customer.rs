@@ -1,6 +1,6 @@
 //! Customer 单元测试
 
-use crate::domain::aggregates::Customer;
+use crate::domain::aggregates::{Customer, CustomerStatus};
 use killer_domain_primitives::CompanyCode;
 
 #[test]
@@ -22,7 +22,7 @@ fn test_new_customer() {
     assert_eq!(customer.name_1(), "测试公司");
     assert_eq!(customer.country(), "CN");
     assert_eq!(customer.currency(), "CNY");
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Active);
+    assert_eq!(customer.status(), CustomerStatus::Active);
 }
 
 #[test]
@@ -39,7 +39,7 @@ fn test_customer_set_tax_number() {
     );
 
     customer.set_tax_number("91310000781789823A".to_string(), "TEST_USER");
-    assert_eq!(customer.tax_number(), Some(&"91310000781789823A".to_string()));
+    assert_eq!(customer.tax_number(), Some("91310000781789823A"));
 }
 
 #[test]
@@ -65,9 +65,9 @@ fn test_customer_update_basic_info() {
     );
 
     assert_eq!(customer.name_1(), "新公司名");
-    assert_eq!(customer.street(), Some(&"北京市".to_string()));
-    assert_eq!(customer.city(), Some(&"朝阳区".to_string()));
-    assert_eq!(customer.postal_code(), Some(&"100000".to_string()));
+    assert_eq!(customer.street(), Some("北京市"));
+    assert_eq!(customer.city(), Some("朝阳区"));
+    assert_eq!(customer.postal_code(), Some("100000"));
 }
 
 #[test]
@@ -93,7 +93,7 @@ fn test_customer_update_financial_info() {
 
     assert_eq!(customer.reconciliation_account(), "1402000000");
     assert_eq!(customer.payment_terms(), "0001");
-    assert_eq!(customer.payment_methods(), Some(&"T".to_string()));
+    assert_eq!(customer.payment_methods(), Some("T"));
 }
 
 #[test]
@@ -115,8 +115,8 @@ fn test_customer_set_contact() {
         "TEST_USER",
     );
 
-    assert_eq!(customer.phone_number(), Some(&"010-12345678".to_string()));
-    assert_eq!(customer.email_address(), Some(&"test@example.com".to_string()));
+    assert_eq!(customer.phone_number(), Some("010-12345678"));
+    assert_eq!(customer.email_address(), Some("test@example.com"));
 }
 
 #[test]
@@ -132,10 +132,10 @@ fn test_customer_block() {
         "CNY",
     );
 
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Active);
+    assert_eq!(customer.status(), CustomerStatus::Active);
 
     customer.block("TEST_USER");
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Blocked);
+    assert_eq!(customer.status(), CustomerStatus::Blocked);
 }
 
 #[test]
@@ -152,10 +152,10 @@ fn test_customer_unblock() {
     );
 
     customer.block("TEST_USER");
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Blocked);
+    assert_eq!(customer.status(), CustomerStatus::Blocked);
 
     customer.unblock("TEST_USER");
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Active);
+    assert_eq!(customer.status(), CustomerStatus::Active);
 }
 
 #[test]
@@ -172,7 +172,7 @@ fn test_customer_delete() {
     );
 
     customer.delete("TEST_USER");
-    assert_eq!(customer.status(), &crate::domain::aggregates::CustomerStatus::Deleted);
+    assert_eq!(customer.status(), CustomerStatus::Deleted);
 }
 
 #[test]

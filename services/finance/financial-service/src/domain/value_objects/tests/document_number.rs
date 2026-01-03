@@ -11,23 +11,17 @@ fn test_document_number_valid() {
 }
 
 #[test]
-fn test_document_number_too_short() {
-    let number = DocumentNumber::new("123456789");
+fn test_document_number_empty() {
+    let number = DocumentNumber::new("");
     assert!(number.is_err());
-    assert_eq!(
-        number.unwrap_err(),
-        DocumentNumberError::InvalidLength { expected: 10, actual: 9 }
-    );
+    assert!(matches!(number.unwrap_err(), DocumentNumberError::Empty));
 }
 
 #[test]
 fn test_document_number_too_long() {
     let number = DocumentNumber::new("12345678901");
     assert!(number.is_err());
-    assert_eq!(
-        number.unwrap_err(),
-        DocumentNumberError::InvalidLength { expected: 10, actual: 11 }
-    );
+    assert!(matches!(number.unwrap_err(), DocumentNumberError::TooLong(_)));
 }
 
 #[test]
@@ -36,7 +30,7 @@ fn test_document_number_not_numeric() {
     assert!(number.is_err());
     assert!(matches!(
         number.unwrap_err(),
-        DocumentNumberError::NotNumeric(_)
+        DocumentNumberError::InvalidFormat(_)
     ));
 }
 

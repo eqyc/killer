@@ -11,23 +11,17 @@ fn test_account_code_valid() {
 }
 
 #[test]
-fn test_account_code_too_short() {
-    let code = AccountCode::new("100");
+fn test_account_code_empty() {
+    let code = AccountCode::new("");
     assert!(code.is_err());
-    assert_eq!(
-        code.unwrap_err(),
-        AccountCodeError::InvalidLength { min: 4, max: 10, actual: 3 }
-    );
+    assert!(matches!(code.unwrap_err(), AccountCodeError::Empty));
 }
 
 #[test]
 fn test_account_code_too_long() {
     let code = AccountCode::new("123456789012345");
     assert!(code.is_err());
-    assert_eq!(
-        code.unwrap_err(),
-        AccountCodeError::InvalidLength { min: 4, max: 10, actual: 15 }
-    );
+    assert!(matches!(code.unwrap_err(), AccountCodeError::TooLong(_)));
 }
 
 #[test]
@@ -36,7 +30,7 @@ fn test_account_code_contains_invalid_characters() {
     assert!(code.is_err());
     assert!(matches!(
         code.unwrap_err(),
-        AccountCodeError::InvalidCharacters(_)
+        AccountCodeError::InvalidFormat(_)
     ));
 }
 

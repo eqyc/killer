@@ -8,4 +8,4 @@ mod tests;
 
 // Re-exports for easier access
 pub use journal_entry_item::{JournalEntryItem, JournalEntryItemError, DebitCreditIndicator};
-pub use document::{Document, DocumentStatus};
+pub use document::{Document, DocumentStatus, DocumentType};

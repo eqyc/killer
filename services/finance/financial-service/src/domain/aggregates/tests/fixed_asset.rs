@@ -1,8 +1,8 @@
 //! FixedAsset 单元测试
 
 use crate::domain::aggregates::FixedAsset;
-use killer_domain_primitives::{CompanyCode, Money};
-use rust_decimal_macros::dec;
+use killer_domain_primitives::{CompanyCode, Money, CurrencyCode};
+use rust_decimal::Decimal;
 use chrono::{NaiveDate, Utc};
 
 #[test]
@@ -50,7 +50,7 @@ fn test_fixed_asset_set_cost_center() {
     );
 
     asset.set_cost_center("C10000001".to_string());
-    assert_eq!(asset.cost_center(), Some(&"C10000001".to_string()));
+    assert_eq!(asset.cost_center(), Some("C10000001"));
 }
 
 #[test]
@@ -65,7 +65,7 @@ fn test_fixed_asset_set_profit_center() {
     );
 
     asset.set_profit_center("P10000001".to_string());
-    assert_eq!(asset.profit_center(), Some(&"P10000001".to_string()));
+    assert_eq!(asset.profit_center(), Some("P10000001"));
 }
 
 #[test]
@@ -80,7 +80,7 @@ fn test_fixed_asset_set_location() {
     );
 
     asset.set_location("BJ001".to_string());
-    assert_eq!(asset.location(), Some(&"BJ001".to_string()));
+    assert_eq!(asset.location(), Some("BJ001"));
 }
 
 #[test]
@@ -94,13 +94,13 @@ fn test_fixed_asset_capitalize() {
         "生产设备",
     );
 
-    let acquisition_value = Money::new(dec!(100000.00), &"CNY").unwrap();
+    let acquisition_value = Money::new(Decimal::new(10000000, 2), CurrencyCode::CNY).unwrap();
     let capitalization_date = NaiveDate::from_ymd_opt(2024, 1, 15).unwrap();
 
-    asset.capitalize(capitalization_date, acquisition_value);
+    asset.capitalize(capitalization_date, acquisition_value.clone());
 
     assert_eq!(asset.status(), crate::domain::aggregates::AssetStatus::Capitalized);
-    assert_eq!(*asset.acquisition_value(), dec!(100000.00));
+    assert_eq!(asset.acquisition_value().amount(), Decimal::new(10000000, 2));
     assert_eq!(asset.capitalization_date(), Some(capitalization_date));
 }
 
@@ -116,17 +116,17 @@ fn test_fixed_asset_depreciate() {
     );
 
     // 先资本化
-    let acquisition_value = Money::new(dec!(100000.00), &"CNY").unwrap();
+    let acquisition_value = Money::new(Decimal::new(10000000, 2), CurrencyCode::CNY).unwrap();
     let capitalization_date = NaiveDate::from_ymd_opt(2024, 1, 15).unwrap();
     asset.capitalize(capitalization_date, acquisition_value);
 
     // 折旧
-    let depreciation_amount = Money::new(dec!(2000.00), &"CNY").unwrap();
+    let depreciation_amount = Money::new(Decimal::new(2000, 2), CurrencyCode::CNY).unwrap();
     asset.depreciate(depreciation_amount);
 
-    assert_eq!(*asset.accumulated_depreciation(), dec!(2000.00));
-    assert_eq!(asset.current_depreciation(), Money::new(dec!(2000.00), &"CNY").unwrap());
-    assert_eq!(asset.net_book_value(), Money::new(dec!(98000.00), &"CNY").unwrap());
+    assert_eq!(asset.accumulated_depreciation().amount(), Decimal::new(2000, 2));
+    assert_eq!(asset.current_depreciation().amount(), Decimal::new(2000, 2));
+    assert_eq!(asset.net_book_value().amount(), Decimal::new(98000, 2));
 }
 
 #[test]
@@ -149,9 +149,9 @@ fn test_fixed_asset_transfer() {
         Some("BJ01".to_string()),
     );
 
-    assert_eq!(asset.cost_center(), Some(&"C10000002".to_string()));
-    assert_eq!(asset.profit_center(), Some(&"P10000002".to_string()));
-    assert_eq!(asset.business_area(), Some(&"BJ01".to_string()));
+    assert_eq!(asset.cost_center(), Some("C10000002"));
+    assert_eq!(asset.profit_center(), Some("P10000002"));
+    assert_eq!(asset.business_area(), Some("BJ01"));
 }
 
 #[test]
@@ -166,16 +166,16 @@ fn test_fixed_asset_retire() {
     );
 
     // 先资本化
-    let acquisition_value = Money::new(dec!(100000.00), &"CNY").unwrap();
+    let acquisition_value = Money::new(Decimal::new(10000000, 2), CurrencyCode::CNY).unwrap();
     let capitalization_date = NaiveDate::from_ymd_opt(2024, 1, 15).unwrap();
     asset.capitalize(capitalization_date, acquisition_value);
 
     // 报废
-    let retirement_value = Money::new(dec!(5000.00), &"CNY").unwrap();
+    let retirement_value = Money::new(Decimal::new(5000, 2), CurrencyCode::CNY).unwrap();
     asset.retire(retirement_value).unwrap();
 
     assert_eq!(asset.status(), crate::domain::aggregates::AssetStatus::Retired);
-    assert_eq!(asset.retirement_value().unwrap().amount(), dec!(5000.00));
+    assert_eq!(asset.retirement_value().unwrap().amount(), Decimal::new(5000, 2));
     assert!(asset.decommissioning_date().is_some());
 }
 

@@ -3,7 +3,7 @@
 use crate::domain::aggregates::GLAccount;
 use crate::domain::value_objects::AccountCode;
 use killer_domain_primitives::{CompanyCode, Money};
-use rust_decimal_macros::dec;
+use rust_decimal::Decimal;
 
 #[test]
 fn test_new_gl_account() {

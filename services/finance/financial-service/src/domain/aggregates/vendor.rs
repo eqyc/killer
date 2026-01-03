@@ -135,6 +135,34 @@ impl Vendor {
         self.status == VendorStatus::Blocked
     }
 
+    pub fn tax_number(&self) -> Option<&str> {
+        self.tax_number_1.as_deref()
+    }
+
+    pub fn street(&self) -> Option<&str> {
+        self.street.as_deref()
+    }
+
+    pub fn city(&self) -> Option<&str> {
+        self.city.as_deref()
+    }
+
+    pub fn postal_code(&self) -> Option<&str> {
+        self.postal_code.as_deref()
+    }
+
+    pub fn payment_methods(&self) -> Option<&str> {
+        self.payment_methods.as_deref()
+    }
+
+    pub fn phone_number(&self) -> Option<&str> {
+        self.phone_number.as_deref()
+    }
+
+    pub fn email_address(&self) -> Option<&str> {
+        self.email_address.as_deref()
+    }
+
     // Commands
 
     /// 更新基本信息

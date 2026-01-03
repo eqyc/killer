@@ -93,12 +93,22 @@ impl JournalEntryItem {
         self.debit_credit
     }
 
-    pub fn document_currency_amount(&self) -> killer_domain_primitives::Money {
-        self.document_currency_amount
+    pub fn document_currency_amount(&self) -> &killer_domain_primitives::Money {
+        &self.document_currency_amount
     }
 
-    pub fn local_currency_amount(&self) -> killer_domain_primitives::Money {
-        self.local_currency_amount
+    pub fn local_currency_amount(&self) -> &killer_domain_primitives::Money {
+        &self.local_currency_amount
+    }
+
+    /// 获取凭证货币金额值
+    pub fn document_currency_amount_value(&self) -> rust_decimal::Decimal {
+        self.document_currency_amount.amount()
+    }
+
+    /// 获取本位币金额值
+    pub fn local_currency_amount_value(&self) -> rust_decimal::Decimal {
+        self.local_currency_amount.amount()
     }
 
     pub fn customer_id(&self) -> Option<&str> {
@@ -215,6 +225,15 @@ impl TryFrom<i32> for DebitCreditIndicator {
             1 => Ok(Self::Debit),
             2 => Ok(Self::Credit),
             _ => Err(JournalEntryItemError::InvalidDebitCredit(value)),
+        }
+    }
+}
+
+impl std::fmt::Display for DebitCreditIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Debit => write!(f, "S"),
+            Self::Credit => write!(f, "H"),
         }
     }
 }

@@ -107,12 +107,12 @@ impl JournalEntry {
         &self.items
     }
 
-    pub fn total_debit(&self) -> Money {
-        self.total_debit
+    pub fn total_debit(&self) -> &Money {
+        &self.total_debit
     }
 
-    pub fn total_credit(&self) -> Money {
-        self.total_credit
+    pub fn total_credit(&self) -> &Money {
+        &self.total_credit
     }
 
     pub fn is_balanced(&self) -> bool {
@@ -135,9 +135,9 @@ impl JournalEntry {
         // 验证借贷平衡
         let amount = item.document_currency_amount();
         if item.is_debit() {
-            self.total_debit = self.total_debit.add(amount);
+            self.total_debit = self.total_debit.add(amount).unwrap();
         } else {
-            self.total_credit = self.total_credit.add(amount);
+            self.total_credit = self.total_credit.add(amount).unwrap();
         }
 
         // 设置行号

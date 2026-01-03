@@ -1,6 +1,6 @@
 //! Vendor 单元测试
 
-use crate::domain::aggregates::Vendor;
+use crate::domain::aggregates::{Vendor, VendorStatus};
 use killer_domain_primitives::CompanyCode;
 
 #[test]
@@ -22,7 +22,7 @@ fn test_new_vendor() {
     assert_eq!(vendor.name_1(), "测试供应商");
     assert_eq!(vendor.country(), "CN");
     assert_eq!(vendor.currency(), "CNY");
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Active);
+    assert_eq!(vendor.status(), VendorStatus::Active);
 }
 
 #[test]
@@ -39,7 +39,7 @@ fn test_vendor_set_tax_number() {
     );
 
     vendor.set_tax_number("91310000781789823B".to_string(), "TEST_USER");
-    assert_eq!(vendor.tax_number(), Some(&"91310000781789823B".to_string()));
+    assert_eq!(vendor.tax_number(), Some("91310000781789823B"));
 }
 
 #[test]
@@ -65,9 +65,9 @@ fn test_vendor_update_basic_info() {
     );
 
     assert_eq!(vendor.name_1(), "新供应商名");
-    assert_eq!(vendor.street(), Some(&"上海市".to_string()));
-    assert_eq!(vendor.city(), Some(&"浦东新区".to_string()));
-    assert_eq!(vendor.postal_code(), Some(&"200000".to_string()));
+    assert_eq!(vendor.street(), Some("上海市"));
+    assert_eq!(vendor.city(), Some("浦东新区"));
+    assert_eq!(vendor.postal_code(), Some("200000"));
 }
 
 #[test]
@@ -93,7 +93,7 @@ fn test_vendor_update_financial_info() {
 
     assert_eq!(vendor.reconciliation_account(), "2202000000");
     assert_eq!(vendor.payment_terms(), "0001");
-    assert_eq!(vendor.payment_methods(), Some(&"T".to_string()));
+    assert_eq!(vendor.payment_methods(), Some("T"));
 }
 
 #[test]
@@ -115,8 +115,8 @@ fn test_vendor_set_contact() {
         "TEST_USER",
     );
 
-    assert_eq!(vendor.phone_number(), Some(&"021-87654321".to_string()));
-    assert_eq!(vendor.email_address(), Some(&"vendor@example.com".to_string()));
+    assert_eq!(vendor.phone_number(), Some("021-87654321"));
+    assert_eq!(vendor.email_address(), Some("vendor@example.com"));
 }
 
 #[test]
@@ -132,10 +132,10 @@ fn test_vendor_block() {
         "CNY",
     );
 
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Active);
+    assert_eq!(vendor.status(), VendorStatus::Active);
 
     vendor.block("TEST_USER");
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Blocked);
+    assert_eq!(vendor.status(), VendorStatus::Blocked);
 }
 
 #[test]
@@ -152,10 +152,10 @@ fn test_vendor_unblock() {
     );
 
     vendor.block("TEST_USER");
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Blocked);
+    assert_eq!(vendor.status(), VendorStatus::Blocked);
 
     vendor.unblock("TEST_USER");
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Active);
+    assert_eq!(vendor.status(), VendorStatus::Active);
 }
 
 #[test]
@@ -172,7 +172,7 @@ fn test_vendor_delete() {
     );
 
     vendor.delete("TEST_USER");
-    assert_eq!(vendor.status(), &crate::domain::aggregates::VendorStatus::Deleted);
+    assert_eq!(vendor.status(), VendorStatus::Deleted);
 }
 
 #[test]

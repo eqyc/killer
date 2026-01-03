@@ -155,8 +155,10 @@ impl FixedAsset {
     /// 计算账面价值
     pub fn book_value(&self) -> Money {
         self.acquisition_value
-            .sub(self.accumulated_depreciation.clone())
-            .sub(self.unplanned_depreciation.clone())
+            .subtract(&self.accumulated_depreciation.clone())
+            .unwrap()
+            .subtract(&self.unplanned_depreciation.clone())
+            .unwrap()
     }
 
     pub fn net_book_value(&self) -> Money {
@@ -223,12 +225,12 @@ impl FixedAsset {
 
     /// 折旧
     pub fn depreciate(&mut self, amount: Money) {
-        self.accumulated_depreciation = self.accumulated_depreciation.add(amount);
+        self.accumulated_depreciation = self.accumulated_depreciation.add(&amount).unwrap();
     }
 
     /// 计划外折旧
     pub fn unplanned_depreciation_amount(&mut self, amount: Money) {
-        self.unplanned_depreciation = self.unplanned_depreciation.add(amount);
+        self.unplanned_depreciation = self.unplanned_depreciation.add(&amount).unwrap();
     }
 
     /// 转移
