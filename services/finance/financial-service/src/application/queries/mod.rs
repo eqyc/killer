@@ -145,3 +145,123 @@ impl<R: VendorRepository> ListVendorsHandler<R> {
         self.repository.find_all(company_code).await
     }
 }
+
+// =============================================================================
+// 固定资产查询处理器
+// =============================================================================
+
+/// 查询固定资产处理器
+#[async_trait]
+pub struct GetFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> GetFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, company_code: &CompanyCode, asset_number: &str, sub_number: &str) -> Option<FixedAsset> {
+        self.repository.find_by_id(company_code, asset_number, sub_number).await
+    }
+}
+
+/// 查询固定资产列表处理器
+#[async_trait]
+pub struct ListFixedAssetsHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> ListFixedAssetsHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, company_code: &CompanyCode) -> Vec<FixedAsset> {
+        self.repository.find_all(company_code).await
+    }
+}
+
+/// 按状态查询固定资产处理器
+#[async_trait]
+pub struct ListFixedAssetsByStatusHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> ListFixedAssetsByStatusHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, company_code: &CompanyCode, status: i32) -> Vec<FixedAsset> {
+        self.repository.find_by_status(company_code, status).await
+    }
+}
+
+// =============================================================================
+// 银行账户查询处理器
+// =============================================================================
+
+/// 查询银行账户处理器
+#[async_trait]
+pub struct GetBankAccountHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> GetBankAccountHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, bank_key: &str, bank_account: &str) -> Option<BankAccount> {
+        self.repository.find_by_id(bank_key, bank_account).await
+    }
+}
+
+/// 查询所有银行账户处理器
+#[async_trait]
+pub struct ListBankAccountsHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> ListBankAccountsHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self) -> Vec<BankAccount> {
+        self.repository.find_all().await
+    }
+}
+
+/// 按国家查询银行账户处理器
+#[async_trait]
+pub struct ListBankAccountsByCountryHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> ListBankAccountsByCountryHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, country_code: &str) -> Vec<BankAccount> {
+        self.repository.find_by_country(country_code).await
+    }
+}
+
+/// 按 SWIFT 代码查询银行账户处理器
+#[async_trait]
+pub struct GetBankAccountBySwiftHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> GetBankAccountBySwiftHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, swift_code: &str) -> Option<BankAccount> {
+        self.repository.find_by_swift(swift_code).await
+    }
+}

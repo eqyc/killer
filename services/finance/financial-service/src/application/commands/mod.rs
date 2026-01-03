@@ -393,3 +393,326 @@ impl<R: VendorRepository> BlockVendorHandler<R> {
         Ok(())
     }
 }
+
+// =============================================================================
+// 固定资产命令处理器
+// =============================================================================
+
+/// 创建固定资产命令处理器
+#[async_trait]
+pub struct CreateFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> CreateFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: CreateFixedAssetDto) -> Result<FixedAsset, String> {
+        // 生成资产编号
+        let asset_number = format!("{:010}", chrono::Local::now().timestamp() as u32 % 10000000000u32);
+
+        // 创建固定资产
+        let mut asset = FixedAsset::new(
+            dto.company_code,
+            dto.asset_class,
+            dto.valuation_class,
+            dto.description,
+        );
+
+        asset.set_asset_number(asset_number);
+
+        if let Some(cc) = dto.cost_center {
+            asset.set_cost_center(cc);
+        }
+        if let Some(pc) = dto.profit_center {
+            asset.set_profit_center(pc);
+        }
+        if let Some(loc) = dto.location {
+            asset.set_location(loc);
+        }
+
+        // 保存
+        self.repository.save(&asset).await?;
+
+        Ok(asset)
+    }
+}
+
+/// 固定资产资本化命令处理器
+#[async_trait]
+pub struct CapitalizeFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> CapitalizeFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: CapitalizeFixedAssetDto) -> Result<FixedAsset, String> {
+        // 查找资产
+        let mut asset = self.repository
+            .find_by_id(&dto.company_code, &dto.asset_number, &dto.sub_number)
+            .await
+            .ok_or("固定资产不存在")?;
+
+        // 资本化
+        let acquisition_value = Money::new(dto.acquisition_value, &dto.currency)
+            .map_err(|e| e.to_string())?;
+
+        asset.capitalize(dto.capitalization_date, acquisition_value);
+
+        // 保存
+        self.repository.save(&asset).await?;
+
+        Ok(asset)
+    }
+}
+
+/// 固定资产折旧命令处理器
+#[async_trait]
+pub struct DepreciateFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> DepreciateFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: DepreciateFixedAssetDto) -> Result<FixedAsset, String> {
+        // 查找资产
+        let mut asset = self.repository
+            .find_by_id(&dto.company_code, &dto.asset_number, &dto.sub_number)
+            .await
+            .ok_or("固定资产不存在")?;
+
+        // 折旧
+        let depreciation_amount = Money::new(dto.depreciation_amount, &dto.currency)
+            .map_err(|e| e.to_string())?;
+
+        asset.depreciate(depreciation_amount);
+
+        // 保存
+        self.repository.save(&asset).await?;
+
+        Ok(asset)
+    }
+}
+
+/// 固定资产转移命令处理器
+#[async_trait]
+pub struct TransferFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> TransferFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: TransferFixedAssetDto) -> Result<FixedAsset, String> {
+        // 查找资产
+        let mut asset = self.repository
+            .find_by_id(&dto.company_code, &dto.asset_number, &dto.sub_number)
+            .await
+            .ok_or("固定资产不存在")?;
+
+        // 转移
+        asset.transfer(dto.new_cost_center, dto.new_profit_center, dto.new_business_area);
+
+        // 保存
+        self.repository.save(&asset).await?;
+
+        Ok(asset)
+    }
+}
+
+/// 固定资产报废命令处理器
+#[async_trait]
+pub struct RetireFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> RetireFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: RetireFixedAssetDto) -> Result<(), String> {
+        // 查找资产
+        let mut asset = self.repository
+            .find_by_id(&dto.company_code, &dto.asset_number, &dto.sub_number)
+            .await
+            .ok_or("固定资产不存在")?;
+
+        // 报废
+        let retirement_value = Money::from_str(&dto.retirement_value.to_string())
+            .map_err(|e| e.to_string())?;
+
+        asset.retire(retirement_value)?;
+
+        // 保存
+        self.repository.save(&asset).await?;
+
+        Ok(())
+    }
+}
+
+/// 冻结固定资产命令处理器
+#[async_trait]
+pub struct BlockFixedAssetHandler<R: FixedAssetRepository> {
+    repository: R,
+}
+
+impl<R: FixedAssetRepository> BlockFixedAssetHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, company_code: &CompanyCode, asset_number: &str, sub_number: &str) -> Result<(), String> {
+        let mut asset = self.repository
+            .find_by_id(company_code, asset_number, sub_number)
+            .await
+            .ok_or("固定资产不存在")?;
+
+        asset.block();
+        self.repository.save(&asset).await?;
+
+        Ok(())
+    }
+}
+
+// =============================================================================
+// 银行账户命令处理器
+// =============================================================================
+
+/// 创建银行账户命令处理器
+#[async_trait]
+pub struct CreateBankAccountHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> CreateBankAccountHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: CreateBankAccountDto) -> Result<BankAccount, String> {
+        // 创建银行账户
+        let mut account = BankAccount::new(
+            dto.bank_country_code,
+            dto.bank_key,
+            dto.bank_name,
+        );
+
+        // 更新地址
+        account.update_address(
+            dto.street_address,
+            dto.city,
+            dto.postal_code,
+            "SYSTEM",
+        );
+
+        // 设置 SWIFT 和 IBAN
+        if let Some(swift) = dto.swift_code {
+            account.set_swift_code(swift, "SYSTEM");
+        }
+        if let Some(iban) = dto.iban {
+            account.set_iban(iban, "SYSTEM");
+        }
+        if let Some(acc_num) = dto.bank_account_number {
+            account.set_bank_account_number(acc_num, "SYSTEM");
+        }
+
+        // 保存
+        self.repository.save(&account).await?;
+
+        Ok(account)
+    }
+}
+
+/// 银行账户存款命令处理器
+#[async_trait]
+pub struct DepositBankAccountHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> DepositBankAccountHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: DepositBankAccountDto) -> Result<BankAccount, String> {
+        // 查找账户
+        let mut account = self.repository
+            .find_by_id(&dto.bank_key, &dto.bank_account)
+            .await
+            .ok_or("银行账户不存在")?;
+
+        // 存款
+        let amount = Money::new(dto.amount, &dto.currency)
+            .map_err(|e| e.to_string())?;
+
+        account.deposit(amount);
+
+        // 保存
+        self.repository.save(&account).await?;
+
+        Ok(account)
+    }
+}
+
+/// 银行账户取款命令处理器
+#[async_trait]
+pub struct WithdrawBankAccountHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> WithdrawBankAccountHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: WithdrawBankAccountDto) -> Result<BankAccount, String> {
+        // 查找账户
+        let mut account = self.repository
+            .find_by_id(&dto.bank_key, &dto.bank_account)
+            .await
+            .ok_or("银行账户不存在")?;
+
+        // 取款
+        let amount = Money::new(dto.amount, &dto.currency)
+            .map_err(|e| e.to_string())?;
+
+        account.withdraw(amount)?;
+
+        // 保存
+        self.repository.save(&account).await?;
+
+        Ok(account)
+    }
+}
+
+/// 银行账户更新余额命令处理器
+#[async_trait]
+pub struct UpdateBankAccountBalanceHandler<R: BankAccountRepository> {
+    repository: R,
+}
+
+impl<R: BankAccountRepository> UpdateBankAccountBalanceHandler<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+
+    pub async fn handle(&self, dto: UpdateBankAccountBalanceDto) -> Result<(), String> {
+        let new_balance = Money::new(dto.new_balance, &dto.currency)
+            .map_err(|e| e.to_string())?;
+
+        self.repository.update_balance(&dto.bank_key, &dto.bank_account, new_balance).await?;
+
+        Ok(())
+    }
+}

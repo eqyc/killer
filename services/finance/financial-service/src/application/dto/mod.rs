@@ -1,6 +1,6 @@
 //! 数据传输对象模块
 
-use crate::domain::aggregates::{gl_account::GLAccount, journal_entry::JournalEntry, customer::Customer, vendor::Vendor};
+use crate::domain::aggregates::{gl_account::GLAccount, journal_entry::JournalEntry, customer::Customer, vendor::Vendor, fixed_asset::FixedAsset, bank_account::BankAccount};
 use killer_domain_primitives::CompanyCode;
 
 /// 创建总账科目 DTO
@@ -172,4 +172,110 @@ pub struct ClearVendorDto {
     pub vendor_id: String,
     pub document_numbers: Vec<String>,
     pub clearing_date: chrono::NaiveDate,
+}
+
+// =============================================================================
+// 固定资产 DTOs
+// =============================================================================
+
+/// 创建固定资产 DTO
+#[derive(Debug)]
+pub struct CreateFixedAssetDto {
+    pub company_code: CompanyCode,
+    pub asset_class: String,
+    pub valuation_class: String,
+    pub description: String,
+    pub cost_center: Option<String>,
+    pub profit_center: Option<String>,
+    pub location: Option<String>,
+    pub acquisition_value: f64,
+    pub currency: String,
+    pub capitalization_date: chrono::NaiveDate,
+}
+
+/// 固定资产资本化 DTO
+#[derive(Debug)]
+pub struct CapitalizeFixedAssetDto {
+    pub company_code: CompanyCode,
+    pub asset_number: String,
+    pub sub_number: String,
+    pub acquisition_value: f64,
+    pub currency: String,
+    pub capitalization_date: chrono::NaiveDate,
+}
+
+/// 固定资产折旧 DTO
+#[derive(Debug)]
+pub struct DepreciateFixedAssetDto {
+    pub company_code: CompanyCode,
+    pub asset_number: String,
+    pub sub_number: String,
+    pub depreciation_amount: f64,
+    pub currency: String,
+}
+
+/// 固定资产转移 DTO
+#[derive(Debug)]
+pub struct TransferFixedAssetDto {
+    pub company_code: CompanyCode,
+    pub asset_number: String,
+    pub sub_number: String,
+    pub new_cost_center: Option<String>,
+    pub new_profit_center: Option<String>,
+    pub new_business_area: Option<String>,
+}
+
+/// 固定资产报废 DTO
+#[derive(Debug)]
+pub struct RetireFixedAssetDto {
+    pub company_code: CompanyCode,
+    pub asset_number: String,
+    pub sub_number: String,
+    pub retirement_value: f64,
+}
+
+// =============================================================================
+// 银行账户 DTOs
+// =============================================================================
+
+/// 创建银行账户 DTO
+#[derive(Debug)]
+pub struct CreateBankAccountDto {
+    pub bank_country_code: String,
+    pub bank_key: String,
+    pub bank_name: String,
+    pub street_address: Option<String>,
+    pub city: Option<String>,
+    pub postal_code: Option<String>,
+    pub swift_code: Option<String>,
+    pub iban: Option<String>,
+    pub bank_account_number: Option<String>,
+    pub bank_type: Option<String>,
+}
+
+/// 银行账户存款 DTO
+#[derive(Debug)]
+pub struct DepositBankAccountDto {
+    pub bank_key: String,
+    pub bank_account: String,
+    pub amount: f64,
+    pub currency: String,
+}
+
+/// 银行账户取款 DTO
+#[derive(Debug)]
+pub struct WithdrawBankAccountDto {
+    pub bank_key: String,
+    pub bank_account: String,
+    pub amount: f64,
+    pub currency: String,
+}
+
+/// 银行账户更新余额 DTO
+#[derive(Debug)]
+pub struct UpdateBankAccountBalanceDto {
+    pub bank_key: String,
+    pub bank_account: String,
+    pub new_balance: f64,
+    pub currency: String,
 }
