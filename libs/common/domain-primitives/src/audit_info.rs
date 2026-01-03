@@ -68,8 +68,8 @@ impl AuditInfo {
     }
 
     /// 更新修改者和修改时间
-    pub fn update(&mut self, updated_by: String) {
-        self.updated_by = updated_by;
+    pub fn update(&mut self, updated_by: impl Into<String>) {
+        self.updated_by = updated_by.into();
         self.updated_at = Utc::now();
     }
 }
@@ -102,7 +102,7 @@ mod tests {
         let now = Utc::now();
         let mut audit = AuditInfo::new("user1".to_string(), now);
 
-        audit.update("user2".to_string());
+        audit.update("user2");
 
         assert_eq!(audit.created_by(), "user1");
         assert_eq!(audit.updated_by(), "user2");

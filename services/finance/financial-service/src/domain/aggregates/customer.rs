@@ -2,7 +2,7 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{CustomerCreated, CustomerPaymentReceived};
-use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
+use killer_domain_primitives::{CompanyCode, DocumentNumber, Money, AuditInfo};
 
 /// 客户主数据聚合根
 ///
@@ -250,11 +250,11 @@ impl Customer {
         }
     }
 
-    pub fn into_payment_received_event(self, document_number: &str, amount: Money) -> CustomerPaymentReceived {
+    pub fn into_payment_received_event(self, document_number: DocumentNumber, amount: Money) -> CustomerPaymentReceived {
         CustomerPaymentReceived {
             company_code: self.company_code,
             customer_id: self.customer_id,
-            document_number: crate::domain::value_objects::document_number::DocumentNumber::new(document_number).unwrap(),
+            document_number,
             amount,
             received_at: Utc::now(),
         }

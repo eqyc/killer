@@ -1,7 +1,7 @@
 //! 银行账户聚合根
 
 use chrono::{DateTime, Utc};
-use killer_domain_primitives::{Money, AuditInfo};
+use killer_domain_primitives::{CurrencyCode, Money, AuditInfo};
 
 /// 银行账户聚合根
 ///
@@ -55,8 +55,8 @@ impl BankAccount {
             iban: None,
             bank_account_number: None,
             bank_type: None,
-            current_balance: Money::zero(),
-            available_balance: Money::zero(),
+            current_balance: Money::zero(CurrencyCode::CNY),
+            available_balance: Money::zero(CurrencyCode::CNY),
             audit_info: AuditInfo::new("SYSTEM".to_string(), now),
         }
     }

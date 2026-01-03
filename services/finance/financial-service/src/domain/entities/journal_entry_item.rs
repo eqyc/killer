@@ -1,7 +1,8 @@
 //! 会计凭证行项目实体
 
 use std::collections::HashMap;
-use crate::domain::value_objects::{account_code::AccountCode, posting_date::PostingDate};
+use crate::domain::value_objects::posting_date::PostingDate;
+use killer_domain_primitives::AccountCode;
 
 /// 会计凭证行项目
 ///
@@ -241,7 +242,7 @@ impl std::fmt::Display for DebitCreditIndicator {
 /// 行项目错误
 #[derive(Debug, thiserror::Error)]
 pub enum JournalEntryItemError {
-    #[error("无效的行项目号: {0}")]
+    #[error("无效的行项目号")]
     InvalidLineNumber,
     #[error("无效的借贷标识: {0}")]
     InvalidDebitCredit(i32),

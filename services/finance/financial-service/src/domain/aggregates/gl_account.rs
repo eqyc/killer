@@ -2,9 +2,8 @@
 
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
-use crate::domain::value_objects::account_code::AccountCode;
 use crate::domain::events::{GLAccountCreated, GLAccountUpdated};
-use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
+use killer_domain_primitives::{AccountCode, CompanyCode, Money, AuditInfo};
 
 /// 总账科目聚合根
 ///
@@ -193,7 +192,7 @@ impl GLAccount {
         GLAccountUpdated {
             company_code: self.company_code,
             account_code: self.account_code,
-            updated_at: self.audit_info.updated_at().unwrap_or_else(Utc::now),
+            updated_at: self.audit_info.updated_at(),
         }
     }
 }

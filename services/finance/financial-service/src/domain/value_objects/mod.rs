@@ -1,7 +1,6 @@
 //! 值对象模块
 
 pub mod account_code;
-pub mod document_number;
 pub mod fiscal_period;
 pub mod posting_date;
 
@@ -9,7 +8,7 @@ pub mod posting_date;
 mod tests;
 
 // Re-exports for easier access
+// 使用 killer_domain_primitives 中的 DocumentNumber
 pub use account_code::{AccountCode, AccountCodeError};
-pub use document_number::{DocumentNumber, DocumentNumberError};
 pub use fiscal_period::{FiscalPeriod, FiscalPeriodError};
 pub use posting_date::{PostingDate, PostingDateError};

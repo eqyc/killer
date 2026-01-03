@@ -2,7 +2,7 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{VendorCreated, VendorPaymentMade};
-use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
+use killer_domain_primitives::{CompanyCode, DocumentNumber, Money, AuditInfo};
 
 /// 供应商主数据聚合根
 ///
@@ -244,11 +244,11 @@ impl Vendor {
         }
     }
 
-    pub fn into_payment_made_event(self, document_number: &str, amount: Money) -> VendorPaymentMade {
+    pub fn into_payment_made_event(self, document_number: DocumentNumber, amount: Money) -> VendorPaymentMade {
         VendorPaymentMade {
             company_code: self.company_code,
             vendor_id: self.vendor_id,
-            document_number: crate::domain::value_objects::document_number::DocumentNumber::new(document_number).unwrap(),
+            document_number,
             amount,
             paid_at: Utc::now(),
         }

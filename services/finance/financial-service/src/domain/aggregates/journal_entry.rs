@@ -2,21 +2,17 @@
 
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
-use crate::domain::value_objects::{
-    account_code::AccountCode,
-    document_number::DocumentNumber,
-    posting_date::PostingDate,
-};
+use crate::domain::value_objects::posting_date::PostingDate;
 use crate::domain::entities::{
     journal_entry_item::{JournalEntryItem, DebitCreditIndicator},
-    document::{Document, DocumentType, DocumentStatus},
+    document::{Document, DocumentStatus},
 };
 use crate::domain::events::{
     JournalEntryCreated,
     JournalEntryPosted,
     JournalEntryReversed,
 };
-use killer_domain_primitives::{CompanyCode, Money};
+use killer_domain_primitives::{AccountCode, CompanyCode, CurrencyCode, DocumentNumber, DocumentType, Money};
 
 /// 会计凭证聚合根
 ///
@@ -38,41 +34,39 @@ impl JournalEntry {
     pub fn new(
         document_type: DocumentType,
         document_number: DocumentNumber,
-        fiscal_year: String,
-        company_code: CompanyCode,
         document_date: chrono::NaiveDate,
         posting_date: chrono::NaiveDate,
         currency: impl Into<String>,
         created_by: impl Into<String>,
     ) -> Self {
+        let currency_str = currency.into();
+        let currency_code = CurrencyCode::new(&currency_str).unwrap_or(CurrencyCode::CNY);
         Self {
             document: Document::new(
                 document_type,
                 document_number,
-                fiscal_year,
-                company_code,
                 document_date,
                 posting_date,
-                currency,
+                currency_str.clone(),
                 created_by,
             ),
             items: Vec::new(),
-            total_debit: Money::zero(),
-            total_credit: Money::zero(),
+            total_debit: Money::zero(currency_code),
+            total_credit: Money::zero(currency_code),
         }
     }
 
     // Getters
-    pub fn document_number(&self) -> &str {
+    pub fn document_number(&self) -> &DocumentNumber {
         self.document.document_number()
     }
 
-    pub fn fiscal_year(&self) -> &str {
+    pub fn fiscal_year(&self) -> i32 {
         self.document.fiscal_year()
     }
 
-    pub fn company_code(&self) -> &CompanyCode {
-        &self.document.company_code().clone()
+    pub fn company_code(&self) -> &str {
+        self.document.company_code()
     }
 
     pub fn document_type(&self) -> DocumentType {
@@ -87,20 +81,16 @@ impl JournalEntry {
         self.document.posting_date()
     }
 
-    pub fn currency(&self) -> &str {
-        self.document.currency()
-    }
-
     pub fn status(&self) -> DocumentStatus {
         self.document.status()
     }
 
-    pub fn header_text(&self) -> Option<&str> {
-        self.document.header_text()
+    pub fn currency(&self) -> &str {
+        self.document.currency()
     }
 
-    pub fn reference_document(&self) -> Option<&str> {
-        self.document.reference_document()
+    pub fn header_text(&self) -> Option<&str> {
+        self.document.header_text()
     }
 
     pub fn items(&self) -> &[JournalEntryItem] {
@@ -123,6 +113,14 @@ impl JournalEntry {
         self.items.len()
     }
 
+    pub fn created_at(&self) -> DateTime<Utc> {
+        self.document.created_at()
+    }
+
+    pub fn created_by(&self) -> &str {
+        self.document.created_by()
+    }
+
     // Commands
 
     /// 添加行项目
@@ -140,9 +138,6 @@ impl JournalEntry {
             self.total_credit = self.total_credit.add(amount).unwrap();
         }
 
-        // 设置行号
-        let line_number = (self.items.len() + 1) as u32;
-        // 注意：实际项目中需要克隆item，这里简化处理
         self.items.push(item);
 
         Ok(())
@@ -162,13 +157,13 @@ impl JournalEntry {
     }
 
     /// 设置参考凭证号
-    pub fn set_reference(&mut self, reference: impl Into<String>) {
-        self.document.set_reference(reference);
+    pub fn set_reference_document(&mut self, reference: impl Into<String>) {
+        self.document.set_reference_document(reference);
     }
 
-    /// 过账凭证
+    /// 过账
     pub fn post(&mut self) -> Result<(), JournalEntryError> {
-        // 验证状态
+        // 验证凭证状态
         if !self.document.can_post() {
             return Err(JournalEntryError::InvalidStatus(self.document.status()));
         }
@@ -181,41 +176,44 @@ impl JournalEntry {
             });
         }
 
-        // 验证至少有一行
+        // 验证行项目
         if self.items.is_empty() {
             return Err(JournalEntryError::NoItems);
         }
 
-        self.document.update_status(DocumentStatus::Posted);
+        // 过账
+        self.document.post();
+
         Ok(())
     }
 
-    /// 冲销凭证
+    /// 冲销
     pub fn reverse(&mut self, reversal_date: chrono::NaiveDate, reason: &str) -> Result<DocumentNumber, JournalEntryError> {
-        // 验证状态
-        if !self.document.can_reverse() {
+        // 验证凭证状态
+        if self.document.is_reversed() {
+            return Err(JournalEntryError::AlreadyReversed);
+        }
+
+        if !matches!(self.document.status(), DocumentStatus::Posted) {
             return Err(JournalEntryError::InvalidStatus(self.document.status()));
         }
 
-        self.document.update_status(DocumentStatus::Reversed);
+        // 验证借贷平衡
+        if !self.is_balanced() {
+            return Err(JournalEntryError::NotBalanced {
+                debit: self.total_debit.clone(),
+                credit: self.total_credit.clone(),
+            });
+        }
 
-        // 返回冲销凭证号（实际业务中需要生成新的凭证号）
-        Ok(DocumentNumber::from_str(&format!("REV{}", self.document_number())).unwrap())
-    }
+        // 生成冲销凭证号
+        let doc_number = self.document_number();
+        let reversal_doc_number = doc_number.next().map_err(|_| JournalEntryError::DocumentNumberOverflow)?;
 
-    /// 冻结凭证
-    pub fn block(&mut self) {
-        self.document.update_status(DocumentStatus::Blocked);
-    }
+        // 冲销
+        self.document.reverse();
 
-    /// 解冻凭证
-    pub fn unblock(&mut self) {
-        self.document.update_status(DocumentStatus::Created);
-    }
-
-    /// 删除凭证
-    pub fn delete(&mut self) {
-        self.document.update_status(DocumentStatus::Deleted);
+        Ok(reversal_doc_number)
     }
 
     // Events
@@ -223,8 +221,8 @@ impl JournalEntry {
     /// 生成创建事件
     pub fn into_created_event(self) -> JournalEntryCreated {
         JournalEntryCreated {
-            company_code: self.document.company_code().clone(),
-            document_number: DocumentNumber::from_str(self.document_number()).unwrap(),
+            company_code: self.document.company_code_value(),
+            document_number: self.document_number().clone(),
             fiscal_year: self.fiscal_year().to_string(),
             total_debit: self.total_debit,
             total_credit: self.total_credit,
@@ -235,8 +233,8 @@ impl JournalEntry {
     /// 生成过账事件
     pub fn into_posted_event(self) -> JournalEntryPosted {
         JournalEntryPosted {
-            company_code: self.document.company_code().clone(),
-            document_number: DocumentNumber::from_str(self.document_number()).unwrap(),
+            company_code: self.document.company_code_value(),
+            document_number: self.document_number().clone(),
             fiscal_year: self.fiscal_year().to_string(),
             posted_at: Utc::now(),
         }
@@ -245,8 +243,8 @@ impl JournalEntry {
     /// 生成冲销事件
     pub fn into_reversed_event(self, reversal_document: DocumentNumber) -> JournalEntryReversed {
         JournalEntryReversed {
-            company_code: self.document.company_code().clone(),
-            original_document: DocumentNumber::from_str(self.document_number()).unwrap(),
+            company_code: self.document.company_code_value(),
+            original_document: self.document_number().clone(),
             reversal_document,
             fiscal_year: self.fiscal_year().to_string(),
             reversed_at: Utc::now(),
@@ -259,133 +257,14 @@ impl JournalEntry {
 pub enum JournalEntryError {
     #[error("无效的凭证状态: {0:?}")]
     InvalidStatus(DocumentStatus),
-    #[error("借贷不平衡: 借方={0:?}, 贷方={1:?}")]
+    #[error("借贷不平衡: 借方={debit:?}, 贷方={credit:?}")]
     NotBalanced { debit: Money, credit: Money },
     #[error("凭证没有行项目")]
     NoItems,
+    #[error("凭证已冲销，不能再次冲销")]
+    AlreadyReversed,
+    #[error("凭证编号溢出")]
+    DocumentNumberOverflow,
     #[error("行项目添加失败: {0}")]
     ItemError(String),
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_create_journal_entry() {
-        let entry = JournalEntry::new(
-            DocumentType::StandardDocument,
-            DocumentNumber::new("0000001000").unwrap(),
-            "2024".to_string(),
-            CompanyCode::new("1000").unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            "CNY",
-            "TESTUSER",
-        );
-
-        assert_eq!(entry.document_number(), "0000001000");
-        assert_eq!(entry.fiscal_year(), "2024");
-        assert_eq!(entry.status(), DocumentStatus::Created);
-    }
-
-    #[test]
-    fn test_add_items() {
-        let mut entry = JournalEntry::new(
-            DocumentType::StandardDocument,
-            DocumentNumber::new("0000001000").unwrap(),
-            "2024".to_string(),
-            CompanyCode::new("1000").unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            "CNY",
-            "TESTUSER",
-        );
-
-        // 添加借方行
-        entry.add_item(JournalEntryItem::new(
-            1,
-            AccountCode::new("1001").unwrap(),
-            DebitCreditIndicator::Debit,
-            Money::new(1000, "CNY").unwrap(),
-            Money::new(1000, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        // 添加贷方行
-        entry.add_item(JournalEntryItem::new(
-            2,
-            AccountCode::new("2201").unwrap(),
-            DebitCreditIndicator::Credit,
-            Money::new(1000, "CNY").unwrap(),
-            Money::new(1000, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        assert_eq!(entry.item_count(), 2);
-        assert!(entry.is_balanced());
-    }
-
-    #[test]
-    fn test_post_entry() {
-        let mut entry = JournalEntry::new(
-            DocumentType::StandardDocument,
-            DocumentNumber::new("0000001000").unwrap(),
-            "2024".to_string(),
-            CompanyCode::new("1000").unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            "CNY",
-            "TESTUSER",
-        );
-
-        entry.add_item(JournalEntryItem::new(
-            1,
-            AccountCode::new("1001").unwrap(),
-            DebitCreditIndicator::Debit,
-            Money::new(1000, "CNY").unwrap(),
-            Money::new(1000, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        entry.add_item(JournalEntryItem::new(
-            2,
-            AccountCode::new("2201").unwrap(),
-            DebitCreditIndicator::Credit,
-            Money::new(1000, "CNY").unwrap(),
-            Money::new(1000, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        entry.post().unwrap();
-        assert_eq!(entry.status(), DocumentStatus::Posted);
-    }
-
-    #[test]
-    fn test_unbalanced_entry() {
-        let mut entry = JournalEntry::new(
-            DocumentType::StandardDocument,
-            DocumentNumber::new("0000001000").unwrap(),
-            "2024".to_string(),
-            CompanyCode::new("1000").unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
-            "CNY",
-            "TESTUSER",
-        );
-
-        entry.add_item(JournalEntryItem::new(
-            1,
-            AccountCode::new("1001").unwrap(),
-            DebitCreditIndicator::Debit,
-            Money::new(1000, "CNY").unwrap(),
-            Money::new(1000, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        entry.add_item(JournalEntryItem::new(
-            2,
-            AccountCode::new("2201").unwrap(),
-            DebitCreditIndicator::Credit,
-            Money::new(500, "CNY").unwrap(),
-            Money::new(500, "CNY").unwrap(),
-        ).unwrap()).unwrap();
-
-        assert!(entry.post().is_err());
-    }
 }

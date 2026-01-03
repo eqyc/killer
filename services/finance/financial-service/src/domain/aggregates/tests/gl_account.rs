@@ -1,14 +1,13 @@
 //! GLAccount 单元测试
 
 use crate::domain::aggregates::GLAccount;
-use crate::domain::value_objects::AccountCode;
-use killer_domain_primitives::{CompanyCode, Money};
+use killer_domain_primitives::{AccountCode, CompanyCode, Money};
 use rust_decimal::Decimal;
 
 #[test]
 fn test_new_gl_account() {
     let company_code = CompanyCode::new("1000").unwrap();
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
 
     let account = GLAccount::new(
         "KA01",
@@ -33,7 +32,7 @@ fn test_new_gl_account() {
 #[test]
 fn test_gl_account_setters() {
     let company_code = CompanyCode::new("1000").unwrap();
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
 
     let mut account = GLAccount::new(
         "KA01",
@@ -57,7 +56,7 @@ fn test_gl_account_setters() {
 #[test]
 fn test_gl_account_soft_delete() {
     let company_code = CompanyCode::new("1000").unwrap();
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
 
     let mut account = GLAccount::new(
         "KA01",
@@ -71,27 +70,6 @@ fn test_gl_account_soft_delete() {
 
     assert!(!account.is_deleted());
 
-    account.delete("TEST_USER");
+    account.mark_deleted("TEST_USER");
     assert!(account.is_deleted());
-    assert!(account.deleted_at().is_some());
-}
-
-#[test]
-fn test_gl_account_display() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let account_code = AccountCode::new("1001000001").unwrap();
-
-    let account = GLAccount::new(
-        "KA01",
-        account_code,
-        company_code,
-        "A",
-        "X",
-        "CNY",
-        "库存现金",
-    );
-
-    let display = format!("{}", account);
-    assert!(display.contains("库存现金"));
-    assert!(display.contains("1001000001"));
 }

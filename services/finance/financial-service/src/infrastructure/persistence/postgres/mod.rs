@@ -3,7 +3,7 @@
 use async_trait::async_trait;
 use sqlx::{Pool, Postgres, Row};
 use std::str::FromStr;
-use killer_domain_primitives::{CompanyCode, AccountCode, DocumentNumber, Money};
+use killer_domain_primitives::{CompanyCode, AccountCode, CurrencyCode, DocumentNumber, Money};
 use crate::domain::aggregates::{
     gl_account::GLAccount,
     journal_entry::JournalEntry,
@@ -827,9 +827,9 @@ fn row_to_bank_account(row: &sqlx::postgres::PgRow) -> BankAccount {
 
     // 设置余额
     let current = Money::from_str(row.try_get::<String, _>("current_balance").unwrap_or_default().as_str())
-        .unwrap_or_else(|_| Money::zero());
+        .unwrap_or_else(|_| Money::zero(CurrencyCode::CNY));
     let available = Money::from_str(row.try_get::<String, _>("available_balance").unwrap_or_default().as_str())
-        .unwrap_or_else(|_| Money::zero());
+        .unwrap_or_else(|_| Money::zero(CurrencyCode::CNY));
     account.set_balance(current, available);
 
     account
@@ -839,10 +839,8 @@ fn row_to_journal_entry(_row: &sqlx::postgres::PgRow) -> JournalEntry {
     // 由于 JournalEntry 结构复杂，这里返回简化版本
     // 实际实现需要加载行项目
     JournalEntry::new(
-        crate::domain::entities::document::DocumentType::StandardDocument,
-        crate::domain::value_objects::document_number::DocumentNumber::new("0000000000").unwrap(),
-        "2024".to_string(),
-        CompanyCode::new("1000").unwrap(),
+        killer_domain_primitives::DocumentType::GeneralLedger,
+        DocumentNumber::new("0000000000", 2024, "1000").unwrap(),
         chrono::NaiveDate::from_ymd_opt(2024, 1, 1).unwrap(),
         chrono::NaiveDate::from_ymd_opt(2024, 1, 1).unwrap(),
         "CNY",

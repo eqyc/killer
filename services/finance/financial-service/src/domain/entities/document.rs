@@ -1,6 +1,28 @@
 //! 文档实体
 
 use chrono::{DateTime, Utc};
+use killer_domain_primitives::{CompanyCode, DocumentNumber, DocumentType as PrimitivesDocumentType, Money};
+
+/// 文档状态
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DocumentStatus {
+    Created = 1,   // 新建
+    Posted = 2,    // 已过账
+    Reversed = 3,  // 已冲销
+}
+
+impl TryFrom<i32> for DocumentStatus {
+    type Error = ();
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        match value {
+            1 => Ok(Self::Created),
+            2 => Ok(Self::Posted),
+            3 => Ok(Self::Reversed),
+            _ => Err(()),
+        }
+    }
+}
 
 /// 通用文档实体
 ///
@@ -8,13 +30,9 @@ use chrono::{DateTime, Utc};
 #[derive(Debug, Clone)]
 pub struct Document {
     /// 凭证类型
-    document_type: DocumentType,
-    /// 凭证号
-    document_number: String,
-    /// 会计年度
-    fiscal_year: String,
-    /// 公司代码
-    company_code: String,
+    document_type: PrimitivesDocumentType,
+    /// 凭证编号
+    document_number: DocumentNumber,
     /// 凭证日期
     document_date: chrono::NaiveDate,
     /// 过账日期
@@ -40,10 +58,8 @@ pub struct Document {
 impl Document {
     /// 创建新文档
     pub fn new(
-        document_type: DocumentType,
-        document_number: impl Into<String>,
-        fiscal_year: impl Into<String>,
-        company_code: impl Into<String>,
+        document_type: PrimitivesDocumentType,
+        document_number: DocumentNumber,
         document_date: chrono::NaiveDate,
         posting_date: chrono::NaiveDate,
         currency: impl Into<String>,
@@ -51,9 +67,7 @@ impl Document {
     ) -> Self {
         Self {
             document_type,
-            document_number: document_number.into(),
-            fiscal_year: fiscal_year.into(),
-            company_code: company_code.into(),
+            document_number,
             document_date,
             posting_date,
             status: DocumentStatus::Created,
@@ -69,20 +83,24 @@ impl Document {
     }
 
     // Getters
-    pub fn document_type(&self) -> DocumentType {
+    pub fn document_type(&self) -> PrimitivesDocumentType {
         self.document_type
     }
 
-    pub fn document_number(&self) -> &str {
+    pub fn document_number(&self) -> &DocumentNumber {
         &self.document_number
     }
 
-    pub fn fiscal_year(&self) -> &str {
-        &self.fiscal_year
+    pub fn fiscal_year(&self) -> i32 {
+        self.document_number.fiscal_year()
     }
 
     pub fn company_code(&self) -> &str {
-        &self.company_code
+        self.document_number.company_code()
+    }
+
+    pub fn company_code_value(&self) -> CompanyCode {
+        CompanyCode::new(self.document_number.company_code()).unwrap()
     }
 
     pub fn document_date(&self) -> chrono::NaiveDate {
@@ -109,10 +127,6 @@ impl Document {
         self.header_text.as_deref()
     }
 
-    pub fn source_system(&self) -> Option<&str> {
-        self.source_system.as_deref()
-    }
-
     pub fn created_at(&self) -> DateTime<Utc> {
         self.created_at
     }
@@ -121,80 +135,40 @@ impl Document {
         &self.created_by
     }
 
-    /// 更新状态
-    pub fn update_status(&mut self, new_status: DocumentStatus) {
-        self.status = new_status;
-        self.updated_at = Some(Utc::now());
+    // Commands
+
+    /// 设置凭证状态
+    pub fn set_status(&mut self, status: DocumentStatus) {
+        self.status = status;
+    }
+
+    /// 检查是否可以过账
+    pub fn can_post(&self) -> bool {
+        matches!(self.status, DocumentStatus::Created)
+    }
+
+    /// 检查是否已冲销
+    pub fn is_reversed(&self) -> bool {
+        matches!(self.status, DocumentStatus::Reversed)
+    }
+
+    /// 过账
+    pub fn post(&mut self) {
+        self.status = DocumentStatus::Posted;
+    }
+
+    /// 冲销
+    pub fn reverse(&mut self) {
+        self.status = DocumentStatus::Reversed;
     }
 
     /// 设置参考凭证号
-    pub fn set_reference(&mut self, reference: impl Into<String>) {
+    pub fn set_reference_document(&mut self, reference: impl Into<String>) {
         self.reference_document = Some(reference.into());
-        self.updated_at = Some(Utc::now());
     }
 
     /// 设置抬头文本
     pub fn set_header_text(&mut self, text: impl Into<String>) {
         self.header_text = Some(text.into());
-        self.updated_at = Some(Utc::now());
-    }
-
-    /// 判断是否可以过账
-    pub fn can_post(&self) -> bool {
-        self.status == DocumentStatus::Created
-    }
-
-    /// 判断是否可以冲销
-    pub fn can_reverse(&self) -> bool {
-        self.status == DocumentStatus::Posted
-    }
-
-    /// 判断是否已删除
-    pub fn is_deleted(&self) -> bool {
-        self.status == DocumentStatus::Deleted
-    }
-}
-
-/// 凭证类型
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum DocumentType {
-    /// 预制凭证
-    PreDocument,
-    /// 标准凭证
-    StandardDocument,
-    /// 收票凭证
-    InvoiceReceipt,
-    /// 付款凭证
-    PaymentDocument,
-    /// 调整凭证
-    AdjustmentDocument,
-    /// 冲销凭证
-    ReversalDocument,
-    /// 年度结转凭证
-    YearEndClosing,
-}
-
-/// 凭证状态
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum DocumentStatus {
-    Created = 1,   // 已创建
-    Posted = 2,    // 已过账
-    Reversed = 3,  // 已冲销
-    Blocked = 4,   // 已冻结
-    Deleted = 5,   // 已删除
-}
-
-impl TryFrom<i32> for DocumentStatus {
-    type Error = ();
-
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        match value {
-            1 => Ok(Self::Created),
-            2 => Ok(Self::Posted),
-            3 => Ok(Self::Reversed),
-            4 => Ok(Self::Blocked),
-            5 => Ok(Self::Deleted),
-            _ => Err(()),
-        }
     }
 }

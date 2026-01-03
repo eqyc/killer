@@ -2,50 +2,43 @@
 
 use crate::domain::aggregates::JournalEntry;
 use crate::domain::entities::{JournalEntryItem, DebitCreditIndicator, DocumentStatus};
-use crate::domain::value_objects::{AccountCode, PostingDate};
-use killer_domain_primitives::{CompanyCode, DocumentNumber, Money, CurrencyCode};
+use killer_domain_primitives::{AccountCode, CompanyCode, DocumentNumber, DocumentType, Money, CurrencyCode};
 use rust_decimal::Decimal;
 use chrono::NaiveDate;
 
 #[test]
 fn test_new_journal_entry() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number.clone(),
-        "2024".to_string(),
-        company_code.clone(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
         "TEST_USER",
     );
 
-    assert_eq!(entry.document_type(), &crate::domain::entities::DocumentType::StandardDocument);
-    assert_eq!(entry.document_number(), &doc_number);
-    assert_eq!(entry.fiscal_year(), "2024");
+    assert_eq!(entry.document_type(), DocumentType::GeneralLedger);
+    assert_eq!(entry.document_number().number(), "1000000001");
+    assert_eq!(entry.fiscal_year(), 2024);
     assert_eq!(entry.status(), DocumentStatus::Created);
 }
 
 #[test]
 fn test_journal_entry_add_item() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let mut entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number,
-        "2024".to_string(),
-        company_code,
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
         "TEST_USER",
     );
 
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
 
     let item = JournalEntryItem::new(
@@ -62,14 +55,11 @@ fn test_journal_entry_add_item() {
 
 #[test]
 fn test_journal_entry_debit_credit_balance() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let mut entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number,
-        "2024".to_string(),
-        company_code,
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
@@ -77,7 +67,7 @@ fn test_journal_entry_debit_credit_balance() {
     );
 
     // 添加借方
-    let debit_account = AccountCode::new("1001000001").unwrap();
+    let debit_account = AccountCode::new("1001000001", "KA01").unwrap();
     let debit_amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
     let debit_item = JournalEntryItem::new(
         1,
@@ -89,7 +79,7 @@ fn test_journal_entry_debit_credit_balance() {
     entry.add_item(debit_item).unwrap();
 
     // 添加贷方
-    let credit_account = AccountCode::new("2001000001").unwrap();
+    let credit_account = AccountCode::new("2001000001", "KA01").unwrap();
     let credit_amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
     let credit_item = JournalEntryItem::new(
         2,
@@ -105,14 +95,11 @@ fn test_journal_entry_debit_credit_balance() {
 
 #[test]
 fn test_journal_entry_unbalanced() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let mut entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number,
-        "2024".to_string(),
-        company_code,
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
@@ -120,7 +107,7 @@ fn test_journal_entry_unbalanced() {
     );
 
     // 只添加借方，不添加贷方
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
     let item = JournalEntryItem::new(
         1,
@@ -136,14 +123,11 @@ fn test_journal_entry_unbalanced() {
 
 #[test]
 fn test_journal_entry_post() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let mut entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number,
-        "2024".to_string(),
-        company_code,
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
@@ -151,8 +135,8 @@ fn test_journal_entry_post() {
     );
 
     // 添加平衡的分录
-    let debit_account = AccountCode::new("1001000001").unwrap();
-    let credit_account = AccountCode::new("2001000001").unwrap();
+    let debit_account = AccountCode::new("1001000001", "KA01").unwrap();
+    let credit_account = AccountCode::new("2001000001", "KA01").unwrap();
     let amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
 
     let debit_item = JournalEntryItem::new(
@@ -180,19 +164,42 @@ fn test_journal_entry_post() {
 
 #[test]
 fn test_journal_entry_reverse() {
-    let company_code = CompanyCode::new("1000").unwrap();
-    let doc_number = DocumentNumber::new("1000000001").unwrap();
+    let doc_number = DocumentNumber::new("1000000001", 2024, "1000").unwrap();
 
     let mut entry = JournalEntry::new(
-        crate::domain::entities::DocumentType::StandardDocument,
+        DocumentType::GeneralLedger,
         doc_number,
-        "2024".to_string(),
-        company_code,
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         NaiveDate::from_ymd_opt(2024, 1, 15).unwrap(),
         "CNY",
         "TEST_USER",
     );
+
+    // 添加平衡的分录
+    let debit_account = AccountCode::new("1001000001", "KA01").unwrap();
+    let credit_account = AccountCode::new("2001000001", "KA01").unwrap();
+    let amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
+
+    let debit_item = JournalEntryItem::new(
+        1,
+        debit_account,
+        DebitCreditIndicator::Debit,
+        amount.clone(),
+        amount,
+    ).unwrap();
+    entry.add_item(debit_item).unwrap();
+
+    let credit_amount = Money::new(Decimal::new(1000, 2), CurrencyCode::CNY).unwrap();
+    let credit_item = JournalEntryItem::new(
+        2,
+        credit_account,
+        DebitCreditIndicator::Credit,
+        credit_amount.clone(),
+        credit_amount,
+    ).unwrap();
+    entry.add_item(credit_item).unwrap();
+
+    entry.post().unwrap();
 
     let reversal = entry.reverse(
         NaiveDate::from_ymd_opt(2024, 1, 20).unwrap(),
@@ -200,5 +207,5 @@ fn test_journal_entry_reverse() {
     ).unwrap();
 
     assert_eq!(entry.status(), DocumentStatus::Reversed);
-    assert!(!reversal.as_str().is_empty());
+    assert!(!reversal.number().is_empty());
 }

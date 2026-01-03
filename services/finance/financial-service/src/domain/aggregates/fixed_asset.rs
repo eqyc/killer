@@ -2,7 +2,7 @@
 
 use chrono::{DateTime, Utc};
 use crate::domain::events::{FixedAssetAcquired, FixedAssetDepreciated, FixedAssetRetired};
-use killer_domain_primitives::{CompanyCode, Money, AuditInfo};
+use killer_domain_primitives::{CompanyCode, CurrencyCode, Money, AuditInfo};
 
 /// 固定资产聚合根
 ///
@@ -76,13 +76,13 @@ impl FixedAsset {
             description: description.into(),
             long_description: None,
             capitalization_date: None,
-            acquisition_value: Money::zero(),
-            accumulated_depreciation: Money::zero(),
-            unplanned_depreciation: Money::zero(),
+            acquisition_value: Money::zero(CurrencyCode::CNY),
+            accumulated_depreciation: Money::zero(CurrencyCode::CNY),
+            unplanned_depreciation: Money::zero(CurrencyCode::CNY),
             asset_type: None,
             retirement_value: None,
             decommissioning_date: None,
-            status: AssetStatus::Created,
+            status: AssetStatus::New,
             audit_info: AuditInfo::new("SYSTEM".to_string(), now),
         }
     }
@@ -276,7 +276,10 @@ impl FixedAsset {
             asset_number: self.asset_number,
             acquisition_value: self.acquisition_value,
             acquired_at: self.capitalization_date
-                .map(|d| DateTime::<Utc>::from_naive_utc_and_offset(d.and_hms_opt(0, 0, 0).unwrap(), Utc))
+                .map(|d| {
+                    let naive = d.and_hms_opt(0, 0, 0).unwrap();
+                    DateTime::<Utc>::from_naive_utc_and_offset(naive, Utc)
+                })
                 .unwrap_or_else(Utc::now),
         }
     }

@@ -1,8 +1,7 @@
 //! JournalEntryItem 单元测试
 
 use crate::domain::entities::{JournalEntryItem, DebitCreditIndicator, JournalEntryItemError};
-use crate::domain::value_objects::AccountCode;
-use killer_domain_primitives::{Money, CurrencyCode};
+use killer_domain_primitives::{AccountCode, Money, CurrencyCode};
 use rust_decimal::Decimal;
 
 fn amount_1000() -> Money {
@@ -11,7 +10,7 @@ fn amount_1000() -> Money {
 
 #[test]
 fn test_new_journal_entry_item() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -30,7 +29,7 @@ fn test_new_journal_entry_item() {
 
 #[test]
 fn test_journal_entry_item_with_customer() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -47,7 +46,7 @@ fn test_journal_entry_item_with_customer() {
 
 #[test]
 fn test_journal_entry_item_with_vendor() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -64,7 +63,7 @@ fn test_journal_entry_item_with_vendor() {
 
 #[test]
 fn test_journal_entry_item_with_cost_center() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -81,7 +80,7 @@ fn test_journal_entry_item_with_cost_center() {
 
 #[test]
 fn test_journal_entry_item_with_profit_center() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -98,7 +97,7 @@ fn test_journal_entry_item_with_profit_center() {
 
 #[test]
 fn test_journal_entry_item_with_line_text() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(
@@ -115,7 +114,7 @@ fn test_journal_entry_item_with_line_text() {
 
 #[test]
 fn test_journal_entry_item_with_assignment() {
-    let account_code = AccountCode::new("1001000001").unwrap();
+    let account_code = AccountCode::new("1001000001", "KA01").unwrap();
     let item_amount = amount_1000();
 
     let item = JournalEntryItem::new(

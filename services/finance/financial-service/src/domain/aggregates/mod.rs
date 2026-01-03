@@ -14,7 +14,7 @@ mod tests;
 
 // Re-exports for easier access
 pub use gl_account::GLAccount;
-pub use journal_entry::{JournalEntry, JournalEntryItem, DocumentStatus};
+pub use journal_entry::{JournalEntry, JournalEntryError};
 pub use customer::{Customer, CustomerStatus};
 pub use vendor::{Vendor, VendorStatus};
 pub use fixed_asset::{FixedAsset, AssetStatus};
