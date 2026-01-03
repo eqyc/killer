@@ -1,5 +1,5 @@
 [package]
-name = "killer-master-data-organizational-units"
+name = "killer-organizational-units"
 description = "组织单元主数据域 - 公司代码、工厂、库存地点等组织结构定义"
 version.workspace = true
 edition.workspace = true
@@ -8,8 +8,8 @@ rust-version.workspace = true
 repository.workspace = true
 
 [features]
-prost = ["prost", "prost-types"]
-serde = ["serde", "serde_json", "dep:serde_with"]
+prost = ["dep:prost", "dep:prost-types"]
+serde = ["dep:serde", "dep:serde_json", "dep:serde_with"]
 validator = ["validator/derive"]
 default = ["prost", "validator"]
 
@@ -19,8 +19,8 @@ killer-domain-primitives = { path = "../../common/domain-primitives" }
 killer-types = { path = "../../common/types" }
 
 # Serde & Validation
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
 validator = { version = "0.16", features = ["derive"] }
 serde_with = { version = "3.0", optional = true }
 
@@ -39,7 +39,7 @@ thiserror = "1.0"
 
 [dev-dependencies]
 serde_test = "1.0"
-validator_test = "0.5"
+
 
 [lints]
 workspace = true

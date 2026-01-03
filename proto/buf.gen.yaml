@@ -27,11 +27,6 @@ plugins:
     opt:
       - compile_well_known_types
       - extern_path=.google.protobuf=::prost_types
-      - file_descriptor_set
-
-  # Prost Serde - 添加 Serde 支持
-  - local: protoc-gen-prost-serde
-    out: ../libs/integration/api-contracts/src/gen
 
   # Tonic - gRPC 服务代码生成
   - local: protoc-gen-tonic

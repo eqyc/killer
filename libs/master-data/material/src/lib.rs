@@ -617,10 +617,13 @@ impl MaterialStorageData {
     pub fn decrease_stock(&mut self, quantity: Quantity) -> MaterialResult<()> {
         let new_value = self.unrestricted_stock.value() - quantity.value();
 
-        if new_value < 0.0 {
+        if new_value < rust_decimal::Decimal::ZERO {
+            // Need to convert Decimal to f64 for error reporting if error expects f64
+            // Or better, update Error definition. For now, assuming error variants expect f64:
+            use rust_decimal::prelude::ToPrimitive;
             return Err(MaterialError::InsufficientStock {
-                available: self.unrestricted_stock.value(),
-                required: quantity.value(),
+                available: self.unrestricted_stock.value().to_f64().unwrap_or_default(),
+                required: quantity.value().to_f64().unwrap_or_default(),
             });
         }
 
@@ -641,7 +644,7 @@ impl MaterialStorageData {
         self.decrease_stock(quantity.clone())?;
 
         let qi_stock = self.quality_inspection_stock.get_or_insert_with(|| {
-            Quantity::new(0.0, quantity.unit().clone()).unwrap()
+            Quantity::new(rust_decimal::Decimal::ZERO, quantity.unit().clone()).unwrap()
         });
 
         *qi_stock = Quantity::new(
@@ -649,7 +652,7 @@ impl MaterialStorageData {
             qi_stock.unit().clone(),
         )
         .map_err(|e| MaterialError::ValidationFailed {
-            message: format!("Failed to move to QI: ", e),
+            message: format!("Failed to move to QI: {}", e), // Fixed variable usage
         })?;
 
         self.updated_at = Utc::now();
@@ -658,17 +661,19 @@ impl MaterialStorageData {
 
     /// 从质检库存释放
     pub fn release_from_quality_inspection(&mut self, quantity: Quantity) -> MaterialResult<()> {
+        use rust_decimal::prelude::ToPrimitive;
+        
         let qi_stock = self.quality_inspection_stock.as_mut()
             .ok_or_else(|| MaterialError::InsufficientStock {
                 available: 0.0,
-                required: quantity.value(),
+                required: quantity.value().to_f64().unwrap_or_default(),
             })?;
 
         let new_qi_value = qi_stock.value() - quantity.value();
-        if new_qi_value < 0.0 {
+        if new_qi_value < rust_decimal::Decimal::ZERO {
             return Err(MaterialError::InsufficientStock {
-                available: qi_stock.value(),
-                required: quantity.value(),
+                available: qi_stock.value().to_f64().unwrap_or_default(),
+                required: quantity.value().to_f64().unwrap_or_default(),
             });
         }
 
